@@ -1,12 +1,14 @@
 import datetime
+
+from dateutil import tz
+from docker_custodian import args
+
 try:
     from unittest import mock
 except ImportError:
     import mock
 
-from dateutil import tz
 
-from docker_custodian import args
 
 
 def test_datetime_seconds_ago(now):

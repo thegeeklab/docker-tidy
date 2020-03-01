@@ -3,14 +3,12 @@ try:
 except ImportError:
     import mock
 
-from docker_custodian.docker_autostop import (
-    build_container_matcher,
-    get_opts,
-    has_been_running_since,
-    main,
-    stop_container,
-    stop_containers,
-)
+from docker_custodian.docker_autostop import build_container_matcher
+from docker_custodian.docker_autostop import get_opts
+from docker_custodian.docker_autostop import has_been_running_since
+from docker_custodian.docker_autostop import main
+from docker_custodian.docker_autostop import stop_container
+from docker_custodian.docker_autostop import stop_containers
 
 
 def test_stop_containers(mock_client, container, now):

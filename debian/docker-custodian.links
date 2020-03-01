@@ -1,2 +1,0 @@
-opt/venvs/docker-custodian/bin/dcgc usr/bin/dcgc
-opt/venvs/docker-custodian/bin/dcstop usr/bin/dcstop

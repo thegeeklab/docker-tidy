@@ -1,12 +1,13 @@
 import datetime
 
-from dateutil import tz
 import docker
+import pytest
+from dateutil import tz
+
 try:
     from unittest import mock
 except ImportError:
     import mock
-import pytest
 
 
 @pytest.fixture

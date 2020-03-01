@@ -1,0 +1,48 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pipenv-setup = "*"
+pydocstyle = "<4.0.0"
+flake8 = "*"
+flake8-colors = "*"
+flake8-blind-except = "*"
+flake8-builtins = "*"
+flake8-docstrings = "<=3.0.0"
+flake8-isort = "*"
+flake8-logging-format = "*"
+flake8-polyfill = "*"
+flake8-quotes = "*"
+pep8-naming = "*"
+pytest = "*"
+pytest-mock = "*"
+pytest-cov = "*"
+bandit = "*"
+docker-tidy = {editable = true,path = "."}
+
+[packages]
+importlib-metadata = {version = "*",markers = "python_version<'3.8'"}
+certifi = "*"
+chardet = "*"
+docker = "*"
+docker-pycreds = "*"
+idna = "*"
+ipaddress = "*"
+python-dateutil = "*"
+pytimeparse = "*"
+requests = "*"
+appdirs = "*"
+colorama = "*"
+anyconfig = "*"
+pathspec = "*"
+python-json-logger = "*"
+jsonschema = "*"
+environs = "*"
+nested-lookup = "*"
+"ruamel.yaml" = "*"
+websocket-client = "*"
+
+[requires]
+python_version = "3.7"
