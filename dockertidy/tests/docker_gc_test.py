@@ -1,9 +1,9 @@
 import textwrap
+from io import StringIO
 
 import docker.errors
 import requests.exceptions
 from docker_custodian import docker_gc
-from io import StringIO
 
 try:
     from unittest import mock

@@ -6,11 +6,14 @@ import logging
 import os
 import sys
 
+from importlib_metadata import PackageNotFoundError
+from importlib_metadata import version
+
 import dockertidy.Exception
+from dockertidy import __version__
 from dockertidy.Config import SingleConfig
 from dockertidy.Utils import SingleLog
 from dockertidy.Utils import timedelta_type
-from importlib_metadata import version, PackageNotFoundError
 
 
 class DockerTidy:
@@ -34,7 +37,7 @@ class DockerTidy:
         parser.add_argument("-q", dest="logging.level", action="append_const",
                             const=1, help="decrease log level")
         parser.add_argument("--version", action="version",
-                            version=version(__name__))
+                            version="%(prog)s {}".format(__version__))
 
         subparsers = parser.add_subparsers(help="sub-command help")
 
