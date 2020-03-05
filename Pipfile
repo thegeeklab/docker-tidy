@@ -21,6 +21,8 @@ pytest-mock = "*"
 pytest-cov = "*"
 bandit = "*"
 docker-tidy = {editable = true,path = "."}
+autopep8 = "*"
+yapf = "*"
 
 [packages]
 importlib-metadata = {version = "*",markers = "python_version<'3.8'"}

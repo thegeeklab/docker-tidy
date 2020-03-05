@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Global settings definition."""
 
-import logging
 import os
-import sys
 
 import anyconfig
 import environs
@@ -11,9 +9,10 @@ import jsonschema.exceptions
 import ruamel.yaml
 from appdirs import AppDirs
 from jsonschema._utils import format_as_index
-from pkg_resources import resource_filename
 
 import dockertidy.Exception
+import dockertidy.Parser
+from dockertidy.Parser import env
 from dockertidy.Utils import Singleton
 
 config_dir = AppDirs("docker-tidy").user_config_dir
@@ -26,7 +25,8 @@ class Config():
 
     Settings are loade from multiple locations in defined order (last wins):
     - default settings defined by `self._get_defaults()`
-    - yaml config file, defaults to OS specific user config dir (https://pypi.org/project/appdirs/)
+    - yaml config file, defaults to OS specific user config dir
+      see (https://pypi.org/project/appdirs/)
     - provides cli parameters
     """
 
@@ -36,21 +36,17 @@ class Config():
             "env": "CONFIG_FILE",
             "type": environs.Env().str
         },
-        "role_dir": {
-            "default": "",
-            "env": "ROLE_DIR",
-            "type": environs.Env().str
-        },
-        "role_name": {
-            "default": "",
-            "env": "ROLE_NAME",
-            "type": environs.Env().str
-        },
         "dry_run": {
             "default": False,
-            "env": "DRY_RUN",
+            "env": "DRY_TUN",
             "file": True,
             "type": environs.Env().bool
+        },
+        "http_timeout": {
+            "default": 60,
+            "env": "HTTP_TIMEOUT",
+            "file": True,
+            "type": environs.Env().int
         },
         "logging.level": {
             "default": "WARNING",
@@ -64,73 +60,47 @@ class Config():
             "file": True,
             "type": environs.Env().bool
         },
-        "output_dir": {
-            "default": os.getcwd(),
-            "env": "OUTPUT_DIR",
+        "gc.max_container_age": {
+            "default": "1day",
+            "env": "GC_MAX_CONTAINER_AGE",
             "file": True,
-            "type": environs.Env().str
+            "type": env.timedelta_validator
         },
-        "template_dir": {
-            "default": os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates"),
-            "env": "TEMPLATE_DIR",
+        "gc.max_image_age": {
+            "default": "1day",
+            "env": "GC_MAX_IMAGE_AGE",
             "file": True,
-            "type": environs.Env().str
+            "type": env.timedelta_validator
         },
-        "template": {
-            "default": "readme",
-            "env": "TEMPLATE",
-            "file": True,
-            "type": environs.Env().str
-        },
-        "force_overwrite": {
+        "gc.dangling_volumes": {
             "default": False,
-            "env": "FORCE_OVERWRITE",
+            "env": "GC_EXCLUDE_IMAGE",
             "file": True,
             "type": environs.Env().bool
         },
-        "custom_header": {
-            "default": "",
-            "env": "CUSTOM_HEADER",
-            "file": True,
-            "type": environs.Env().str
-        },
-        "exclude_files": {
+        "gc.exclude_image": {
             "default": [],
-            "env": "EXCLUDE_FILES",
+            "env": "GC_DANGLING_VOLUMES",
             "file": True,
             "type": environs.Env().list
         },
-    }
-
-    ANNOTATIONS = {
-        "meta": {
-            "name": "meta",
-            "automatic": True,
-            "subtypes": []
+        "gc.exclude_container_label": {
+            "default": [],
+            "env": "GC_EXCLUDE_CONTAINER_LABEL",
+            "file": True,
+            "type": environs.Env().list
         },
-        "todo": {
-            "name": "todo",
-            "automatic": True,
-            "subtypes": []
+        "stop.max_run_time": {
+            "default": "3days",
+            "env": "STOP_MAX_RUN_TIME",
+            "file": True,
+            "type": env.timedelta_validator
         },
-        "var": {
-            "name": "var",
-            "automatic": True,
-            "subtypes": [
-                "value",
-                "example",
-                "description"
-            ]
-        },
-        "example": {
-            "name": "example",
-            "automatic": True,
-            "subtypes": []
-        },
-        "tag": {
-            "name": "tag",
-            "automatic": True,
-            "subtypes": []
+        "stop.prefix": {
+            "default": [],
+            "env": "STOP_PREFIX",
+            "file": True,
+            "type": environs.Env().list
         },
     }
 
@@ -146,10 +116,8 @@ class Config():
         self._args = args
         self._schema = None
         self.config_file = default_config_file
-        self.role_dir = os.getcwd()
         self.config = None
         self._set_config()
-        self.is_role = self._set_is_role() or False
 
     def _get_args(self, args):
         cleaned = dict(filter(lambda item: item[1] is not None, args.items()))
@@ -173,9 +141,6 @@ class Config():
         for key, item in self.SETTINGS.items():
             normalized = self._add_dict_branch(normalized, key.split("."), item["default"])
 
-        # compute role_name default
-        normalized["role_name"] = os.path.basename(self.role_dir)
-
         self.schema = anyconfig.gen_schema(normalized)
         return normalized
 
@@ -183,7 +148,7 @@ class Config():
         normalized = {}
         for key, item in self.SETTINGS.items():
             if item.get("env"):
-                prefix = "ANSIBLE_DOCTOR_"
+                prefix = "TIDY_"
                 envname = prefix + item["env"]
                 try:
                     value = item["type"](envname)
@@ -192,7 +157,9 @@ class Config():
                     if '"{}" not set'.format(envname) in str(e):
                         pass
                     else:
-                        raise dockertidy.Exception.ConfigError("Unable to read environment variable", str(e))
+                        raise dockertidy.Exception.ConfigError(
+                            "Unable to read environment variable", str(e)
+                        )
 
         return normalized
 
@@ -204,13 +171,9 @@ class Config():
         # preset config file path
         if envs.get("config_file"):
             self.config_file = self._normalize_path(envs.get("config_file"))
-        if envs.get("role_dir"):
-            self.role_dir = self._normalize_path(envs.get("role_dir"))
 
         if args.get("config_file"):
             self.config_file = self._normalize_path(args.get("config_file"))
-        if args.get("role_dir"):
-            self.role_dir = self._normalize_path(args.get("role_dir"))
 
         source_files = []
         source_files.append(self.config_file)
@@ -224,7 +187,9 @@ class Config():
                     s = stream.read()
                     try:
                         file_dict = ruamel.yaml.safe_load(s)
-                    except (ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError) as e:
+                    except (
+                        ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError
+                    ) as e:
                         message = "{} {}".format(e.context, e.problem)
                         raise dockertidy.Exception.ConfigError(
                             "Unable to read config file {}".format(config), message
@@ -240,15 +205,8 @@ class Config():
         if self._validate(args):
             anyconfig.merge(defaults, args, ac_merge=anyconfig.MS_DICTS)
 
-        fix_files = ["output_dir", "template_dir", "custom_header"]
-        for file in fix_files:
-            if defaults[file] and defaults[file] != "":
-                defaults[file] = self._normalize_path(defaults[file])
-
         if "config_file" in defaults:
             defaults.pop("config_file")
-        if "role_dir" in defaults:
-            defaults.pop("role_dir")
 
         defaults["logging"]["level"] = defaults["logging"]["level"].upper()
 
@@ -260,10 +218,6 @@ class Config():
             return os.path.abspath(os.path.expanduser(os.path.expandvars(base)))
         else:
             return path
-
-    def _set_is_role(self):
-        if os.path.isdir(os.path.join(self.role_dir, "tasks")):
-            return True
 
     def _validate(self, config):
         try:
@@ -284,32 +238,6 @@ class Config():
             if len(vector) == 1 \
             else self._add_dict_branch(tree[key] if key in tree else {}, vector[1:], value)
         return tree
-
-    def get_annotations_definition(self, automatic=True):
-        annotations = {}
-        if automatic:
-            for k, item in self.ANNOTATIONS.items():
-                if "automatic" in item.keys() and item["automatic"]:
-                    annotations[k] = item
-        return annotations
-
-    def get_annotations_names(self, automatic=True):
-        annotations = []
-        if automatic:
-            for k, item in self.ANNOTATIONS.items():
-                if "automatic" in item.keys() and item["automatic"]:
-                    annotations.append(k)
-        return annotations
-
-    def get_template(self):
-        """
-        Get the base dir for the template to use.
-
-        :return: str abs path
-        """
-        template_dir = self.config.get("template_dir")
-        template = self.config.get("template")
-        return os.path.realpath(os.path.join(template_dir, template))
 
 
 class SingleConfig(Config, metaclass=Singleton):

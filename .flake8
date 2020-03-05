@@ -1,6 +1,6 @@
 [flake8]
-ignore = D103
-max-line-length = 110
+ignore = D103, W503
+max-line-length = 99
 inline-quotes = double
 exclude =
     .git

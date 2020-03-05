@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
 """Default package."""
-from importlib_metadata import PackageNotFoundError
+
 from importlib_metadata import version
 
 __author__ = "Robert Kaussow"

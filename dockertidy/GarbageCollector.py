@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Remove unused docker containers and images."""
 
-import argparse
 import fnmatch
 import logging
 import sys
@@ -12,10 +11,9 @@ import docker
 import docker.errors
 import requests.exceptions
 from docker.utils import kwargs_from_env
-from docker_custodian.args import timedelta_type
 
-log = logging.getLogger(__name__)
-
+from dockertidy.Config import SingleConfig
+from dockertidy.Logger import SingleLog
 
 # This seems to be something docker uses for a null/zero date
 YEAR_ZERO = "0001-01-01T00:00:00Z"
@@ -23,12 +21,15 @@ YEAR_ZERO = "0001-01-01T00:00:00Z"
 ExcludeLabel = namedtuple("ExcludeLabel", ["key", "value"])
 
 
-def cleanup_containers(
-    client,
-    max_container_age,
-    dry_run,
-    exclude_container_labels,
-):
+class GarbageCollector:
+
+    def __init__(self):
+        self.config = SingleConfig()
+        self.log = SingleLog()
+        self.logger = SingleLog().logger
+
+
+def cleanup_containers(client, max_container_age, dry_run, exclude_container_labels):
     all_containers = get_all_containers(client)
     filtered_containers = filter_excluded_containers(
         all_containers,
@@ -40,15 +41,13 @@ def cleanup_containers(
             container=container_summary["Id"],
         )
         if not container or not should_remove_container(
-            container,
-            max_container_age,
+                container,
+                max_container_age,
         ):
             continue
 
-        log.info("Removing container %s %s %s" % (
-            container["Id"][:16],
-            container.get("Name", "").lstrip("/"),
-            container["State"]["FinishedAt"]))
+        log.info("Removing container %s %s %s" % (container["Id"][:16], container.get(
+            "Name", "").lstrip("/"), container["State"]["FinishedAt"]))
 
         if not dry_run:
             api_call(
@@ -64,11 +63,12 @@ def filter_excluded_containers(containers, exclude_container_labels):
 
     def include_container(container):
         if should_exclude_container_with_labels(
-            container,
-            exclude_container_labels,
+                container,
+                exclude_container_labels,
         ):
             return False
         return True
+
     return filter(include_container, containers)
 
 
@@ -81,16 +81,12 @@ def should_exclude_container_with_labels(container, exclude_container_labels):
                     exclude_label.key,
                 )
                 label_values_to_check = [
-                    container["Labels"][matching_key]
-                    for matching_key in matching_keys
+                    container["Labels"][matching_key] for matching_key in matching_keys
                 ]
                 if fnmatch.filter(label_values_to_check, exclude_label.value):
                     return True
             else:
-                if fnmatch.filter(
-                    container["Labels"].keys(),
-                    exclude_label.key
-                ):
+                if fnmatch.filter(container["Labels"].keys(), exclude_label.key):
                     return True
     return False
 
@@ -153,6 +149,7 @@ def cleanup_images(client, max_image_age, dry_run, exclude_set):
 
 
 def filter_excluded_images(images, exclude_set):
+
     def include_image(image_summary):
         image_tags = image_summary.get("RepoTags")
         if no_image_tags(image_tags):
@@ -166,6 +163,7 @@ def filter_excluded_images(images, exclude_set):
 
 
 def filter_images_in_use(images, image_tags_in_use):
+
     def get_tag_set(image_summary):
         image_tags = image_summary.get("RepoTags")
         if no_image_tags(image_tags):
@@ -180,6 +178,7 @@ def filter_images_in_use(images, image_tags_in_use):
 
 
 def filter_images_in_use_by_id(images, image_ids_in_use):
+
     def image_not_in_use(image_summary):
         return image_summary["Id"] not in image_ids_in_use
 
@@ -245,6 +244,7 @@ def api_call(func, **kwargs):
 
 
 def format_image(image, image_summary):
+
     def get_tags():
         tags = image_summary.get("RepoTags")
         if not tags or tags == ["<none>:<none>"]:
@@ -275,29 +275,20 @@ def format_exclude_labels(exclude_label_args):
             exclude_label_value = split_exclude_label[1]
         else:
             exclude_label_value = None
-        exclude_labels.append(
-            ExcludeLabel(
-                key=exclude_label_key,
-                value=exclude_label_value,
-            )
-        )
+        exclude_labels.append(ExcludeLabel(
+            key=exclude_label_key,
+            value=exclude_label_value,
+        ))
     return exclude_labels
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(message)s",
-        stream=sys.stdout)
+    logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
     args = get_args()
-    client = docker.APIClient(version="auto",
-                              timeout=args.timeout,
-                              **kwargs_from_env())
+    client = docker.APIClient(version="auto", timeout=args.timeout, **kwargs_from_env())
 
-    exclude_container_labels = format_exclude_labels(
-        args.exclude_container_label
-    )
+    exclude_container_labels = format_exclude_labels(args.exclude_container_label)
 
     if args.max_container_age:
         cleanup_containers(
@@ -308,55 +299,8 @@ def main():
         )
 
     if args.max_image_age:
-        exclude_set = build_exclude_set(
-            args.exclude_image,
-            args.exclude_image_file)
+        exclude_set = build_exclude_set(args.exclude_image, args.exclude_image_file)
         cleanup_images(client, args.max_image_age, args.dry_run, exclude_set)
 
     if args.dangling_volumes:
         cleanup_volumes(client, args.dry_run)
-
-
-def get_args(args=None):
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--max-container-age",
-        type=timedelta_type,
-        help="Maximum age for a container. Containers older than this age "
-             "will be removed. Age can be specified in any pytimeparse "
-             "supported format.")
-    parser.add_argument(
-        "--max-image-age",
-        type=timedelta_type,
-        help="Maxium age for an image. Images older than this age will be "
-             "removed. Age can be specified in any pytimeparse supported "
-             "format.")
-    parser.add_argument(
-        "--dangling-volumes",
-        action="store_true",
-        help="Dangling volumes will be removed.")
-    parser.add_argument(
-        "--dry-run", action="store_true",
-        help="Only log actions, don't remove anything.")
-    parser.add_argument(
-        "-t", "--timeout", type=int, default=60,
-        help="HTTP timeout in seconds for making docker API calls.")
-    parser.add_argument(
-        "--exclude-image",
-        action="append",
-        help="Never remove images with this tag.")
-    parser.add_argument(
-        "--exclude-image-file",
-        type=argparse.FileType("r"),
-        help="Path to a file which contains a list of images to exclude, one "
-             "image tag per line.")
-    parser.add_argument(
-        "--exclude-container-label",
-        action="append", type=str, default=[],
-        help="Never remove containers with this label key or label key=value")
-
-    return parser.parse_args(args=args)
-
-
-if __name__ == "__main__":
-    main()
