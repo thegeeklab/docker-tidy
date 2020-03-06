@@ -76,7 +76,7 @@ setup(
         "importlib-metadata==1.5.0; python_version < '3.8'",
         "ipaddress==1.0.23",
         "jsonschema==3.2.0",
-        "marshmallow==3.5.0",
+        "marshmallow==3.5.1",
         "nested-lookup==0.2.21",
         "pathspec==0.7.0",
         "pyrsistent==0.15.7",

@@ -5,8 +5,8 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
-    'pip install -r test-requirements.txt -qq',
-    'pip install -qq .',
+    'pip install pipenv -qq',
+    'pipenv install --dev',
     'docker-tidy --help',
   ],
   depends_on: [
@@ -29,11 +29,41 @@ local PipelineLint = {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install -r test-requirements.txt -qq',
-        'pip install -qq .',
+        'pip install pipenv -qq',
+        'pipenv install --dev',
         'flake8 ./dockertidy',
       ],
     },
+  ],
+  trigger: {
+    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
+  },
+};
+
+local PipelineDeps = {
+  kind: 'pipeline',
+  name: 'dependencies',
+  platform: {
+    os: 'linux',
+    arch: 'amd64',
+  },
+  steps: [
+    {
+      name: 'pipenv',
+      image: 'python:3.7',
+      environment: {
+        PY_COLORS: 1,
+      },
+      commands: [
+        'pip install pipenv -qq',
+        'pipenv install --dev',
+        'pipenv check',
+        'pipenv-sync check',
+      ],
+    },
+  ],
+  depends_on: [
+    'lint',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -51,10 +81,10 @@ local PipelineTest = {
     PythonVersion(pyversion='3.5'),
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
-    PythonVersion(pyversion='3.8-rc'),
+    PythonVersion(pyversion='3.8'),
   ],
   depends_on: [
-    'lint',
+    'dependencies',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -76,8 +106,8 @@ local PipelineSecurity = {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install -r test-requirements.txt -qq',
-        'pip install -qq .',
+        'pip install pipenv -qq',
+        'pipenv install --dev',
         'bandit -r ./dockertidy -x ./dockertidy/tests',
       ],
     },
@@ -332,6 +362,7 @@ local PipelineNotifications = {
 
 [
   PipelineLint,
+  PipelineDeps,
   PipelineTest,
   PipelineSecurity,
   PipelineBuildPackage,

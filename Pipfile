@@ -45,6 +45,3 @@ environs = "*"
 nested-lookup = "*"
 "ruamel.yaml" = "*"
 websocket-client = "*"
-
-[requires]
-python_version = "3.7"
