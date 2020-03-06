@@ -61,6 +61,7 @@ class MultilineJsonFormatter(jsonlogger.JsonFormatter):
 
 
 class Log:
+    """Base logging object."""
 
     def __init__(self, level=logging.WARN, name="dockertidy", json=False):
         self.logger = logging.getLogger(name)
@@ -78,7 +79,9 @@ class Log:
         handler.addFilter(LogFilter(logging.ERROR))
         handler.setFormatter(
             MultilineFormatter(
-                self.error(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))))
+                self.error(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))
+            )
+        )
 
         if json:
             handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
@@ -91,7 +94,9 @@ class Log:
         handler.addFilter(LogFilter(logging.WARN))
         handler.setFormatter(
             MultilineFormatter(
-                self.warn(CONSOLE_FORMAT.format(colorama.Fore.YELLOW, colorama.Style.RESET_ALL))))
+                self.warn(CONSOLE_FORMAT.format(colorama.Fore.YELLOW, colorama.Style.RESET_ALL))
+            )
+        )
 
         if json:
             handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
@@ -104,7 +109,9 @@ class Log:
         handler.addFilter(LogFilter(logging.INFO))
         handler.setFormatter(
             MultilineFormatter(
-                self.info(CONSOLE_FORMAT.format(colorama.Fore.CYAN, colorama.Style.RESET_ALL))))
+                self.info(CONSOLE_FORMAT.format(colorama.Fore.CYAN, colorama.Style.RESET_ALL))
+            )
+        )
 
         if json:
             handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
@@ -117,7 +124,9 @@ class Log:
         handler.addFilter(LogFilter(logging.CRITICAL))
         handler.setFormatter(
             MultilineFormatter(
-                self.critical(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))))
+                self.critical(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))
+            )
+        )
 
         if json:
             handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
@@ -130,8 +139,9 @@ class Log:
         handler.addFilter(LogFilter(logging.DEBUG))
         handler.setFormatter(
             MultilineFormatter(
-                self.critical(CONSOLE_FORMAT.format(colorama.Fore.BLUE,
-                                                    colorama.Style.RESET_ALL))))
+                self.critical(CONSOLE_FORMAT.format(colorama.Fore.BLUE, colorama.Style.RESET_ALL))
+            )
+        )
 
         if json:
             handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
@@ -139,6 +149,7 @@ class Log:
         return handler
 
     def set_level(self, s):
+        """Set log level."""
         self.logger.setLevel(s)
 
     def debug(self, msg):
@@ -173,12 +184,16 @@ class Log:
         return "{}{}{}".format(color, msg, colorama.Style.RESET_ALL)
 
     def sysexit(self, code=1):
+        """Exit running program with given exit code."""
         sys.exit(code)
 
     def sysexit_with_message(self, msg, code=1):
+        """Exit running program with given exit code and message."""
         self.logger.critical(str(msg))
         self.sysexit(code)
 
 
 class SingleLog(Log, metaclass=Singleton):
+    """Singleton logger object."""
+
     pass

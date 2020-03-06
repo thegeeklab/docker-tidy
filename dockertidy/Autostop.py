@@ -12,6 +12,7 @@ from dockertidy.Parser import timedelta
 
 
 class AutoStop:
+    """Autostop object to handle long running containers."""
 
     def __init__(self):
         self.config = SingleConfig()
@@ -20,6 +21,7 @@ class AutoStop:
         self.docker = self._get_docker_client()
 
     def stop_containers(self):
+        """Identify long running containers and terminate them."""
         client = self.docker
         config = self.config.config
 

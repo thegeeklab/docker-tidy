@@ -11,6 +11,7 @@ from dockertidy.Parser import timedelta_validator
 
 
 class DockerTidy:
+    """Cli entrypoint to handle command arguments."""
 
     def __init__(self):
         self.log = SingleLog()

@@ -20,14 +20,12 @@ default_config_file = os.path.join(config_dir, "config.yml")
 
 
 class Config():
-    """
-    Create an object with all necessary settings.
+    """Create an object with all necessary settings.
 
     Settings are loade from multiple locations in defined order (last wins):
-    - default settings defined by `self._get_defaults()`
-    - yaml config file, defaults to OS specific user config dir
-      see (https://pypi.org/project/appdirs/)
-    - provides cli parameters
+        - default settings defined by `self._get_defaults()`
+        - yaml config file, defaults to OS specific user config directory
+        - provided cli parameters
     """
 
     SETTINGS = {
@@ -241,4 +239,6 @@ class Config():
 
 
 class SingleConfig(Config, metaclass=Singleton):
+    """Singleton config object."""
+
     pass

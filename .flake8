@@ -1,5 +1,5 @@
 [flake8]
-ignore = D103, W503
+ignore = D103, D107, W503
 max-line-length = 99
 inline-quotes = double
 exclude =
