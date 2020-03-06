@@ -6,8 +6,8 @@ local PythonVersion(pyversion='3.5') = {
   },
   commands: [
     'pip install pipenv -qq',
-    'pipenv install --dev',
-    'docker-tidy --help',
+    'pipenv install --dev --keep-outdated',
+    'pipenv run docker-tidy --help',
   ],
   depends_on: [
     'clone',
@@ -30,8 +30,8 @@ local PipelineLint = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev',
-        'flake8 ./dockertidy',
+        'pipenv install --dev --keep-outdated',
+        'pipenv run flake8 ./dockertidy',
       ],
     },
   ],
@@ -56,9 +56,9 @@ local PipelineDeps = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev',
+        'pipenv install --dev --keep-outdated',
         'pipenv check',
-        'pipenv-sync check',
+        'pipenv run pipenv-sync check',
       ],
     },
   ],
@@ -107,8 +107,8 @@ local PipelineSecurity = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev',
-        'bandit -r ./dockertidy -x ./dockertidy/tests',
+        'pipenv install --dev --keep-outdated',
+        'pipenv run bandit -r ./dockertidy -x ./dockertidy/tests',
       ],
     },
   ],
