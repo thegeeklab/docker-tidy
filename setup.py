@@ -90,10 +90,10 @@ setup(
         "six==1.14.0",
         "urllib3==1.25.8",
         "websocket-client==0.57.0",
-        "zipp==3.1.0",
+        "zipp==1.2.0; python_version == '3.5'",
     ],
     dependency_links=[],
-    setup_requires=["setuptools_scm",],
+    setup_requires=["setuptools_scm"],
     entry_points={"console_scripts": ["docker-tidy = dockertidy.__main__:main"]},
     test_suite="tests",
 )
