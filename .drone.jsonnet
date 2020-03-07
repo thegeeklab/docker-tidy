@@ -5,8 +5,9 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
-    'pip install .',
+    'pip install -qq .',
     'docker-tidy --help',
+    'docker-tidy --version',
   ],
   depends_on: [
     'clone',
@@ -29,7 +30,7 @@ local PipelineLint = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev --keep-outdated',
+        'pipenv --bare install --dev --keep-outdated',
         'pipenv run flake8 ./dockertidy',
       ],
     },
@@ -55,7 +56,7 @@ local PipelineDeps = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev --keep-outdated',
+        'pipenv --bare install --dev --keep-outdated',
         'pipenv check',
         'pipenv run pipenv-setup check',
       ],
@@ -106,7 +107,7 @@ local PipelineSecurity = {
       },
       commands: [
         'pip install pipenv -qq',
-        'pipenv install --dev --keep-outdated',
+        'pipenv --bare install --dev --keep-outdated',
         'pipenv run bandit -r ./dockertidy -x ./dockertidy/tests',
       ],
     },
@@ -335,7 +336,7 @@ local PipelineNotifications = {
         DOCKERHUB_REPO_PREFIX: 'xoxys',
         DOCKERHUB_REPO_NAME: '${DRONE_REPO_NAME}',
         README_PATH: 'README.md',
-        SHORT_DESCRIPTION: 'docker-tidy - Simple annotation based documentation for your roles',
+        SHORT_DESCRIPTION: 'docker-tidy - Keep docker hosts tidy',
       },
     },
     {
