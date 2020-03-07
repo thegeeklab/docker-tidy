@@ -52,7 +52,7 @@ depends_on:
 
 ---
 kind: pipeline
-name: test
+name: verify
 
 platform:
   os: linux
@@ -62,9 +62,8 @@ steps:
 - name: python35-pytest
   image: python:3.5
   commands:
-  - pip install pipenv -qq
-  - pipenv install --dev --keep-outdated
-  - pipenv run docker-tidy --help
+  - pip install .
+  - docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -73,9 +72,8 @@ steps:
 - name: python36-pytest
   image: python:3.6
   commands:
-  - pip install pipenv -qq
-  - pipenv install --dev --keep-outdated
-  - pipenv run docker-tidy --help
+  - pip install .
+  - docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -84,9 +82,8 @@ steps:
 - name: python37-pytest
   image: python:3.7
   commands:
-  - pip install pipenv -qq
-  - pipenv install --dev --keep-outdated
-  - pipenv run docker-tidy --help
+  - pip install .
+  - docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -95,9 +92,8 @@ steps:
 - name: python38-pytest
   image: python:3.8
   commands:
-  - pip install pipenv -qq
-  - pipenv install --dev --keep-outdated
-  - pipenv run docker-tidy --help
+  - pip install .
+  - docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -137,7 +133,7 @@ trigger:
   - refs/pull/**
 
 depends_on:
-- test
+- verify
 
 ---
 kind: pipeline
@@ -486,6 +482,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 6895442dc05e0774292f058639bc483ca93f5404107e5294209d38ae894936a9
+hmac: 54ee5fed7470d61a767d1d774adb82c1eeda89ec78efcfeec59557202303a405
 
 ...

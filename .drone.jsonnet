@@ -5,9 +5,8 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
-    'pip install pipenv -qq',
-    'pipenv install --dev --keep-outdated',
-    'pipenv run docker-tidy --help',
+    'pip install .',
+    'docker-tidy --help',
   ],
   depends_on: [
     'clone',
@@ -72,7 +71,7 @@ local PipelineDeps = {
 
 local PipelineTest = {
   kind: 'pipeline',
-  name: 'test',
+  name: 'verify',
   platform: {
     os: 'linux',
     arch: 'amd64',
@@ -113,7 +112,7 @@ local PipelineSecurity = {
     },
   ],
   depends_on: [
-    'test',
+    'verify',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
