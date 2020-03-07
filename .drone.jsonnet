@@ -349,6 +349,9 @@ local PipelineNotifications = {
         username: { from_secret: 'matrix_username' },
         password: { from_secret: 'matrix_password' },
       },
+      when: {
+        status: ['success', 'failure'],
+      },
     },
   ],
   depends_on: [
