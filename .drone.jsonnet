@@ -191,8 +191,6 @@ local PipelineBuildContainer(arch='amd64') = {
       image: 'python:3.7',
       commands: [
         'python setup.py bdist_wheel',
-        'ls -l dist/docker_tidy-*.whl',
-        'ls -l dist/',
       ],
     },
     {
