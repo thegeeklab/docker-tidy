@@ -90,7 +90,7 @@ setup(
         "six==1.14.0",
         "urllib3==1.25.8",
         "websocket-client==0.57.0",
-        "zipp==1.2.0; python_version == '3.5'",
+        "zipp==1.2.0",
     ],
     dependency_links=[],
     setup_requires=["setuptools_scm"],
