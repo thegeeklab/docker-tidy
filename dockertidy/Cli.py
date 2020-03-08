@@ -31,6 +31,7 @@ class DockerTidy:
         parser.add_argument(
             "--dry-run",
             action="store_true",
+            default=None,
             dest="dry_run",
             help="Only log actions, don't stop anything."
         )
@@ -52,7 +53,7 @@ class DockerTidy:
             "--version", action="version", version="%(prog)s {}".format(__version__)
         )
 
-        subparsers = parser.add_subparsers(help="sub-command help")
+        subparsers = parser.add_subparsers(dest="command", help="sub-command help")
 
         parser_gc = subparsers.add_parser("gc", help="Run docker garbage collector.")
         parser_gc.add_argument(

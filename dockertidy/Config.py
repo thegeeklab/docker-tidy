@@ -14,6 +14,7 @@ import dockertidy.Exception
 import dockertidy.Parser
 from dockertidy.Parser import env
 from dockertidy.Utils import Singleton
+from dockertidy.Utils import dict_intersect
 
 config_dir = AppDirs("docker-tidy").user_config_dir
 default_config_file = os.path.join(config_dir, "config.yml")
@@ -29,6 +30,9 @@ class Config():
     """
 
     SETTINGS = {
+        "command": {
+            "default": "",
+        },
         "config_file": {
             "default": "",
             "env": "CONFIG_FILE",
@@ -134,9 +138,12 @@ class Config():
 
         return normalized
 
-    def _get_defaults(self):
+    def _get_defaults(self, files=False):
         normalized = {}
+
         for key, item in self.SETTINGS.items():
+            if files and not item.get("file"):
+                continue
             normalized = self._add_dict_branch(normalized, key.split("."), item["default"])
 
         self.schema = anyconfig.gen_schema(normalized)
@@ -165,6 +172,7 @@ class Config():
         args = self._get_args(self._args)
         envs = self._get_envs()
         defaults = self._get_defaults()
+        files_raw = self._get_defaults(files=True)
 
         # preset config file path
         if envs.get("config_file"):
@@ -179,23 +187,25 @@ class Config():
         source_files.append(os.path.join(os.getcwd(), ".dockertidy.yml"))
         source_files.append(os.path.join(os.getcwd(), ".dockertidy.yaml"))
 
-        for config in source_files:
-            if config and os.path.exists(config):
-                with open(config, "r", encoding="utf8") as stream:
-                    s = stream.read()
-                    try:
-                        file_dict = ruamel.yaml.safe_load(s)
-                    except (
-                        ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError
-                    ) as e:
-                        message = "{} {}".format(e.context, e.problem)
-                        raise dockertidy.Exception.ConfigError(
-                            "Unable to read config file {}".format(config), message
-                        )
+        for config in [i for i in source_files if os.path.exists(i)]:
+            with open(config, "r", encoding="utf8") as stream:
+                s = stream.read()
+                try:
+                    normalized = ruamel.yaml.safe_load(s)
+                except (ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError) as e:
+                    message = "{} {}".format(e.context, e.problem)
+                    raise dockertidy.Exception.ConfigError(
+                        "Unable to read config file {}".format(config), message
+                    )
 
-                    if self._validate(file_dict):
-                        anyconfig.merge(defaults, file_dict, ac_merge=anyconfig.MS_DICTS)
-                        defaults["logging"]["level"] = defaults["logging"]["level"].upper()
+                if self._validate(normalized):
+                    anyconfig.merge(files_raw, normalized, ac_merge=anyconfig.MS_DICTS)
+                    files_raw["logging"]["level"] = files_raw["logging"]["level"].upper()
+
+        files = dict_intersect(files_raw, self._get_defaults(files=True))
+
+        if self._validate(files):
+            anyconfig.merge(defaults, files, ac_merge=anyconfig.MS_DICTS)
 
         if self._validate(envs):
             anyconfig.merge(defaults, envs, ac_merge=anyconfig.MS_DICTS)
