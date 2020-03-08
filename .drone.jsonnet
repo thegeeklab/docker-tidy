@@ -57,7 +57,7 @@ local PipelineDeps = {
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --keep-outdated',
-        'pipenv check',
+        'pipenv check -i 37752',
         'pipenv run pipenv-setup check',
       ],
     },
