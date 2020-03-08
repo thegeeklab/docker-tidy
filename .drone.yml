@@ -37,6 +37,7 @@ steps:
   - pip install pipenv -qq
   - pipenv --bare install --keep-outdated
   - pipenv check -i 37752
+  - pipenv --bare install --dev --keep-outdated
   - pipenv run pipenv-setup check
   environment:
     PY_COLORS: 1
@@ -490,6 +491,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: e0a3f9b769dc68179eb50505f2d243d3790dbdb003c4025d845602151208e2f5
+hmac: 7434a5205208c8f283d2985ede241d81c2fdd629f19032f550d5173449b0c74f
 
 ...
