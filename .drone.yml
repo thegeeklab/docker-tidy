@@ -35,7 +35,7 @@ steps:
   image: python:3.7
   commands:
   - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
+  - pipenv --bare install --keep-outdated
   - pipenv check
   - pipenv run pipenv-setup check
   environment:
@@ -490,6 +490,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 7560e4442691c78855f160abc22966652d7e84dc68136e1d8e1f5a402d38cab7
+hmac: fe27b95c5d0bb16f3d259d9e03fc25949bcf82b5ec064f945e60873e8a6fa52c
 
 ...
