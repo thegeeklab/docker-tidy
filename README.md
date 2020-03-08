@@ -5,7 +5,6 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
 [![PyPi Status](https://img.shields.io/pypi/status/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
 [![PyPi Release](https://img.shields.io/pypi/v/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
-[![Codecov](https://img.shields.io/codecov/c/github/xoxys/docker-tidy)](https://codecov.io/gh/xoxys/docker-tidy)
 [![License: MIT](https://img.shields.io/github/license/xoxys/docker-tidy)](LICENSE)
 
 This is a fork of [Yelp/docker-custodian](https://github.com/Yelp/docker-custodian). Keep docker hosts tidy.

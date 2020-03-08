@@ -1,0 +1,31 @@
+---
+baseURL: https://docker-tidy.geekdocs.de/
+title: docker-tidy
+theme: hugo-geekdoc
+pygmentsUseClasses: true
+pygmentsCodeFences: true
+
+# Geekdoc configuration
+disablePathToLower: true
+enableGitInfo: true
+
+# Needed for mermaid/katex shortcodes
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  tableOfContents:
+    startLevel: 1
+
+params:
+  geekdocMenuBundle: true
+  geekdocToC: 3
+
+  geekdocRepo: https://github.com/xoxys/docker-tidy
+  geekdocEditPath: edit/master/docs/content
+
+  geekdocDateFormat: "Jan 2, 2006"
+  geekdocSearch: true
+
+  geekdocLegalNotice: https://geeklabor.de/legal-notice/#impressum
+  geekdocPrivacyPolicy: https://geeklabor.de/legal-notice/#datenschutzerkl%C3%A4rung
