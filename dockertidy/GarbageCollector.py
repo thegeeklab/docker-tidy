@@ -241,7 +241,6 @@ class GarbageCollector:
 
     def cleanup_volumes(self):
         """Identify old volumes and remove them."""
-
         dangling_volumes = self._get_dangling_volumes()
 
         for volume in reversed(dangling_volumes):
