@@ -74,8 +74,10 @@ labels to prevent them from being removed.
 Stop containers that have been running for too long.
 
 `docker-tidy stop` will `docker stop` containers where the container name starts
-with [\--prefix]{.title-ref} and it has been running for longer than
+with [\--prefix]{.title-ref} and/or it has been running for longer than
 [\--max-run-time]{.title-ref}.
+
+If no prefix is set, __all__ containers matching the `max-run-time` will be stopped!
 
 Example:
 

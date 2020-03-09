@@ -243,6 +243,7 @@ class GarbageCollector:
         """Identify old volumes and remove them."""
         dangling_volumes = self._get_dangling_volumes()
 
+        self.logger.info("Removing dangling volumes")
         for volume in reversed(dangling_volumes):
             self.logger.info("Removing dangling volume %s", volume["Name"])
             self._remove_volume(volume)
@@ -312,7 +313,6 @@ class GarbageCollector:
             self.cleanup_images(exclude_set)
 
         if config["gc"]["dangling_volumes"]:
-            self.logger.info("Remove dangling volumes")
             self.cleanup_volumes()
 
         if (

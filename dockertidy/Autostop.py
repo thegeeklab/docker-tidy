@@ -31,11 +31,18 @@ class AutoStop:
 
         matcher = self._build_container_matcher(prefix)
 
+        self.logger.info(
+            "Stopping containers older than '{}'".format(
+                timedelta(config["stop"]["max_run_time"], dt_format="%Y-%m-%d, %H:%M:%S")
+            )
+        )
         for container_summary in client.containers():
             container = client.inspect_container(container_summary["Id"])
             name = container["Name"].lstrip("/")
-            if (matcher(name) and self._has_been_running_since(container, max_run_time)):
 
+            if (
+                prefix and matcher(name) and self._has_been_running_since(container, max_run_time)
+            ) or (not prefix and self._has_been_running_since(container, max_run_time)):
                 self.logger.info(
                     "Stopping container %s %s: running since %s" %
                     (container["Id"][:16], name, container["State"]["StartedAt"])
@@ -72,4 +79,11 @@ class AutoStop:
 
     def run(self):
         """Autostop main method."""
-        print("run stop")
+        self.logger.info("Start autostop")
+        config = self.config.config
+
+        if config["stop"]["max_run_time"]:
+            self.stop_containers()
+
+        if not config["stop"]["max_run_time"]:
+            self.logger.info("Skipped, no arguments given")
