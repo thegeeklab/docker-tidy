@@ -5,7 +5,9 @@ import argparse
 
 import dockertidy.Exception
 from dockertidy import __version__
+from dockertidy.Autostop import AutoStop
 from dockertidy.Config import SingleConfig
+from dockertidy.GarbageCollector import GarbageCollector
 from dockertidy.Logger import SingleLog
 from dockertidy.Parser import timedelta_validator
 
@@ -18,6 +20,9 @@ class DockerTidy:
         self.logger = self.log.logger
         self.args = self._cli_args()
         self.config = self._get_config()
+        self.gc = GarbageCollector()
+        self.stop = AutoStop()
+        self.run()
 
     def _cli_args(self):
         """
@@ -54,6 +59,7 @@ class DockerTidy:
         )
 
         subparsers = parser.add_subparsers(dest="command", help="sub-command help")
+        subparsers.required = True
 
         parser_gc = subparsers.add_parser("gc", help="Run docker garbage collector.")
         parser_gc.add_argument(
@@ -84,7 +90,7 @@ class DockerTidy:
             "--exclude-image",
             action="append",
             type=str,
-            dest="gc.exclude_image",
+            dest="gc.exclude_images",
             metavar="EXCLUDE_IMAGE",
             help="Never remove images with this tag."
         )
@@ -92,7 +98,7 @@ class DockerTidy:
             "--exclude-container-label",
             action="append",
             type=str,
-            dest="gc.exclude_container_label",
+            dest="gc.exclude_container_labels",
             metavar="EXCLUDE_CONTAINER_LABEL",
             help="Never remove containers with this label key "
             "or label key=value"
@@ -127,13 +133,19 @@ class DockerTidy:
         except dockertidy.Exception.ConfigError as e:
             self.log.sysexit_with_message(e)
 
-        print(config.config)
-
         try:
             self.log.set_level(config.config["logging"]["level"])
         except ValueError as e:
             self.log.sysexit_with_message("Can not set log level.\n{}".format(str(e)))
 
         self.logger.info("Using config file {}".format(config.config_file))
+        self.logger.debug("Config dump: {}".format(config.config))
 
         return config
+
+    def run(self):
+        """Cli main method."""
+        if self.config.config["command"] == "gc":
+            self.gc.run()
+        elif self.config.config["command"] == "stop":
+            self.stop.run()

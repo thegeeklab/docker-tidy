@@ -26,7 +26,7 @@ def timedelta_validator(value):
         raise
 
 
-def timedelta(value):
+def timedelta(value, dt_format=None):
     """Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
     :param value: a string containing a time format supported by
@@ -34,7 +34,12 @@ def timedelta(value):
     """
     if value is None:
         return None
-    return _datetime_seconds_ago(timeparse.timeparse(value))
+
+    timedelta = _datetime_seconds_ago(timeparse.timeparse(value))
+    if dt_format:
+        timedelta = timedelta.strftime(dt_format)
+
+    return timedelta
 
 
 def _datetime_seconds_ago(seconds):

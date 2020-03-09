@@ -11,6 +11,7 @@ import requests.exceptions
 
 from dockertidy.Config import SingleConfig
 from dockertidy.Logger import SingleLog
+from dockertidy.Parser import timedelta
 
 
 class GarbageCollector:
@@ -30,10 +31,14 @@ class GarbageCollector:
         """Identify old containers and remove them."""
         config = self.config.config
         client = self.docker
-        all_containers = self._get_all_containers(client)
-        filtered_containers = self._filter_excluded_containers(
-            all_containers,
-            config["gc"]["exclude_container_labels"],
+        all_containers = self._get_all_containers()
+
+        filtered_containers = self._filter_excluded_containers(all_containers)
+
+        self.logger.info(
+            "Removing containers older than '{}'".format(
+                timedelta(config["gc"]["max_container_age"], dt_format="%Y-%m-%d, %H:%M:%S")
+            )
         )
 
         for container_summary in reversed(list(filtered_containers)):
@@ -43,14 +48,14 @@ class GarbageCollector:
             )
             if not container or not self._should_remove_container(
                 container,
-                config["gc"]["max_container_age"],
+                timedelta(config["gc"]["max_container_age"]),
             ):
                 continue
 
             self.logger.info(
-                "Removing container %s %s %s" % (
-                    container["Id"][:16], container.get("Name", "").lstrip("/"),
-                    container["State"]["FinishedAt"]
+                "Removing container {} {} {}".format(
+                    container["Id"][:16],
+                    container.get("Name", "").lstrip("/"), container["State"]["FinishedAt"]
                 )
             )
 
@@ -152,16 +157,19 @@ class GarbageCollector:
             images = self._filter_images_in_use_by_id(images, image_ids_in_use)
         images = self._filter_excluded_images(images, exclude_set)
 
-        for image_summary in reversed(list(images)):
-            self._rmove_image(
-                client, image_summary, config["gc"]["max_image_age"], config["dry_run"]
+        self.logger.info(
+            "Removing images older than '{}'".format(
+                timedelta(config["gc"]["max_image_age"], dt_format="%Y-%m-%d, %H:%M:%S")
             )
+        )
+        for image_summary in reversed(list(images)):
+            self._remove_image(image_summary, timedelta(config["gc"]["max_image_age"]))
 
     def _filter_excluded_images(self, images, exclude_set):
 
         def include_image(image_summary):
             image_tags = image_summary.get("RepoTags")
-            if self.no_image_tags(image_tags):
+            if self._no_image_tags(image_tags):
                 return True
             for exclude_pattern in exclude_set:
                 if fnmatch.filter(image_tags, exclude_pattern):
@@ -197,7 +205,7 @@ class GarbageCollector:
     def _no_image_tags(self, image_tags):
         return not image_tags or image_tags == ["<none>:<none>"]
 
-    def _remove_image(self, client, image_summary, min_date):
+    def _remove_image(self, image_summary, min_date):
         config = self.config.config
         client = self.docker
         image = self._api_call(client.inspect_image, image=image_summary["Id"])
@@ -219,8 +227,9 @@ class GarbageCollector:
         for image_tag in image_tags:
             self._api_call(client.remove_image, image=image_tag)
 
-    def _remove_volume(self, client, volume):
+    def _remove_volume(self, volume):
         config = self.config.config
+        client = self.docker
         if not volume:
             return
 
@@ -230,13 +239,14 @@ class GarbageCollector:
 
         self._api_call(client.remove_volume, name=volume["Name"])
 
-    def cleanup_volumes(self, client):
+    def cleanup_volumes(self):
         """Identify old volumes and remove them."""
-        dangling_volumes = self._get_dangling_volumes(client)
+
+        dangling_volumes = self._get_dangling_volumes()
 
         for volume in reversed(dangling_volumes):
             self.logger.info("Removing dangling volume %s", volume["Name"])
-            self._remove_volume(client, volume)
+            self._remove_volume(volume)
 
     def _api_call(self, func, **kwargs):
         try:
@@ -260,7 +270,7 @@ class GarbageCollector:
 
     def _build_exclude_set(self):
         config = self.config.config
-        exclude_set = set(config["gc"]["exclude_image"])
+        exclude_set = set(config["gc"]["exclude_images"])
 
         def is_image_tag(line):
             return line and not line.startswith("#")
@@ -288,23 +298,26 @@ class GarbageCollector:
 
     def _get_docker_client(self):
         config = self.config.config
-        return docker.APIClient(version="auto", timeout=config["timeout"])
+        return docker.APIClient(version="auto", timeout=config["http_timeout"])
 
+    def run(self):
+        """Garbage collector main method."""
+        self.logger.info("Start garbage collection")
+        config = self.config.config
 
-# def main():
-#     exclude_container_labels = format_exclude_labels(args.exclude_container_label)
+        if config["gc"]["max_container_age"]:
+            self.cleanup_containers()
 
-#     if args.max_container_age:
-#         cleanup_containers(
-#             client,
-#             args.max_container_age,
-#             args.dry_run,
-#             exclude_container_labels,
-#         )
+        if config["gc"]["max_image_age"]:
+            exclude_set = self._build_exclude_set()
+            self.cleanup_images(exclude_set)
 
-#     if args.max_image_age:
-#         exclude_set = build_exclude_set(args.exclude_image, args.exclude_image_file)
-#         cleanup_images(client, args.max_image_age, args.dry_run, exclude_set)
+        if config["gc"]["dangling_volumes"]:
+            self.logger.info("Remove dangling volumes")
+            self.cleanup_volumes()
 
-#     if args.dangling_volumes:
-#         cleanup_volumes(client, args.dry_run)
+        if (
+            not config["gc"]["max_container_age"] or not config["gc"]["max_image_age"]
+            or not config["gc"]["dangling_volumes"]
+        ):
+            self.logger.info("Skipped, no arguments given")

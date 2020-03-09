@@ -63,37 +63,37 @@ class Config():
             "type": environs.Env().bool
         },
         "gc.max_container_age": {
-            "default": "1day",
+            "default": "",
             "env": "GC_MAX_CONTAINER_AGE",
             "file": True,
             "type": env.timedelta_validator
         },
         "gc.max_image_age": {
-            "default": "1day",
+            "default": "",
             "env": "GC_MAX_IMAGE_AGE",
             "file": True,
             "type": env.timedelta_validator
         },
         "gc.dangling_volumes": {
             "default": False,
-            "env": "GC_EXCLUDE_IMAGE",
+            "env": "GC_DANGLING_VOLUMES",
             "file": True,
             "type": environs.Env().bool
         },
-        "gc.exclude_image": {
+        "gc.exclude_images": {
             "default": [],
-            "env": "GC_DANGLING_VOLUMES",
+            "env": "GC_EXCLUDE_IMAGES",
             "file": True,
             "type": environs.Env().list
         },
-        "gc.exclude_container_label": {
+        "gc.exclude_container_labels": {
             "default": [],
-            "env": "GC_EXCLUDE_CONTAINER_LABEL",
+            "env": "GC_EXCLUDE_CONTAINER_LABELS",
             "file": True,
             "type": environs.Env().list
         },
         "stop.max_run_time": {
-            "default": "3days",
+            "default": "",
             "env": "STOP_MAX_RUN_TIME",
             "file": True,
             "type": env.timedelta_validator

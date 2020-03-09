@@ -68,4 +68,8 @@ class AutoStop:
 
     def _get_docker_client(self):
         config = self.config.config
-        return docker.APIClient(version="auto", timeout=config["timeout"])
+        return docker.APIClient(version="auto", timeout=config["http_timeout"])
+
+    def run(self):
+        """Autostop main method."""
+        print("run stop")
