@@ -73,10 +73,7 @@ class GarbageCollector:
             return containers
 
         def include_container(container):
-            if self._should_exclude_container_with_labels(
-                container,
-                config["gc"]["exclude_container_labels"],
-            ):
+            if self._should_exclude_container_with_labels(container):
                 return False
             return True
 
