@@ -21,6 +21,9 @@ $ pip install https://github.com/xoxys/docker-tidy/releases/download/v0.1.0/dock
 
 ## Docker
 
+The default entrypoint is set to the `gc` subcommand and you have to overwrite it
+if you want to use other subcommands like `stop`.
+
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
 docker run \

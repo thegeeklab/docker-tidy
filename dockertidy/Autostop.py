@@ -86,4 +86,4 @@ class AutoStop:
             self.stop_containers()
 
         if not config["stop"]["max_run_time"]:
-            self.logger.info("Skipped, no arguments given")
+            self.logger.warn("Skipped, no arguments given")

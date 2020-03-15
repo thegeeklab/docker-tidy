@@ -316,4 +316,4 @@ class GarbageCollector:
             not config["gc"]["max_container_age"] or not config["gc"]["max_image_age"]
             or not config["gc"]["dangling_volumes"]
         ):
-            self.logger.info("Skipped, no arguments given")
+            self.logger.warn("Skipped, no arguments given")
