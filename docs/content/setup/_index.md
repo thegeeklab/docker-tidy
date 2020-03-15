@@ -27,9 +27,9 @@ if you want to use other subcommands like `stop`.
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
 docker run \
-    -e TIDY_GC_MAX_CONTAINER_AGE=3days
-    -e TIDY_GC_MAX_IMAGE_AGE=5days
-    -v /var/run/docker.sock:/var/run/docker.sock
+    -e TIDY_GC_MAX_CONTAINER_AGE="3 days ago" \
+    -e TIDY_GC_MAX_IMAGE_AGE="5 days ago" \
+    -v /var/run/docker.sock:/var/run/docker.sock \
     xoxys/docker-tidy
 {{< /highlight >}}
 <!-- markdownlint-enable -->
