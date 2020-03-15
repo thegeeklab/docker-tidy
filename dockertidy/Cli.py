@@ -30,15 +30,13 @@ class DockerTidy:
 
         :return: args objec
         """
-        parser = argparse.ArgumentParser(
-            description="Generate documentation from annotated Ansible roles using templates"
-        )
+        parser = argparse.ArgumentParser(description="keep docker hosts tidy")
         parser.add_argument(
             "--dry-run",
             action="store_true",
             default=None,
             dest="dry_run",
-            help="Only log actions, don't stop anything."
+            help="only log actions, don't stop anything"
         )
         parser.add_argument(
             "-t",
@@ -46,7 +44,7 @@ class DockerTidy:
             type=int,
             dest="http_timeout",
             metavar="HTTP_TIMEOUT",
-            help="HTTP timeout in seconds for making docker API calls."
+            help="HTTP timeout in seconds for making docker API calls"
         )
         parser.add_argument(
             "-v", dest="logging.level", action="append_const", const=-1, help="increase log level"
@@ -61,30 +59,28 @@ class DockerTidy:
         subparsers = parser.add_subparsers(dest="command", help="sub-command help")
         subparsers.required = True
 
-        parser_gc = subparsers.add_parser("gc", help="Run docker garbage collector.")
+        parser_gc = subparsers.add_parser("gc", help="run docker garbage collector")
         parser_gc.add_argument(
             "--max-container-age",
             type=timedelta_validator,
             dest="gc.max_container_age",
             metavar="MAX_CONTAINER_AGE",
-            help="Maximum age for a container. Containers older than this age "
-            "will be removed. Age can be specified in any pytimeparse "
-            "supported format."
+            help="maximum age for a container, containers older than this age "
+            "will be removed (dateparser value)"
         )
         parser_gc.add_argument(
             "--max-image-age",
             type=timedelta_validator,
             dest="gc.max_image_age",
             metavar="MAX_IMAGE_AGE",
-            help="Maxium age for an image. Images older than this age will be "
-            "removed. Age can be specified in any pytimeparse supported "
-            "format."
+            help="maxium age for an image, images older than this age will be "
+            "removed (dateparser value)"
         )
         parser_gc.add_argument(
             "--dangling-volumes",
             action="store_true",
             dest="gc.dangling_volumes",
-            help="Dangling volumes will be removed."
+            help="dangling volumes will be removed"
         )
         parser_gc.add_argument(
             "--exclude-image",
@@ -92,7 +88,7 @@ class DockerTidy:
             type=str,
             dest="gc.exclude_images",
             metavar="EXCLUDE_IMAGE",
-            help="Never remove images with this tag."
+            help="never remove images with this tag"
         )
         parser_gc.add_argument(
             "--exclude-container-label",
@@ -100,20 +96,19 @@ class DockerTidy:
             type=str,
             dest="gc.exclude_container_labels",
             metavar="EXCLUDE_CONTAINER_LABEL",
-            help="Never remove containers with this label key "
+            help="never remove containers with this label key "
             "or label key=value"
         )
 
         parser_stop = subparsers.add_parser(
-            "stop", help="Stop containers that have been running for too long."
+            "stop", help="stop containers that have been running for too long"
         )
         parser_stop.add_argument(
             "--max-run-time",
             type=timedelta_validator,
             dest="stop.max_run_time",
             metavar="MAX_RUN_TIME",
-            help="Maximum time a container is allows to run. Time may "
-            "be specified in any pytimeparse supported format."
+            help="maximum time a container is allows to run (dateparser value)"
         )
         parser_stop.add_argument(
             "--prefix",
@@ -121,8 +116,7 @@ class DockerTidy:
             type=str,
             dest="stop.prefix",
             metavar="PREFIX",
-            help="Only stop containers which match one of the "
-            "prefix."
+            help="only stop containers which match one of the prefix"
         )
 
         return parser.parse_args().__dict__

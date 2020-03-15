@@ -13,12 +13,12 @@ than \"max age\". Running containers, and images which are used by a
 container are never removed.
 
 Maximum age can be specificied with any format supported by
-[pytimeparse](https://github.com/wroberts/pytimeparse).
+[dateparser](https://dateparser.readthedocs.io/en/latest/index.html#features).
 
 __Example:__
 
 ```Shell
-docker-tidy gc --max-container-age 3days --max-image-age 30days
+docker-tidy gc --max-container-age "3 days ago" --max-image-age "30 days ago"
 ```
 
 ### Prevent images from being removed
@@ -58,5 +58,5 @@ If no prefix is set, __all__ containers matching the `max-run-time` will be stop
 __Example:__
 
 ```Shell
-docker-tidy stop --max-run-time 2days --prefix "projectprefix_"
+docker-tidy stop --max-run-time "2 days ago" --prefix "projectprefix_"
 ```

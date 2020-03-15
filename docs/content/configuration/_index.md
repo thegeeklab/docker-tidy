@@ -74,18 +74,18 @@ $ docker-tidy --help
 usage: docker-tidy [-h] [--dry-run] [-t HTTP_TIMEOUT] [-v] [-q] [--version]
                    {gc,stop} ...
 
-Generate documentation from annotated Ansible roles using templates
+keep docker hosts tidy
 
 positional arguments:
   {gc,stop}             sub-command help
-    gc                  Run docker garbage collector.
-    stop                Stop containers that have been running for too long.
+    gc                  run docker garbage collector
+    stop                stop containers that have been running for too long
 
 optional arguments:
   -h, --help            show this help message and exit
-  --dry-run             Only log actions, don't stop anything.
+  --dry-run             only log actions, don't stop anything
   -t HTTP_TIMEOUT, --timeout HTTP_TIMEOUT
-                        HTTP timeout in seconds for making docker API calls.
+                        HTTP timeout in seconds for making docker API calls
   -v                    increase log level
   -q                    decrease log level
   --version             show program's version number and exit

@@ -1,50 +1,49 @@
 #!/usr/bin/env python3
 """Custom input type parser."""
 
-import datetime
+from argparse import ArgumentTypeError
 
+import dateparser
 import environs
-from dateutil import tz
-from pytimeparse import timeparse
 
 env = environs.Env()
 
 
 def timedelta_validator(value):
-    """Return the :class:`datetime.datetime.DateTime` for a time in the past.
+    """Return the dateparser string for a time in the past.
 
     :param value: a string containing a time format supported by
-    mod:`pytimeparse`
+    mod:`dateparser`
     """
     if value is None:
         return None
 
-    try:
-        _datetime_seconds_ago(timeparse.timeparse(value))
-        return value
-    except TypeError:
-        raise
+    if not dateparser.parse(value):
+        raise ArgumentTypeError("'{}' is not a valid timedelta string".format(value))
+
+    return value
 
 
 def timedelta(value, dt_format=None):
     """Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
     :param value: a string containing a time format supported by
-    mod:`pytimeparse`
+    mod:`dateparser`
     """
     if value is None:
         return None
 
-    timedelta = _datetime_seconds_ago(timeparse.timeparse(value))
+    timedelta = dateparser.parse(
+        value, settings={
+            "TO_TIMEZONE": "UTC",
+            "RETURN_AS_TIMEZONE_AWARE": True
+        }
+    )
+
     if dt_format:
         timedelta = timedelta.strftime(dt_format)
 
     return timedelta
-
-
-def _datetime_seconds_ago(seconds):
-    now = datetime.datetime.now(tz.tzutc())
-    return now - datetime.timedelta(seconds=seconds)
 
 
 @env.parser_for("timedelta_validator")

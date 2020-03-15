@@ -313,7 +313,7 @@ class GarbageCollector:
             self.cleanup_volumes()
 
         if (
-            not config["gc"]["max_container_age"] or not config["gc"]["max_image_age"]
-            or not config["gc"]["dangling_volumes"]
+            not config["gc"]["max_container_age"] and not config["gc"]["max_image_age"]
+            and not config["gc"]["dangling_volumes"]
         ):
             self.logger.warn("Skipped, no arguments given")
