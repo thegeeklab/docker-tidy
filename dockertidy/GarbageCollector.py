@@ -295,7 +295,10 @@ class GarbageCollector:
 
     def _get_docker_client(self):
         config = self.config.config
-        return docker.APIClient(version="auto", timeout=config["http_timeout"])
+        try:
+            return docker.APIClient(version="auto", timeout=config["http_timeout"])
+        except docker.errors.DockerException as e:
+            self.log.sysexit_with_message("Can't create docker client\n{}".format(e))
 
     def run(self):
         """Garbage collector main method."""

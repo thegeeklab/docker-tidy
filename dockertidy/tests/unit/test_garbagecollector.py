@@ -447,3 +447,7 @@ def test_build_exclude_set_empty(gc):
     gc.config.config["gc"]["exclude_images"] = []
     exclude_set = gc._build_exclude_set()
     assert exclude_set == set()
+
+
+def test_get_docker_client(gc, mocker):
+    assert isinstance(gc.docker, docker.APIClient)

@@ -7,6 +7,7 @@ LABEL maintainer="Robert Kaussow <mail@geeklabor.de>" \
     org.label-schema.schema-version="1.0"
 
 ENV PY_COLORS=1
+ENV TZ=UTC
 
 ADD dist/docker_tidy-*.whl /
 
