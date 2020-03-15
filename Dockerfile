@@ -11,7 +11,7 @@ ENV PY_COLORS=1
 ADD dist/docker_tidy-*.whl /
 
 RUN \
-    apk --update add --virtual .build-deps gcc && \
+    apk --update add --virtual .build-deps gcc g++ && \
     pip install --upgrade --no-cache-dir pip && \
     pip install --no-cache-dir --find-links=. docker-tidy && \
     rm -f docker_tidy-*.whl && \
