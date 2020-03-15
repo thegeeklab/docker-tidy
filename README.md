@@ -7,7 +7,7 @@
 [![PyPi Release](https://img.shields.io/pypi/v/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
 [![License: MIT](https://img.shields.io/github/license/xoxys/docker-tidy)](LICENSE)
 
-This is a fork of [Yelp/docker-custodian](https://github.com/Yelp/docker-custodian). Keep docker hosts tidy.
+This project is a fork of [Yelp/docker-custodian](https://github.com/Yelp/docker-custodian). Keep docker hosts tidy.
 
 You can find the full documentation at [https://docker-tidy.geekdocs.de](https://docker-tidy.geekdocs.de/).
 

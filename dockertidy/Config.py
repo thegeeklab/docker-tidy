@@ -40,7 +40,7 @@ class Config():
         },
         "dry_run": {
             "default": False,
-            "env": "DRY_TUN",
+            "env": "DRY_RUN",
             "file": True,
             "type": environs.Env().bool
         },

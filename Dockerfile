@@ -20,4 +20,4 @@ RUN \
 
 USER root
 CMD []
-ENTRYPOINT ["/usr/local/bin/docker-tidy"]
+ENTRYPOINT ["/usr/local/bin/docker-tidy gc"]

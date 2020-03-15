@@ -1,0 +1,10 @@
+---
+more:
+  - name: Releases
+    ref: "https://github.com/xoxys/docker-tidy/releases"
+    external: true
+    icon: "download"
+  - name: "View Source"
+    ref: "https://github.com/xoxys/docker-tidy"
+    external: true
+    icon: "github"
