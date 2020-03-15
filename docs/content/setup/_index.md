@@ -2,6 +2,8 @@
 title: Setup
 ---
 
+{{< toc >}}
+
 ## Pip
 
 <!-- markdownlint-disable -->

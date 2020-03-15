@@ -12,6 +12,8 @@ Changes can be made on different locations which will be processed in the follow
 * environment variables
 * cli options
 
+{{< toc >}}
+
 ## Default settings
 
 <!-- markdownlint-disable -->
@@ -19,6 +21,7 @@ Changes can be made on different locations which will be processed in the follow
 ---
 # don't do anything
 dry_run: False
+http_timeout: 60
 
 logging:
     # possible options debug | info | warning | error | critical
@@ -26,6 +29,16 @@ logging:
     # you can enable json logging if a parsable output is required
     json: False
 
+gc:
+  max_container_age:
+  max_image_age:
+  dangling_volumes: false
+  exclude_images: []
+  exclude_container_labels: []
+
+stop:
+  max_run_time:
+  prefix: []
 {{< /highlight >}}
 <!-- markdownlint-enable -->
 

@@ -2,6 +2,8 @@
 title: Usage
 ---
 
+{{< toc >}}
+
 ## Garbage Collector
 
 Remove old docker containers and docker images.
