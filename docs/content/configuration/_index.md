@@ -2,6 +2,8 @@
 title: Configuration
 ---
 
+{{< toc >}}
+
 *docker-tidy* comes with default settings which should be sufficient for most users to start, but you can adjust most settings to your needs.
 
 Changes can be made on different locations which will be processed in the following order (last wins):
@@ -11,8 +13,6 @@ Changes can be made on different locations which will be processed in the follow
 * folder-based config file (.dockertidy.yml|.dockertidy.yaml|.dockertidy in current working dir)
 * environment variables
 * cli options
-
-{{< toc >}}
 
 ## Default settings
 
