@@ -73,6 +73,48 @@ local PipelineDeps = {
 
 local PipelineTest = {
   kind: 'pipeline',
+  name: 'test',
+  platform: {
+    os: 'linux',
+    arch: 'amd64',
+  },
+  steps: [
+    {
+      name: 'pytest',
+      image: 'python:3.8',
+      environment: {
+        PY_COLORS: 1,
+      },
+      commands: [
+        'pip install pipenv -qq',
+        'pipenv --bare install --dev --keep-outdated',
+        'pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail',
+      ],
+    },
+    {
+      name: 'codecov',
+      image: 'python:3.8',
+      environment: {
+        PY_COLORS: 1,
+        CODECOV_TOKEN: { from_secret: 'codecov_token' },
+      },
+      commands: [
+        'pip install codecov',
+        'coverage combine .tox/py*/.coverage',
+        'codecov --required',
+      ],
+    },
+  ],
+  depends_on: [
+    'dependencies',
+  ],
+  trigger: {
+    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
+  },
+};
+
+local PipelineVerify = {
+  kind: 'pipeline',
   name: 'verify',
   platform: {
     os: 'linux',
@@ -85,7 +127,7 @@ local PipelineTest = {
     PythonVersion(pyversion='3.8'),
   ],
   depends_on: [
-    'dependencies',
+    'test',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -368,6 +410,7 @@ local PipelineNotifications = {
   PipelineLint,
   PipelineDeps,
   PipelineTest,
+  PipelineVerify,
   PipelineSecurity,
   PipelineBuildPackage,
   PipelineBuildContainer(arch='amd64'),

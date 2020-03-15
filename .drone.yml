@@ -53,6 +53,44 @@ depends_on:
 
 ---
 kind: pipeline
+name: test
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: pytest
+  image: python:3.8
+  commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail
+  environment:
+    PY_COLORS: 1
+
+- name: codecov
+  image: python:3.8
+  commands:
+  - pip install codecov
+  - coverage combine .tox/py*/.coverage
+  - codecov --required
+  environment:
+    CODECOV_TOKEN:
+      from_secret: codecov_token
+    PY_COLORS: 1
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/tags/**
+  - refs/pull/**
+
+depends_on:
+- dependencies
+
+---
+kind: pipeline
 name: verify
 
 platform:
@@ -111,7 +149,7 @@ trigger:
   - refs/pull/**
 
 depends_on:
-- dependencies
+- test
 
 ---
 kind: pipeline
@@ -491,6 +529,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 7434a5205208c8f283d2985ede241d81c2fdd629f19032f550d5173449b0c74f
+hmac: 5fd3ca3dfa6f98b965f927a5b3ac5e9f59d0f871fe97d018bea4ccdcd059923b
 
 ...
