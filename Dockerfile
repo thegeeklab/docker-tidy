@@ -11,12 +11,14 @@ ENV PY_COLORS=1
 ADD dist/docker_tidy-*.whl /
 
 RUN \
-    apk update --no-cache && \
-    rm -rf /var/cache/apk/* && \
+    apk --update add --virtual .build-deps gcc && \
     pip install --upgrade --no-cache-dir pip && \
     pip install --no-cache-dir --find-links=. docker-tidy && \
     rm -f docker_tidy-*.whl && \
-    rm -rf /root/.cache/
+    apk del .build-deps && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /root/.cache/ && \
+    rm -rf /tmp/*
 
 USER root
 CMD []
