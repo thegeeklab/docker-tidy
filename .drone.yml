@@ -73,7 +73,6 @@ steps:
   image: python:3.8
   commands:
   - pip install codecov
-  - coverage combine .tox/py*/.coverage
   - codecov --required
   environment:
     CODECOV_TOKEN:
@@ -529,6 +528,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 5fd3ca3dfa6f98b965f927a5b3ac5e9f59d0f871fe97d018bea4ccdcd059923b
+hmac: 49adcc2d9a98d979952ca688fa4ea2c013747a7bc8f2b94c507ef83410b27e45
 
 ...

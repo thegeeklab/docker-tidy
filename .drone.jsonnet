@@ -100,7 +100,6 @@ local PipelineTest = {
       },
       commands: [
         'pip install codecov',
-        'coverage combine .tox/py*/.coverage',
         'codecov --required',
       ],
     },
