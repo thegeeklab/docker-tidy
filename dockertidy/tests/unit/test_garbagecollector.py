@@ -12,7 +12,13 @@ pytest_plugins = [
 
 
 @pytest.fixture
-def gc():
+def gc(mocker):
+    mocker.patch.object(
+        GarbageCollector.GarbageCollector,
+        "_get_docker_client",
+        return_value=mocker.create_autospec(docker.APIClient)
+    )
+
     gc = GarbageCollector.GarbageCollector()
     return gc
 

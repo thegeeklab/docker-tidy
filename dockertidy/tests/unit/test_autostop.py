@@ -11,7 +11,13 @@ pytest_plugins = [
 
 
 @pytest.fixture
-def autostop():
+def autostop(mocker):
+    mocker.patch.object(
+        Autostop.AutoStop,
+        "_get_docker_client",
+        return_value=mocker.create_autospec(docker.APIClient)
+    )
+
     stop = Autostop.AutoStop()
     return stop
 
