@@ -105,6 +105,7 @@ steps:
   - docker-tidy --version
   environment:
     PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
@@ -116,6 +117,7 @@ steps:
   - docker-tidy --version
   environment:
     PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
@@ -127,6 +129,7 @@ steps:
   - docker-tidy --version
   environment:
     PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
@@ -138,6 +141,7 @@ steps:
   - docker-tidy --version
   environment:
     PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
@@ -190,6 +194,8 @@ steps:
   image: python:3.7
   commands:
   - python setup.py sdist bdist_wheel
+  environment:
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
 
 - name: checksum
   image: alpine
@@ -246,6 +252,8 @@ steps:
   image: python:3.7
   commands:
   - python setup.py bdist_wheel
+  environment:
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
 
 - name: dryrun
   image: plugins/docker:18-linux-amd64
@@ -299,6 +307,8 @@ steps:
   image: python:3.7
   commands:
   - python setup.py bdist_wheel
+  environment:
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
 
 - name: dryrun
   image: plugins/docker:18-linux-arm64
@@ -352,6 +362,8 @@ steps:
   image: python:3.7
   commands:
   - python setup.py bdist_wheel
+  environment:
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
 
 - name: dryrun
   image: plugins/docker:18-linux-arm
@@ -528,6 +540,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 49adcc2d9a98d979952ca688fa4ea2c013747a7bc8f2b94c507ef83410b27e45
+hmac: db08f11618d3ac957b55287ac41ae743df3d3b9a87a68cda3b25c1add3f0c346
 
 ...

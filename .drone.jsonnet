@@ -3,6 +3,7 @@ local PythonVersion(pyversion='3.5') = {
   image: 'python:' + pyversion,
   environment: {
     PY_COLORS: 1,
+    SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
   },
   commands: [
     'pip install -qq .',
@@ -173,6 +174,9 @@ local PipelineBuildPackage = {
     {
       name: 'build',
       image: 'python:3.7',
+      environment: {
+        SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
+      },
       commands: [
         'python setup.py sdist bdist_wheel',
       ],
@@ -234,6 +238,9 @@ local PipelineBuildContainer(arch='amd64') = {
       commands: [
         'python setup.py bdist_wheel',
       ],
+      environment: {
+        SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
+      },
     },
     {
       name: 'dryrun',
