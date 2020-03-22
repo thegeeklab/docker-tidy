@@ -437,7 +437,7 @@ def test_build_exclude_set(gc):
 
 
 def test_format_exclude_labels(gc):
-    gc.config.config["gc"]["exclude_container_label"] = [
+    gc.config.config["gc"]["exclude_container_labels"] = [
         "voo*",
         "doo=poo",
     ]
