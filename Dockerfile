@@ -14,7 +14,7 @@ ADD dist/docker_tidy-*.whl /
 RUN \
     apk --update add --virtual .build-deps gcc g++ && \
     pip install --upgrade --no-cache-dir pip && \
-    pip install --no-cache-dir --find-links=. docker-tidy && \
+    pip install --no-cache-dir docker_tidy-*.whl && \
     rm -f docker_tidy-*.whl && \
     apk del .build-deps && \
     rm -rf /var/cache/apk/* && \
