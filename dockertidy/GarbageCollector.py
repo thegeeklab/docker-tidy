@@ -278,7 +278,7 @@ class GarbageCollector:
         config = self.config.config
         exclude_labels = []
 
-        for exclude_label_arg in config["gc"]["exclude_container_label"]:
+        for exclude_label_arg in config["gc"]["exclude_container_labels"]:
             split_exclude_label = exclude_label_arg.split("=", 1)
             exclude_label_key = split_exclude_label[0]
             if len(split_exclude_label) == 2:
@@ -291,7 +291,7 @@ class GarbageCollector:
                     value=exclude_label_value,
                 )
             )
-        return exclude_labels
+        config["gc"]["exclude_container_labels"] = exclude_labels
 
     def _get_docker_client(self):
         config = self.config.config
@@ -304,6 +304,7 @@ class GarbageCollector:
         """Garbage collector main method."""
         self.logger.info("Start garbage collection")
         config = self.config.config
+        self._format_exclude_labels()
 
         if config["gc"]["max_container_age"]:
             self.cleanup_containers()
