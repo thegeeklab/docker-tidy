@@ -51,5 +51,5 @@ def timedelta_parser(value):
     try:
         timedelta_validator(value)
         return value
-    except TypeError as e:
+    except ArgumentTypeError as e:
         raise environs.EnvError(e)
