@@ -445,8 +445,8 @@ def test_format_exclude_labels(gc):
         gc.ExcludeLabel(key="voo*", value=None),
         gc.ExcludeLabel(key="doo", value="poo"),
     ]
-    exclude_labels = gc._format_exclude_labels()
-    assert expected == exclude_labels
+    gc._format_exclude_labels()
+    assert expected == gc.config.config["gc"]["exclude_container_labels"]
 
 
 def test_build_exclude_set_empty(gc):
