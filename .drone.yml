@@ -129,6 +129,11 @@ steps:
     CODECOV_TOKEN:
       from_secret: codecov_token
     PY_COLORS: 1
+  depends_on:
+  - python35-pytest
+  - python36-pytest
+  - python37-pytest
+  - python38-pytest
 
 trigger:
   ref:
@@ -525,6 +530,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: fbfcb6fef59439df55b8f6cc3e49a8b913725b82f94c32dbde517faa03a1899e
+hmac: 7a1fe20a74d931f7aa7b25eb6e58f3a7acea8ff05fc4b1bbdf8aa99deae4cc97
 
 ...

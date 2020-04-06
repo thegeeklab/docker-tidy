@@ -23,6 +23,7 @@ bandit = "*"
 docker-tidy = {editable = true,path = "."}
 autopep8 = "*"
 yapf = "*"
+pathlib2 = "*"
 
 [packages]
 zipp = "<2.0.0"

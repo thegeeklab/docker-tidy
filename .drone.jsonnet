@@ -98,6 +98,12 @@ local PipelineTest = {
         'pip install codecov -qq',
         'codecov --required -X gcov',
       ],
+      depends_on: [
+        'python35-pytest',
+        'python36-pytest',
+        'python37-pytest',
+        'python38-pytest',
+      ],
     },
   ],
   depends_on: [
