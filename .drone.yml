@@ -72,8 +72,8 @@ steps:
 - name: codecov
   image: python:3.8
   commands:
-  - pip install codecov
-  - codecov --required
+  - pip install codecov -qq
+  - codecov --required -X gcov
   environment:
     CODECOV_TOKEN:
       from_secret: codecov_token
@@ -540,6 +540,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 8be331b316af8e1f89747bc7251c7adf724d84675732272bced3d3e45a3a3f76
+hmac: ecfe4ba74ed1fcc1e558757e4f63266ef7b43ea2cf67a2dba6e77797178e70fb
 
 ...

@@ -100,8 +100,8 @@ local PipelineTest = {
         CODECOV_TOKEN: { from_secret: 'codecov_token' },
       },
       commands: [
-        'pip install codecov',
-        'codecov --required',
+        'pip install codecov -qq',
+        'codecov --required -X gcov',
       ],
     },
   ],
