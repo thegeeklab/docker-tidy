@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: flake8
-  image: python:3.7
+  image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
@@ -32,7 +32,7 @@ platform:
 
 steps:
 - name: pipenv
-  image: python:3.7
+  image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --keep-outdated
@@ -164,7 +164,7 @@ platform:
 
 steps:
 - name: bandit
-  image: python:3.7
+  image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
@@ -191,7 +191,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py sdist bdist_wheel
   environment:
@@ -249,7 +249,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -304,7 +304,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -359,7 +359,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -540,6 +540,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: d375570b943723373904590f1138d9c8e1fc05970040ff2fd71596fa5c03d207
+hmac: 8be331b316af8e1f89747bc7251c7adf724d84675732272bced3d3e45a3a3f76
 
 ...
