@@ -60,14 +60,65 @@ platform:
   arch: amd64
 
 steps:
-- name: pytest
+- name: python35-pytest
+  image: python:3.5
+  commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pip install -qq .
+  - docker-tidy --help
+  - docker-tidy --version
+  environment:
+    PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  depends_on:
+  - clone
+
+- name: python36-pytest
+  image: python:3.6
+  commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pip install -qq .
+  - docker-tidy --help
+  - docker-tidy --version
+  environment:
+    PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  depends_on:
+  - clone
+
+- name: python37-pytest
+  image: python:3.7
+  commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pip install -qq .
+  - docker-tidy --help
+  - docker-tidy --version
+  environment:
+    PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  depends_on:
+  - clone
+
+- name: python38-pytest
   image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
   - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pip install -qq .
+  - docker-tidy --help
+  - docker-tidy --version
   environment:
     PY_COLORS: 1
+    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  depends_on:
+  - clone
 
 - name: codecov
   image: python:3.8
@@ -87,72 +138,6 @@ trigger:
 
 depends_on:
 - dependencies
-
----
-kind: pipeline
-name: verify
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: python35-pytest
-  image: python:3.5
-  commands:
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
-  environment:
-    PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
-  depends_on:
-  - clone
-
-- name: python36-pytest
-  image: python:3.6
-  commands:
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
-  environment:
-    PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
-  depends_on:
-  - clone
-
-- name: python37-pytest
-  image: python:3.7
-  commands:
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
-  environment:
-    PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
-  depends_on:
-  - clone
-
-- name: python38-pytest
-  image: python:3.8
-  commands:
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
-  environment:
-    PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
-  depends_on:
-  - clone
-
-trigger:
-  ref:
-  - refs/heads/master
-  - refs/tags/**
-  - refs/pull/**
-
-depends_on:
-- test
 
 ---
 kind: pipeline
@@ -179,7 +164,7 @@ trigger:
   - refs/pull/**
 
 depends_on:
-- verify
+- test
 
 ---
 kind: pipeline
@@ -540,6 +525,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: ecfe4ba74ed1fcc1e558757e4f63266ef7b43ea2cf67a2dba6e77797178e70fb
+hmac: fbfcb6fef59439df55b8f6cc3e49a8b913725b82f94c32dbde517faa03a1899e
 
 ...
