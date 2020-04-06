@@ -6,6 +6,9 @@ local PythonVersion(pyversion='3.5') = {
     SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
   },
   commands: [
+    'pip install pipenv -qq',
+    'pipenv --bare install --dev --keep-outdated',
+    'pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail',
     'pip install -qq .',
     'docker-tidy --help',
     'docker-tidy --version',
@@ -80,18 +83,10 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
-    {
-      name: 'pytest',
-      image: 'python:3.8',
-      environment: {
-        PY_COLORS: 1,
-      },
-      commands: [
-        'pip install pipenv -qq',
-        'pipenv --bare install --dev --keep-outdated',
-        'pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail',
-      ],
-    },
+    PythonVersion(pyversion='3.5'),
+    PythonVersion(pyversion='3.6'),
+    PythonVersion(pyversion='3.7'),
+    PythonVersion(pyversion='3.8'),
     {
       name: 'codecov',
       image: 'python:3.8',
@@ -107,27 +102,6 @@ local PipelineTest = {
   ],
   depends_on: [
     'dependencies',
-  ],
-  trigger: {
-    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
-  },
-};
-
-local PipelineVerify = {
-  kind: 'pipeline',
-  name: 'verify',
-  platform: {
-    os: 'linux',
-    arch: 'amd64',
-  },
-  steps: [
-    PythonVersion(pyversion='3.5'),
-    PythonVersion(pyversion='3.6'),
-    PythonVersion(pyversion='3.7'),
-    PythonVersion(pyversion='3.8'),
-  ],
-  depends_on: [
-    'test',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -156,7 +130,7 @@ local PipelineSecurity = {
     },
   ],
   depends_on: [
-    'verify',
+    'test',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -416,7 +390,6 @@ local PipelineNotifications = {
   PipelineLint,
   PipelineDeps,
   PipelineTest,
-  PipelineVerify,
   PipelineSecurity,
   PipelineBuildPackage,
   PipelineBuildContainer(arch='amd64'),
