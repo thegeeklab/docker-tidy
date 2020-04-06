@@ -65,7 +65,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
   environment:
     PY_COLORS: 1
 
@@ -168,7 +168,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run bandit -r ./dockertidy -x ./dockertidy/tests
+  - pipenv run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
     PY_COLORS: 1
 
@@ -540,6 +540,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: db08f11618d3ac957b55287ac41ae743df3d3b9a87a68cda3b25c1add3f0c346
+hmac: d375570b943723373904590f1138d9c8e1fc05970040ff2fd71596fa5c03d207
 
 ...

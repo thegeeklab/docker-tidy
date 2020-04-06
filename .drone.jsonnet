@@ -89,7 +89,7 @@ local PipelineTest = {
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --dev --keep-outdated',
-        'pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail',
+        'pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail',
       ],
     },
     {
@@ -151,7 +151,7 @@ local PipelineSecurity = {
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --dev --keep-outdated',
-        'pipenv run bandit -r ./dockertidy -x ./dockertidy/tests',
+        'pipenv run bandit -r ./dockertidy -x ./dockertidy/test',
       ],
     },
   ],
