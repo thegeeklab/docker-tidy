@@ -6,6 +6,9 @@ local PythonVersion(pyversion='3.5') = {
     SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
   },
   commands: [
+    'pip install pipenv -qq',
+    'pipenv --bare install --dev --keep-outdated',
+    'pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail',
     'pip install -qq .',
     'docker-tidy --help',
     'docker-tidy --version',
@@ -25,7 +28,7 @@ local PipelineLint = {
   steps: [
     {
       name: 'flake8',
-      image: 'python:3.7',
+      image: 'python:3.8',
       environment: {
         PY_COLORS: 1,
       },
@@ -51,14 +54,15 @@ local PipelineDeps = {
   steps: [
     {
       name: 'pipenv',
-      image: 'python:3.7',
+      image: 'python:3.8',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --keep-outdated',
-        'pipenv check -i 37752',
+        # temp disabled
+        # 'pipenv check -i 37752',
         'pipenv --bare install --dev --keep-outdated',
         'pipenv run pipenv-setup check',
       ],
@@ -80,18 +84,10 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
-    {
-      name: 'pytest',
-      image: 'python:3.8',
-      environment: {
-        PY_COLORS: 1,
-      },
-      commands: [
-        'pip install pipenv -qq',
-        'pipenv --bare install --dev --keep-outdated',
-        'pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail',
-      ],
-    },
+    PythonVersion(pyversion='3.5'),
+    PythonVersion(pyversion='3.6'),
+    PythonVersion(pyversion='3.7'),
+    PythonVersion(pyversion='3.8'),
     {
       name: 'codecov',
       image: 'python:3.8',
@@ -100,34 +96,19 @@ local PipelineTest = {
         CODECOV_TOKEN: { from_secret: 'codecov_token' },
       },
       commands: [
-        'pip install codecov',
-        'codecov --required',
+        'pip install codecov -qq',
+        'codecov --required -X gcov',
+      ],
+      depends_on: [
+        'python35-pytest',
+        'python36-pytest',
+        'python37-pytest',
+        'python38-pytest',
       ],
     },
   ],
   depends_on: [
     'dependencies',
-  ],
-  trigger: {
-    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
-  },
-};
-
-local PipelineVerify = {
-  kind: 'pipeline',
-  name: 'verify',
-  platform: {
-    os: 'linux',
-    arch: 'amd64',
-  },
-  steps: [
-    PythonVersion(pyversion='3.5'),
-    PythonVersion(pyversion='3.6'),
-    PythonVersion(pyversion='3.7'),
-    PythonVersion(pyversion='3.8'),
-  ],
-  depends_on: [
-    'test',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -144,19 +125,19 @@ local PipelineSecurity = {
   steps: [
     {
       name: 'bandit',
-      image: 'python:3.7',
+      image: 'python:3.8',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --dev --keep-outdated',
-        'pipenv run bandit -r ./dockertidy -x ./dockertidy/tests',
+        'pipenv run bandit -r ./dockertidy -x ./dockertidy/test',
       ],
     },
   ],
   depends_on: [
-    'verify',
+    'test',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -173,7 +154,7 @@ local PipelineBuildPackage = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.7',
+      image: 'python:3.8',
       environment: {
         SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
       },
@@ -234,7 +215,7 @@ local PipelineBuildContainer(arch='amd64') = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.7',
+      image: 'python:3.8',
       commands: [
         'python setup.py bdist_wheel',
       ],
@@ -416,7 +397,6 @@ local PipelineNotifications = {
   PipelineLint,
   PipelineDeps,
   PipelineTest,
-  PipelineVerify,
   PipelineSecurity,
   PipelineBuildPackage,
   PipelineBuildContainer(arch='amd64'),

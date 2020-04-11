@@ -7,7 +7,7 @@ import requests
 from dockertidy import GarbageCollector
 
 pytest_plugins = [
-    "dockertidy.tests.fixtures.fixtures",
+    "dockertidy.test.fixtures.fixtures",
 ]
 
 

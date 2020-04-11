@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: flake8
-  image: python:3.7
+  image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
@@ -32,11 +32,10 @@ platform:
 
 steps:
 - name: pipenv
-  image: python:3.7
+  image: python:3.8
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --keep-outdated
-  - pipenv check -i 37752
   - pipenv --bare install --dev --keep-outdated
   - pipenv run pipenv-setup check
   environment:
@@ -60,46 +59,12 @@ platform:
   arch: amd64
 
 steps:
-- name: pytest
-  image: python:3.8
-  commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy/tests/ --cov=dockertidy/ --no-cov-on-fail
-  environment:
-    PY_COLORS: 1
-
-- name: codecov
-  image: python:3.8
-  commands:
-  - pip install codecov
-  - codecov --required
-  environment:
-    CODECOV_TOKEN:
-      from_secret: codecov_token
-    PY_COLORS: 1
-
-trigger:
-  ref:
-  - refs/heads/master
-  - refs/tags/**
-  - refs/pull/**
-
-depends_on:
-- dependencies
-
----
-kind: pipeline
-name: verify
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
 - name: python35-pytest
   image: python:3.5
   commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -112,6 +77,9 @@ steps:
 - name: python36-pytest
   image: python:3.6
   commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -124,6 +92,9 @@ steps:
 - name: python37-pytest
   image: python:3.7
   commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -136,6 +107,9 @@ steps:
 - name: python38-pytest
   image: python:3.8
   commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -144,6 +118,48 @@ steps:
     SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
+
+- name: codecov
+  image: python:3.8
+  commands:
+  - pip install codecov -qq
+  - codecov --required -X gcov
+  environment:
+    CODECOV_TOKEN:
+      from_secret: codecov_token
+    PY_COLORS: 1
+  depends_on:
+  - python35-pytest
+  - python36-pytest
+  - python37-pytest
+  - python38-pytest
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/tags/**
+  - refs/pull/**
+
+depends_on:
+- dependencies
+
+---
+kind: pipeline
+name: security
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: bandit
+  image: python:3.8
+  commands:
+  - pip install pipenv -qq
+  - pipenv --bare install --dev --keep-outdated
+  - pipenv run bandit -r ./dockertidy -x ./dockertidy/test
+  environment:
+    PY_COLORS: 1
 
 trigger:
   ref:
@@ -156,33 +172,6 @@ depends_on:
 
 ---
 kind: pipeline
-name: security
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: bandit
-  image: python:3.7
-  commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run bandit -r ./dockertidy -x ./dockertidy/tests
-  environment:
-    PY_COLORS: 1
-
-trigger:
-  ref:
-  - refs/heads/master
-  - refs/tags/**
-  - refs/pull/**
-
-depends_on:
-- verify
-
----
-kind: pipeline
 name: build-package
 
 platform:
@@ -191,7 +180,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py sdist bdist_wheel
   environment:
@@ -249,7 +238,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -304,7 +293,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -359,7 +348,7 @@ platform:
 
 steps:
 - name: build
-  image: python:3.7
+  image: python:3.8
   commands:
   - python setup.py bdist_wheel
   environment:
@@ -540,6 +529,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: db08f11618d3ac957b55287ac41ae743df3d3b9a87a68cda3b25c1add3f0c346
+hmac: 1a06f37400cd549c9b7f95b9395f0ba5c5bbb8f7069e8635b3761322d0fba07c
 
 ...

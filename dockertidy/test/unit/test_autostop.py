@@ -6,7 +6,7 @@ import pytest
 from dockertidy import Autostop
 
 pytest_plugins = [
-    "dockertidy.tests.fixtures.fixtures",
+    "dockertidy.test.fixtures.fixtures",
 ]
 
 
