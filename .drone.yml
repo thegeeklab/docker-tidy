@@ -36,7 +36,6 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --keep-outdated
-  - pipenv check -i 37752
   - pipenv --bare install --dev --keep-outdated
   - pipenv run pipenv-setup check
   environment:
@@ -530,6 +529,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 7a1fe20a74d931f7aa7b25eb6e58f3a7acea8ff05fc4b1bbdf8aa99deae4cc97
+hmac: 1a06f37400cd549c9b7f95b9395f0ba5c5bbb8f7069e8635b3761322d0fba07c
 
 ...
