@@ -181,7 +181,7 @@ class GarbageCollector:
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
                 # The repr of the image Id used by client.containers()
-                return set(["%s:latest" % image_summary["Id"][:12]])
+                return set(["{id}:latest".format(id=image_summary["Id"][:12])])
             return set(image_tags)
 
         def image_not_in_use(image_summary):
@@ -210,7 +210,9 @@ class GarbageCollector:
         if not image or not self._is_image_old(image, min_date):
             return
 
-        self.logger.info("Removing image %s" % self._format_image(image, image_summary))
+        self.logger.info(
+            "Removing image {name}".format(name=self._format_image(image, image_summary))
+        )
         if config["dry_run"]:
             return
 
@@ -230,7 +232,7 @@ class GarbageCollector:
         if not volume:
             return
 
-        self.logger.info("Removing volume %s" % volume["Name"])
+        self.logger.info("Removing volume {name}".format(name=volume["Name"]))
         if config["dry_run"]:
             return
 
@@ -249,11 +251,19 @@ class GarbageCollector:
         try:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
-            params = ",".join("%s=%s" % item for item in kwargs.items())
-            self.logger.warn("Failed to call %s %s %s" % (func.__name__, params, e))
-        except docker.errors.APIError as ae:
-            params = ",".join("%s=%s" % item for item in kwargs.items())
-            self.logger.warn("Error calling %s %s %s" % (func.__name__, params, ae))
+            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
+            self.logger.warn(
+                "Failed to call {name} {params} {msg}".format(
+                    name=func.__name__, params=params, msg=str(e)
+                )
+            )
+        except docker.errors.APIError as e:
+            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
+            self.logger.warn(
+                "Error calling {name} {params} {msg}".format(
+                    name=func.__name__, params=params, msg=str(e)
+                )
+            )
 
     def _format_image(self, image, image_summary):
 
@@ -263,7 +273,7 @@ class GarbageCollector:
                 return ""
             return ", ".join(tags)
 
-        return "%s %s" % (image["Id"][:16], get_tags())
+        return "{id} {tags}".format(id=image["Id"][:16], tags=get_tags())
 
     def _build_exclude_set(self):
         config = self.config.config

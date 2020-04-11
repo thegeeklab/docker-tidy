@@ -44,8 +44,11 @@ class AutoStop:
                 prefix and matcher(name) and self._has_been_running_since(container, max_run_time)
             ) or (not prefix and self._has_been_running_since(container, max_run_time)):
                 self.logger.info(
-                    "Stopping container %s %s: running since %s" %
-                    (container["Id"][:16], name, container["State"]["StartedAt"])
+                    "Stopping container {id} {name}: running since {started}".format(
+                        id=container["Id"][:16],
+                        name=name,
+                        started=container["State"]["StartedAt"]
+                    )
                 )
 
                 if not dry_run:
@@ -55,9 +58,9 @@ class AutoStop:
         try:
             client.stop(cid)
         except requests.exceptions.Timeout as e:
-            self.logger.warn("Failed to stop container %s: %s" % (cid, e))
-        except docker.errors.APIError as ae:
-            self.logger.warn("Error stopping %s: %s" % (cid, ae))
+            self.logger.warn("Failed to stop container {id}: {msg}".format(id=cid, msg=str(e)))
+        except docker.errors.APIError as e:
+            self.logger.warn("Error stopping {id}: {msg}".format(id=cid, msg=str(e)))
 
     def _build_container_matcher(self, prefixes):
 

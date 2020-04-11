@@ -81,7 +81,7 @@ setup(
         "jsonschema==3.2.0",
         "marshmallow==3.5.1",
         "nested-lookup==0.2.21",
-        "pathspec==0.7.0",
+        "pathspec==0.8.0",
         "pyrsistent==0.16.0",
         "python-dateutil==2.8.1",
         "python-dotenv==0.12.0",
