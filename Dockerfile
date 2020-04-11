@@ -15,8 +15,8 @@ RUN \
     apk --update add --virtual .build-deps gcc g++ && \
     pip install --upgrade --no-cache-dir pip && \
     pip install --no-cache-dir docker_tidy-*.whl && \
-    rm -f docker_tidy-*.whl && \
     apk del .build-deps && \
+    rm -f docker_tidy-*.whl && \
     rm -rf /var/cache/apk/* && \
     rm -rf /root/.cache/ && \
     rm -rf /tmp/*
