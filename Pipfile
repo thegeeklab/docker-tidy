@@ -15,6 +15,7 @@ flake8-isort = "*"
 flake8-logging-format = "*"
 flake8-polyfill = "*"
 flake8-quotes = "*"
+flake8-pep3101 = "*"
 flake8-eradicate = {version = "*",markers = "python_version>='3.6'"}
 pep8-naming = "*"
 pytest = "*"
