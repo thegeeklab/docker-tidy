@@ -61,8 +61,7 @@ local PipelineDeps = {
       commands: [
         'pip install pipenv -qq',
         'pipenv --bare install --keep-outdated',
-        # temp disabled
-        # 'pipenv check -i 37752',
+        'pipenv check -i 37752',
         'pipenv --bare install --dev --keep-outdated',
         'pipenv run pipenv-setup check',
       ],
@@ -288,42 +287,18 @@ local PipelineDocs = {
       ],
     },
     {
-      name: 'freeze',
-      image: 'appleboy/drone-ssh:1.5.5',
-      settings: {
-        host: { from_secret: 'ssh_host' },
-        key: { from_secret: 'ssh_key' },
-        script: [
-          'cp -R /var/www/virtual/geeklab/html/docker-tidy.geekdocs.de/ /var/www/virtual/geeklab/html/dockertidy_freeze/',
-          'ln -sfn /var/www/virtual/geeklab/html/dockertidy_freeze /var/www/virtual/geeklab/docker-tidy.geekdocs.de',
-        ],
-        username: { from_secret: 'ssh_username' },
-      },
-    },
-    {
       name: 'publish',
-      image: 'appleboy/drone-scp',
+      image: 'plugins/s3-sync',
       settings: {
-        host: { from_secret: 'ssh_host' },
-        key: { from_secret: 'ssh_key' },
-        rm: true,
-        source: 'docs/public/*',
-        strip_components: 2,
-        target: '/var/www/virtual/geeklab/html/docker-tidy.geekdocs.de/',
-        username: { from_secret: 'ssh_username' },
-      },
-    },
-    {
-      name: 'cleanup',
-      image: 'appleboy/drone-ssh:1.5.5',
-      settings: {
-        host: { from_secret: 'ssh_host' },
-        key: { from_secret: 'ssh_key' },
-        script: [
-          'ln -sfn /var/www/virtual/geeklab/html/docker-tidy.geekdocs.de /var/www/virtual/geeklab/docker-tidy.geekdocs.de',
-          'rm -rf /var/www/virtual/geeklab/html/dockertidy_freeze/',
-        ],
-        username: { from_secret: 'ssh_username' },
+        access_key: { from_secret: 's3_access_key' },
+        bucket: 'geekdocs',
+        delete: true,
+        endpoint: 'https://sp.rknet.org',
+        path_style: true,
+        secret_key: { from_secret: 's3_secret_access_key' },
+        source: 'docs/public/',
+        strip_prefix: 'docs/public/',
+        target: '/${DRONE_REPO_NAME}',
       },
     },
   ],
