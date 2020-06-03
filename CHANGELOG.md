@@ -1,2 +1,2 @@
-* INTERNAL
-  * maintenance and refactoring release, no changes
+* ENHANCEMENT
+  * update dependencies
