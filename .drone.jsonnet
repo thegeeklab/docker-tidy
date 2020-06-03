@@ -8,7 +8,7 @@ local PythonVersion(pyversion='3.5') = {
   commands: [
     'pip install pipenv -qq',
     'pipenv --bare install --dev --keep-outdated',
-    'pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail',
+    'pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
     'pip install -qq .',
     'docker-tidy --help',
     'docker-tidy --version',

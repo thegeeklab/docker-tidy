@@ -64,7 +64,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -79,7 +79,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -94,7 +94,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -109,7 +109,7 @@ steps:
   commands:
   - pip install pipenv -qq
   - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --no-cov-on-fail
+  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - pip install -qq .
   - docker-tidy --help
   - docker-tidy --version
@@ -543,6 +543,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 5d012501ff3c2722e59f68d7c2ba24369ef32806f3176492a90073f2df12a1fe
+hmac: 3a5eed826fd837d9c63d46c8f9a14263ddd0d791f110b32a8dec464a83062e20
 
 ...
