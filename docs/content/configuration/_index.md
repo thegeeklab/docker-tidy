@@ -4,18 +4,19 @@ title: Configuration
 
 {{< toc >}}
 
-*docker-tidy* comes with default settings which should be sufficient for most users to start, but you can adjust most settings to your needs.
+_docker-tidy_ comes with default settings which should be sufficient for most users to start, but you can adjust most settings to your needs.
 
 Changes can be made on different locations which will be processed in the following order (last wins):
 
-* default config (build-in)
-* global config file (path depends on your operating system)
-* folder-based config file (.dockertidy.yml|.dockertidy.yaml|.dockertidy in current working dir)
-* environment variables
-* cli options
+- default configuration (build-in)
+- global configuration file (path depends on your operating system)
+- directory based configuration file (.dockertidy.yml|.dockertidy.yaml|.dockertidy in current working directory)
+- environment variables
+- CLI options
 
 ## Default settings
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< highlight YAML "linenos=table" >}}
 ---
@@ -41,9 +42,11 @@ stop:
   prefix: []
 {{< /highlight >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
 ## Environment Variables
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
 TIDY_CONFIG_FILE=
@@ -63,11 +66,13 @@ TIDY_STOP_MAX_RUN_TIME=
 TIDY_STOP_PREFIX=
 {{< /highlight >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
 ## CLI options
 
-You can get all available cli options by running `docker-tidy --help`:
+You can get all available CLI options by running `docker-tidy --help`:
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
 $ docker-tidy --help
@@ -91,3 +96,4 @@ optional arguments:
   --version             show program's version number and exit
 {{< /highlight >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->

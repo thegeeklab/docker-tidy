@@ -1,0 +1,15 @@
+([a-zA-Z0-9]+[_=])+\S+
+@\S+
+Autostop
+CLI
+Codecov
+Kaussow
+PyPI
+YAML
+gc
+sudo
+xoxys
+toc
+entrypoint
+SELinux
+dateparser

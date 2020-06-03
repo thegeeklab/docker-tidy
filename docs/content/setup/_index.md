@@ -6,9 +6,10 @@ title: Setup
 
 ## Pip
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
-# From PyPI as unprivilegd user
+# From PyPI as unprivileged user
 $ pip install docker-tidy --user
 
 # .. or as root
@@ -18,12 +19,14 @@ $ sudo pip install docker-tidy
 $ pip install https://github.com/xoxys/docker-tidy/releases/download/v0.1.0/docker_tidy-0.1.0-py2.py3-none-any.whl
 {{< /highlight >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
 ## Docker
 
-The default entrypoint is set to the `gc` subcommand and you have to overwrite it
-if you want to use other subcommands like `stop`.
+The default entrypoint is set to the `gc` sub-command and you have to overwrite it
+if you want to use other sub-commands like `stop`.
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< highlight Shell "linenos=table" >}}
 docker run \
@@ -33,10 +36,13 @@ docker run \
     xoxys/docker-tidy
 {{< /highlight >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 {{< hint info >}}
 **Info**\
-Keep in mind, that you have to pass selinux labels (:Z or :z) to your mount option if you are working on selinux enabled systems.
+Keep in mind, that you have to pass SELinux labels (:Z or :z) to your mount option if you are working on SELinux enabled systems.
 {{< /hint >}}
 <!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
