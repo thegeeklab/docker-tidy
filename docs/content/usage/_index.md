@@ -2,7 +2,9 @@
 title: Usage
 ---
 
+<!-- spellchecker-disable -->
 {{< toc >}}
+<!-- spellchecker-enable -->
 
 ## Garbage Collector
 

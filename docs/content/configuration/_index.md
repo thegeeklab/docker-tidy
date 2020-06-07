@@ -2,7 +2,9 @@
 title: Configuration
 ---
 
+<!-- spellchecker-disable -->
 {{< toc >}}
+<!-- spellchecker-enable -->
 
 _docker-tidy_ comes with default settings which should be sufficient for most users to start, but you can adjust most settings to your needs.
 
@@ -18,6 +20,7 @@ Changes can be made on different locations which will be processed in the follow
 
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<!-- spellchecker-disable -->
 {{< highlight YAML "linenos=table" >}}
 ---
 # don't do anything
@@ -41,13 +44,15 @@ stop:
   max_run_time:
   prefix: []
 {{< /highlight >}}
-<!-- markdownlint-enable -->
+<!-- spellchecker-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
 ## Environment Variables
 
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<!-- spellchecker-disable -->
 {{< highlight Shell "linenos=table" >}}
 TIDY_CONFIG_FILE=
 TIDY_DRY_RUN=False
@@ -65,7 +70,8 @@ TIDY_STOP_MAX_RUN_TIME=
 # comma-separated list
 TIDY_STOP_PREFIX=
 {{< /highlight >}}
-<!-- markdownlint-enable -->
+<!-- spellchecker-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 
 ## CLI options
@@ -74,6 +80,7 @@ You can get all available CLI options by running `docker-tidy --help`:
 
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<!-- spellchecker-disable -->
 {{< highlight Shell "linenos=table" >}}
 $ docker-tidy --help
 usage: docker-tidy [-h] [--dry-run] [-t HTTP_TIMEOUT] [-v] [-q] [--version]
@@ -95,5 +102,6 @@ optional arguments:
   -q                    decrease log level
   --version             show program's version number and exit
 {{< /highlight >}}
-<!-- markdownlint-enable -->
+<!-- spellchecker-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
