@@ -257,6 +257,8 @@ steps:
   when:
     ref:
     - refs/pull/**
+  depends_on:
+  - build
 
 - name: publish-dockerhub
   image: plugins/docker:18-linux-amd64
@@ -333,6 +335,8 @@ steps:
   when:
     ref:
     - refs/pull/**
+  depends_on:
+  - build
 
 - name: publish-dockerhub
   image: plugins/docker:18-linux-arm64
@@ -409,6 +413,8 @@ steps:
   when:
     ref:
     - refs/pull/**
+  depends_on:
+  - build
 
 - name: publish-dockerhub
   image: plugins/docker:18-linux-arm
@@ -636,6 +642,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 3e5a1774720e218877b669897d1d9d8793197948c8f8d4f36ef357d62d34c755
+hmac: 71d089dacfa86733fec2b3555b1bfedc175297c9b7add39320c87fe8d0424401
 
 ...

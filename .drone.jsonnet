@@ -234,6 +234,7 @@ local PipelineBuildContainer(arch='amd64') = {
       when: {
         ref: ['refs/pull/**'],
       },
+      depends_on: ['build'],
     },
     {
       name: 'publish-dockerhub',
