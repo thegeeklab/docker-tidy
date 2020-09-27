@@ -20,4 +20,4 @@ Special thanks goes to all [contributors](https://github.com/thegeeklab/docker-t
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/thegeeklab/docker-tidy/blob/master/LICENSE) file for details.
+This project is licensed under the Apache-2.0 License - see the [LICENSE](https://github.com/thegeeklab/docker-tidy/blob/master/LICENSE) file for details.
