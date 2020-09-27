@@ -1,7 +1,7 @@
 ---
 repository:
   name: docker-tidy
-  description: Keep docker hosts tidy.
+  description: Keep docker hosts tidy
   homepage: https://docker-tidy.geekdocs.de
   topics: automation, python, docker
 

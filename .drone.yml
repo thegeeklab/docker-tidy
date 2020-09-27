@@ -595,7 +595,7 @@ steps:
     DOCKER_USER:
       from_secret: docker_username
     PUSHRM_FILE: README.md
-    PUSHRM_SHORT: Drone plugin to add comments to GitHub Issues/PRs
+    PUSHRM_SHORT: Keep docker hosts tidy
     PUSHRM_TARGET: thegeeklab/${DRONE_REPO_NAME}
   when:
     status:
@@ -642,6 +642,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 71d089dacfa86733fec2b3555b1bfedc175297c9b7add39320c87fe8d0424401
+hmac: d87061b48f3d83fa2686568087dbed6c022980a8c783507adde883e51b13c6df
 
 ...
