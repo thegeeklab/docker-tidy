@@ -3,15 +3,13 @@ local PythonVersion(pyversion='3.5') = {
   image: 'python:' + pyversion,
   environment: {
     PY_COLORS: 1,
-    SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
   },
   commands: [
-    'pip install pipenv -qq',
-    'pipenv --bare install --dev --keep-outdated',
-    'pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
-    'pip install -qq .',
-    'docker-tidy --help',
-    'docker-tidy --version',
+    'pip install poetry -qq',
+    'poetry install -q',
+    'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
+    'poetry version',
+    'poetry run docker-tidy --help',
   ],
   depends_on: [
     'clone',
@@ -28,46 +26,16 @@ local PipelineLint = {
   steps: [
     {
       name: 'flake8',
-      image: 'python:3.8',
+      image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install pipenv -qq',
-        'pipenv --bare install --dev --keep-outdated',
-        'pipenv run flake8 ./dockertidy',
+        'pip install poetry -qq',
+        'poetry install -q',
+        'poetry run flake8 ./dockertidy',
       ],
     },
-  ],
-  trigger: {
-    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
-  },
-};
-
-local PipelineDeps = {
-  kind: 'pipeline',
-  name: 'dependencies',
-  platform: {
-    os: 'linux',
-    arch: 'amd64',
-  },
-  steps: [
-    {
-      name: 'pipenv',
-      image: 'python:3.8',
-      environment: {
-        PY_COLORS: 1,
-      },
-      commands: [
-        'pip install pipenv -qq',
-        'pipenv --bare install --keep-outdated',
-        'pipenv --bare install --dev --keep-outdated',
-        'pipenv run pipenv-setup check',
-      ],
-    },
-  ],
-  depends_on: [
-    'lint',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -86,9 +54,10 @@ local PipelineTest = {
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),
+    PythonVersion(pyversion='3.9'),
     {
       name: 'codecov',
-      image: 'python:3.8',
+      image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
         CODECOV_TOKEN: { from_secret: 'codecov_token' },
@@ -102,11 +71,12 @@ local PipelineTest = {
         'python36-pytest',
         'python37-pytest',
         'python38-pytest',
+        'python39-pytest',
       ],
     },
   ],
   depends_on: [
-    'dependencies',
+    'lint',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
@@ -123,14 +93,14 @@ local PipelineSecurity = {
   steps: [
     {
       name: 'bandit',
-      image: 'python:3.8',
+      image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install pipenv -qq',
-        'pipenv --bare install --dev --keep-outdated',
-        'pipenv run bandit -r ./dockertidy -x ./dockertidy/test',
+        'pip install poetry -qq',
+        'poetry install -q',
+        'poetry run bandit -r ./dockertidy -x ./dockertidy/test',
       ],
     },
   ],
@@ -152,12 +122,10 @@ local PipelineBuildPackage = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.8',
-      environment: {
-        SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
-      },
+      image: 'python:3.9',
       commands: [
-        'python setup.py sdist bdist_wheel',
+        'pip install poetry poetry-dynamic-versioning -qq',
+        'poetry build',
       ],
     },
     {
@@ -183,12 +151,14 @@ local PipelineBuildPackage = {
     },
     {
       name: 'publish-pypi',
-      image: 'plugins/pypi',
-      settings: {
-        username: { from_secret: 'pypi_username' },
-        password: { from_secret: 'pypi_password' },
-        repository: 'https://upload.pypi.org/legacy/',
-        skip_build: true,
+      image: 'python:3.9',
+      commands: [
+        'pip install poetry poetry-dynamic-versioning -qq',
+        'poetry build',
+      ],
+      environment: {
+        POETRY_HTTP_BASIC_TESTPYPI_USERNAME: { from_secret: 'pypi_username' },
+        POETRY_HTTP_BASIC_TESTPYPI_PASSWORD: { from_secret: 'pypi_password' },
       },
       when: {
         ref: ['refs/tags/**'],
@@ -213,13 +183,11 @@ local PipelineBuildContainer(arch='amd64') = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.8',
+      image: 'python:3.9',
       commands: [
-        'python setup.py bdist_wheel',
+        'pip install poetry poetry-dynamic-versioning -qq',
+        'poetry build',
       ],
-      environment: {
-        SETUPTOOLS_SCM_PRETEND_VERSION: '${DRONE_TAG##v}',
-      },
     },
     {
       name: 'dryrun',
@@ -478,7 +446,6 @@ local PipelineNotifications = {
 
 [
   PipelineLint,
-  PipelineDeps,
   PipelineTest,
   PipelineSecurity,
   PipelineBuildPackage,

@@ -1,0 +1,115 @@
+[tool.poetry]
+authors = ["Robert Kaussow <mail@thegeeklab.de>"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "License :: OSI Approved :: Apache Software License",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "Natural Language :: English",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.5",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: System :: Systems Administration",
+  "Topic :: Utilities",
+  "Topic :: Software Development",
+]
+description = "Keep docker hosts tidy"
+documentation = "https://docker-tidy.geekdocs.de/"
+homepage = "https://docker-tidy.geekdocs.de/"
+include = [
+  "LICENSE",
+]
+keywords = ["docker", "gc", "prune", "garbage"]
+license = "Apache-2.0"
+name = "docker-tidy"
+packages = [
+  {include = "dockertidy"},
+]
+readme = "README.md"
+repository = "https://github.com/thegeeklab/docker-tidy/"
+version = "0.0.0"
+
+[tool.poetry.dependencies]
+anyconfig = "*"
+appdirs = "*"
+certifi = "*"
+chardet = "*"
+colorama = "*"
+dateparser = "*"
+docker = "*"
+docker-pycreds = "*"
+environs = "*"
+idna = "*"
+importlib-metadata = {version = "*", markers = "python_version<'3.8'"}
+ipaddress = "*"
+jsonschema = "*"
+nested-lookup = "*"
+pathspec = "*"
+python = "^3.5.0"
+python-dateutil = "*"
+python-json-logger = "*"
+requests = "*"
+"ruamel.yaml" = "*"
+websocket-client = "*"
+zipp = "<2.0.0"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "*"
+bandit = "*"
+coverage = {extras = ["toml"], version = "*"}
+flake8 = "*"
+flake8-blind-except = "*"
+flake8-builtins = "*"
+flake8-colors = "*"
+flake8-docstrings = "<=3.0.0"
+flake8-eradicate = {version = "*", markers = "python_version>='3.6'"}
+flake8-isort = "*"
+flake8-logging-format = "*"
+flake8-pep3101 = "*"
+flake8-polyfill = "*"
+flake8-quotes = "*"
+pathlib2 = "*"
+pep8-naming = "*"
+pipenv-setup = "*"
+pydocstyle = "<4.0.0"
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+yapf = "*"
+
+[tool.poetry.scripts]
+docker-tidy = "dockertidy.Cli:main"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+style = "semver"
+vcs = "git"
+
+[tool.isort]
+default_section = "THIRDPARTY"
+force_single_line = true
+known_first_party = "dockertidy"
+line_length = 99
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip_glob = ["**/.env*", "**/env/*", "**/docs/*"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=dockertidy --cov-report xml:coverage.xml --cov-append --no-cov-on-fail"
+filterwarnings = [
+  "ignore::FutureWarning",
+  "ignore:.*collections.*:DeprecationWarning",
+  "ignore:.*pep8.*:FutureWarning",
+]
+
+[tool.coverage.run]
+omit = ["**/test/*"]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
