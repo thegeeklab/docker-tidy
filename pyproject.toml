@@ -62,6 +62,7 @@ zipp = "<2.0.0"
 [tool.poetry.dev-dependencies]
 autopep8 = "*"
 bandit = "*"
+coverage = {extras = ["toml"], version = "*"}
 flake8 = "*"
 flake8-blind-except = "*"
 flake8-builtins = "*"
@@ -98,7 +99,8 @@ line_length = 99
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 skip_glob = ["**/.env*", "**/env/*", "**/docs/*"]
 
-[tool.pytest]
+[tool.pytest.ini_options]
+addopts = "--cov=dockertidy --cov-report xml:coverage.xml --cov-append --no-cov-on-fail"
 filterwarnings = [
   "ignore::FutureWarning",
   "ignore:.*collections.*:DeprecationWarning",
