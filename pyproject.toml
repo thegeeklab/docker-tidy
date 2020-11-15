@@ -106,7 +106,7 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-omit = "**/test/*"
+omit = ["**/test/*"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

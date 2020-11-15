@@ -8,11 +8,11 @@ platform:
 
 steps:
 - name: flake8
-  image: python:3.8
+  image: python:3.9
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run flake8 ./dockertidy
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run flake8 ./dockertidy
   environment:
     PY_COLORS: 1
 
@@ -21,34 +21,6 @@ trigger:
   - refs/heads/master
   - refs/tags/**
   - refs/pull/**
-
----
-kind: pipeline
-name: dependencies
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: pipenv
-  image: python:3.8
-  commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --keep-outdated
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pipenv-setup check
-  environment:
-    PY_COLORS: 1
-
-trigger:
-  ref:
-  - refs/heads/master
-  - refs/tags/**
-  - refs/pull/**
-
-depends_on:
-- lint
 
 ---
 kind: pipeline
@@ -62,65 +34,70 @@ steps:
 - name: python35-pytest
   image: python:3.5
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+  - poetry docker-tidy --help
+  - poetry docker-tidy --version
   environment:
     PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
 - name: python36-pytest
   image: python:3.6
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+  - poetry docker-tidy --help
+  - poetry docker-tidy --version
   environment:
     PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
 - name: python37-pytest
   image: python:3.7
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+  - poetry docker-tidy --help
+  - poetry docker-tidy --version
   environment:
     PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
   depends_on:
   - clone
 
 - name: python38-pytest
   image: python:3.8
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - pip install -qq .
-  - docker-tidy --help
-  - docker-tidy --version
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+  - poetry docker-tidy --help
+  - poetry docker-tidy --version
   environment:
     PY_COLORS: 1
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  depends_on:
+  - clone
+
+- name: python39-pytest
+  image: python:3.9
+  commands:
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+  - poetry docker-tidy --help
+  - poetry docker-tidy --version
+  environment:
+    PY_COLORS: 1
   depends_on:
   - clone
 
 - name: codecov
-  image: python:3.8
+  image: python:3.9
   commands:
   - pip install codecov -qq
   - codecov --required -X gcov
@@ -153,11 +130,11 @@ platform:
 
 steps:
 - name: bandit
-  image: python:3.8
+  image: python:3.9
   commands:
-  - pip install pipenv -qq
-  - pipenv --bare install --dev --keep-outdated
-  - pipenv run bandit -r ./dockertidy -x ./dockertidy/test
+  - pip install poetry -qq
+  - poetry install -q
+  - poetry run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
     PY_COLORS: 1
 
@@ -180,11 +157,10 @@ platform:
 
 steps:
 - name: build
-  image: python:3.8
+  image: python:3.9
   commands:
-  - python setup.py sdist bdist_wheel
-  environment:
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry build
 
 - name: checksum
   image: alpine
@@ -207,13 +183,14 @@ steps:
     - refs/tags/**
 
 - name: publish-pypi
-  image: plugins/pypi
-  settings:
-    password:
+  image: python:3.9
+  commands:
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry build
+  environment:
+    POETRY_HTTP_BASIC_TESTPYPI_PASSWORD:
       from_secret: pypi_password
-    repository: https://upload.pypi.org/legacy/
-    skip_build: true
-    username:
+    POETRY_HTTP_BASIC_TESTPYPI_USERNAME:
       from_secret: pypi_username
   when:
     ref:
@@ -238,11 +215,10 @@ platform:
 
 steps:
 - name: build
-  image: python:3.8
+  image: python:3.9
   commands:
-  - python setup.py bdist_wheel
-  environment:
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry build
 
 - name: dryrun
   image: plugins/docker:18-linux-amd64
@@ -316,11 +292,10 @@ platform:
 
 steps:
 - name: build
-  image: python:3.8
+  image: python:3.9
   commands:
-  - python setup.py bdist_wheel
-  environment:
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry build
 
 - name: dryrun
   image: plugins/docker:18-linux-arm64
@@ -394,11 +369,10 @@ platform:
 
 steps:
 - name: build
-  image: python:3.8
+  image: python:3.9
   commands:
-  - python setup.py bdist_wheel
-  environment:
-    SETUPTOOLS_SCM_PRETEND_VERSION: ${DRONE_TAG##v}
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry build
 
 - name: dryrun
   image: plugins/docker:18-linux-arm
@@ -642,6 +616,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 41e4e1996dfd5b429fba2d13465a5a1875affe7f79bbdbcbd39b9449f89bf706
+hmac: de4f69305a1dcd9e48b983fb4e6dd38569e363e81dc62cb2d1a61c7b255b5ae3
 
 ...
