@@ -37,8 +37,8 @@ steps:
   - pip install poetry -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry docker-tidy --help
-  - poetry docker-tidy --version
+  - poetry version
+  - poetry run docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -50,8 +50,8 @@ steps:
   - pip install poetry -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry docker-tidy --help
-  - poetry docker-tidy --version
+  - poetry version
+  - poetry run docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -63,8 +63,8 @@ steps:
   - pip install poetry -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry docker-tidy --help
-  - poetry docker-tidy --version
+  - poetry version
+  - poetry run docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -76,8 +76,8 @@ steps:
   - pip install poetry -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry docker-tidy --help
-  - poetry docker-tidy --version
+  - poetry version
+  - poetry run docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -89,8 +89,8 @@ steps:
   - pip install poetry -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry docker-tidy --help
-  - poetry docker-tidy --version
+  - poetry version
+  - poetry run docker-tidy --help
   environment:
     PY_COLORS: 1
   depends_on:
@@ -617,6 +617,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 546c9afb5d0df097c4a2f2153cc15b75dd5b18dc5565efd86e50189e3dd89282
+hmac: 0cca89c6ee5e4403f8fe70514e96aa7d596b7f0d74994d2e567993ae19c6692f
 
 ...

@@ -8,8 +8,8 @@ local PythonVersion(pyversion='3.5') = {
     'pip install poetry -qq',
     'poetry install -q',
     'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
-    'poetry docker-tidy --help',
-    'poetry docker-tidy --version',
+    'poetry version',
+    'poetry run docker-tidy --help',
   ],
   depends_on: [
     'clone',
