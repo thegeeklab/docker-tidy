@@ -71,11 +71,12 @@ local PipelineTest = {
         'python36-pytest',
         'python37-pytest',
         'python38-pytest',
+        'python39-pytest',
       ],
     },
   ],
   depends_on: [
-    'dependencies',
+    'lint',
   ],
   trigger: {
     ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],

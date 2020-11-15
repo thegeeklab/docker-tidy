@@ -110,6 +110,7 @@ steps:
   - python36-pytest
   - python37-pytest
   - python38-pytest
+  - python39-pytest
 
 trigger:
   ref:
@@ -118,7 +119,7 @@ trigger:
   - refs/pull/**
 
 depends_on:
-- dependencies
+- lint
 
 ---
 kind: pipeline
@@ -616,6 +617,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: de4f69305a1dcd9e48b983fb4e6dd38569e363e81dc62cb2d1a61c7b255b5ae3
+hmac: 546c9afb5d0df097c4a2f2153cc15b75dd5b18dc5565efd86e50189e3dd89282
 
 ...
