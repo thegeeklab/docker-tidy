@@ -143,3 +143,7 @@ class DockerTidy:
             self.gc.run()
         elif self.config.config["command"] == "stop":
             self.stop.run()
+
+
+def main():
+    DockerTidy()
