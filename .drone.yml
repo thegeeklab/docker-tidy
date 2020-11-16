@@ -31,19 +31,6 @@ platform:
   arch: amd64
 
 steps:
-- name: python35-pytest
-  image: python:3.5
-  commands:
-  - pip install poetry -qq
-  - poetry install -q
-  - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-  - poetry version
-  - poetry run docker-tidy --help
-  environment:
-    PY_COLORS: 1
-  depends_on:
-  - clone
-
 - name: python36-pytest
   image: python:3.6
   commands:
@@ -106,7 +93,6 @@ steps:
       from_secret: codecov_token
     PY_COLORS: 1
   depends_on:
-  - python35-pytest
   - python36-pytest
   - python37-pytest
   - python38-pytest
@@ -617,6 +603,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 0cca89c6ee5e4403f8fe70514e96aa7d596b7f0d74994d2e567993ae19c6692f
+hmac: 06ddc40fb488eedcd3e5b8b71be91eed5b0414955f39edfd8689a286be1d2f7d
 
 ...

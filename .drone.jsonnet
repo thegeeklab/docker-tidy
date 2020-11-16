@@ -50,7 +50,6 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
-    PythonVersion(pyversion='3.5'),
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),
@@ -67,7 +66,6 @@ local PipelineTest = {
         'codecov --required -X gcov',
       ],
       depends_on: [
-        'python35-pytest',
         'python36-pytest',
         'python37-pytest',
         'python38-pytest',
