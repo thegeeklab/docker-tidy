@@ -1,8 +1,8 @@
 """Test Autostop class."""
 
-import docker
 import pytest
 
+import docker
 from dockertidy import Autostop
 
 pytest_plugins = [
