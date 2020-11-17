@@ -257,10 +257,9 @@ local PipelineDocs = {
   steps: [
     {
       name: 'assets',
-      image: 'byrnedo/alpine-curl',
+      image: 'thegeeklab/alpine-tools',
       commands: [
-        'mkdir -p docs/themes/hugo-geekdoc/',
-        'curl -L https://github.com/thegeeklab/hugo-geekdoc/releases/latest/download/hugo-geekdoc.tar.gz | tar -xz -C docs/themes/hugo-geekdoc/ --strip-components=1',
+        'make doc',
       ],
     },
     {
@@ -337,6 +336,9 @@ local PipelineDocs = {
         strip_prefix: 'docs/public/',
         target: '/${DRONE_REPO_NAME}',
       },
+      when: {
+        ref: ['refs/heads/master', 'refs/tags/**'],
+      },
     },
   ],
   depends_on: [
@@ -346,7 +348,7 @@ local PipelineDocs = {
     'build-container-arm',
   ],
   trigger: {
-    ref: ['refs/heads/master', 'refs/tags/**'],
+    ref: ['refs/heads/master', 'refs/tags/**', 'refs/pull/**'],
   },
 };
 

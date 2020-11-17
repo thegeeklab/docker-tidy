@@ -436,10 +436,9 @@ concurrency:
 
 steps:
 - name: assets
-  image: byrnedo/alpine-curl
+  image: thegeeklab/alpine-tools
   commands:
-  - mkdir -p docs/themes/hugo-geekdoc/
-  - curl -L https://github.com/thegeeklab/hugo-geekdoc/releases/latest/download/hugo-geekdoc.tar.gz | tar -xz -C docs/themes/hugo-geekdoc/ --strip-components=1
+  - make doc
 
 - name: markdownlint
   image: node:lts-alpine
@@ -499,11 +498,16 @@ steps:
     source: docs/public/
     strip_prefix: docs/public/
     target: /${DRONE_REPO_NAME}
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/**
 
 trigger:
   ref:
   - refs/heads/master
   - refs/tags/**
+  - refs/pull/**
 
 depends_on:
 - build-package
@@ -603,6 +607,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 06ddc40fb488eedcd3e5b8b71be91eed5b0414955f39edfd8689a286be1d2f7d
+hmac: fd70b6b2c63c8307c8653b9ca6bd264501e5237ffb22bcf0883f9eb327ee6f89
 
 ...
