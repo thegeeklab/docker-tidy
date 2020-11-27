@@ -16,6 +16,9 @@ steps:
   environment:
     PY_COLORS: 1
 
+image_pull_secrets:
+- docker_config
+
 trigger:
   ref:
   - refs/heads/master
@@ -98,6 +101,9 @@ steps:
   - python38-pytest
   - python39-pytest
 
+image_pull_secrets:
+- docker_config
+
 trigger:
   ref:
   - refs/heads/master
@@ -124,6 +130,9 @@ steps:
   - poetry run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
     PY_COLORS: 1
+
+image_pull_secrets:
+- docker_config
 
 trigger:
   ref:
@@ -183,6 +192,9 @@ steps:
     ref:
     - refs/tags/**
 
+image_pull_secrets:
+- docker_config
+
 trigger:
   ref:
   - refs/heads/master
@@ -208,8 +220,10 @@ steps:
   - poetry build
 
 - name: dryrun
-  image: plugins/docker:18-linux-amd64
+  image: plugins/docker:19
   settings:
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     dry_run: true
     password:
@@ -224,10 +238,12 @@ steps:
   - build
 
 - name: publish-dockerhub
-  image: plugins/docker:18-linux-amd64
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: amd64
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: docker_password
@@ -242,10 +258,12 @@ steps:
   - dryrun
 
 - name: publish-quay
-  image: plugins/docker:18-linux-amd64
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: amd64
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: quay_password
@@ -259,6 +277,9 @@ steps:
     - refs/tags/**
   depends_on:
   - dryrun
+
+image_pull_secrets:
+- docker_config
 
 trigger:
   ref:
@@ -285,8 +306,10 @@ steps:
   - poetry build
 
 - name: dryrun
-  image: plugins/docker:18-linux-arm64
+  image: plugins/docker:19
   settings:
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     dry_run: true
     password:
@@ -301,10 +324,12 @@ steps:
   - build
 
 - name: publish-dockerhub
-  image: plugins/docker:18-linux-arm64
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: arm64
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: docker_password
@@ -319,10 +344,12 @@ steps:
   - dryrun
 
 - name: publish-quay
-  image: plugins/docker:18-linux-arm64
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: arm64
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: quay_password
@@ -336,6 +363,9 @@ steps:
     - refs/tags/**
   depends_on:
   - dryrun
+
+image_pull_secrets:
+- docker_config
 
 trigger:
   ref:
@@ -362,8 +392,10 @@ steps:
   - poetry build
 
 - name: dryrun
-  image: plugins/docker:18-linux-arm
+  image: plugins/docker:19
   settings:
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     dry_run: true
     password:
@@ -378,10 +410,12 @@ steps:
   - build
 
 - name: publish-dockerhub
-  image: plugins/docker:18-linux-arm
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: arm
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: docker_password
@@ -396,10 +430,12 @@ steps:
   - dryrun
 
 - name: publish-quay
-  image: plugins/docker:18-linux-arm
+  image: plugins/docker:19
   settings:
     auto_tag: true
     auto_tag_suffix: arm
+    config:
+      from_secret: docker_config
     dockerfile: docker/Dockerfile
     password:
       from_secret: quay_password
@@ -413,6 +449,9 @@ steps:
     - refs/tags/**
   depends_on:
   - dryrun
+
+image_pull_secrets:
+- docker_config
 
 trigger:
   ref:
@@ -502,6 +541,9 @@ steps:
     ref:
     - refs/heads/master
     - refs/tags/**
+
+image_pull_secrets:
+- docker_config
 
 trigger:
   ref:
@@ -594,6 +636,9 @@ steps:
     - success
     - failure
 
+image_pull_secrets:
+- docker_config
+
 trigger:
   ref:
   - refs/heads/master
@@ -607,6 +652,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: fd70b6b2c63c8307c8653b9ca6bd264501e5237ffb22bcf0883f9eb327ee6f89
+hmac: 75497b938ca5a161c125b510a28ddbf446bfa69bec13203b27af6dd4426f2902
 
 ...
