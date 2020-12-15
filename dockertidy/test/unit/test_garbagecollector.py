@@ -364,7 +364,9 @@ def test_api_call_with_timeout(mocker, gc):
 def test_api_call_with_api_error(mocker, gc):
     func = mocker.Mock(
         side_effect=docker.errors.APIError(
-            "Ooops", mocker.Mock(status_code=409, reason="Conflict"), explanation="failed"
+            "Ooops",
+            mocker.Mock(status_code=409, reason="Conflict", url="dummy"),
+            explanation="failed"
         ),
         __name__="remove_image"
     )
@@ -376,7 +378,7 @@ def test_api_call_with_api_error(mocker, gc):
     func.assert_called_once_with(image="abcd")
     mock_log.warn.assert_called_once_with(
         "Error calling remove_image image=abcd "
-        '409 Client Error: Conflict ("failed")'
+        '409 Client Error for dummy: Conflict ("failed")'
     )
 
 
