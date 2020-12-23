@@ -29,7 +29,7 @@ local PipelineLint = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {
@@ -59,6 +59,13 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
+    {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch -tq',
+      ],
+    },
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),
@@ -103,7 +110,7 @@ local PipelineSecurity = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {
@@ -140,7 +147,7 @@ local PipelineBuildPackage = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {
@@ -209,7 +216,7 @@ local PipelineBuildContainer(arch='amd64') = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {
@@ -296,7 +303,7 @@ local PipelineDocs = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {
@@ -409,7 +416,7 @@ local PipelineNotifications = {
       name: 'fetch',
       image: 'thegeeklab/alpine-tools',
       commands: [
-        'git fetch --tags',
+        'git fetch -tq',
       ],
     },
     {

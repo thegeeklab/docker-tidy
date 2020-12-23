@@ -10,7 +10,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: flake8
   image: python:3.9
@@ -39,6 +39,11 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch -tq
+
 - name: python36-pytest
   image: python:3.6
   commands:
@@ -130,7 +135,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: bandit
   image: python:3.9
@@ -165,7 +170,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: build
   image: python:3.9
@@ -231,7 +236,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: build
   image: python:3.9
@@ -322,7 +327,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: build
   image: python:3.9
@@ -413,7 +418,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: build
   image: python:3.9
@@ -507,7 +512,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: assets
   image: thegeeklab/alpine-tools
@@ -604,7 +609,7 @@ steps:
 - name: fetch
   image: thegeeklab/alpine-tools
   commands:
-  - git fetch --tags
+  - git fetch -tq
 
 - name: manifest-dockerhub
   image: plugins/manifest
@@ -692,6 +697,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: b6c89922bc97dcb1dbfbfd8b9e1b0dd0c84f07ef607dc2a5a694822f4cf198e4
+hmac: c79a1e6c4b48d2989922a16cb430f9c31958011389b9b4842c98d319c9088ad0
 
 ...
