@@ -5,7 +5,6 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
-    'git fetch -tq',
     'pip install poetry poetry-dynamic-versioning -qq',
     'poetry install -q',
     'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
@@ -54,6 +53,13 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
+    {
+      name: 'fetch',
+      image: 'python:3.9',
+      commands: [
+        'git fetch -tq',
+      ],
+    },
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),

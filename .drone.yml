@@ -35,10 +35,14 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: python:3.9
+  commands:
+  - git fetch -tq
+
 - name: python36-pytest
   image: python:3.6
   commands:
-  - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
@@ -52,7 +56,6 @@ steps:
 - name: python37-pytest
   image: python:3.7
   commands:
-  - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
@@ -66,7 +69,6 @@ steps:
 - name: python38-pytest
   image: python:3.8
   commands:
-  - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
@@ -80,7 +82,6 @@ steps:
 - name: python39-pytest
   image: python:3.9
   commands:
-  - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
@@ -663,6 +664,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 0d65e2bcc25f551af7335b766efdfe441f634d411c4fab68d11367e51a9a2e22
+hmac: e6019acabf9aa621c86476cf604105cfdee5a58d6c0cbea069b9159f180ecf24
 
 ...
