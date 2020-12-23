@@ -5,6 +5,7 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
+    'git fetch -tq',
     'pip install poetry poetry-dynamic-versioning -qq',
     'poetry install -q',
     'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
@@ -26,19 +27,13 @@ local PipelineLint = {
   },
   steps: [
     {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
-    {
       name: 'flake8',
       image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
+        'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
         'poetry install -q',
         'poetry run flake8 ./dockertidy',
@@ -59,13 +54,6 @@ local PipelineTest = {
     arch: 'amd64',
   },
   steps: [
-    {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
     PythonVersion(pyversion='3.6'),
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),
@@ -107,19 +95,13 @@ local PipelineSecurity = {
   },
   steps: [
     {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
-    {
       name: 'bandit',
       image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
+        'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
         'poetry install -q',
         'poetry run bandit -r ./dockertidy -x ./dockertidy/test',
@@ -144,16 +126,10 @@ local PipelineBuildPackage = {
   },
   steps: [
     {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
-    {
       name: 'build',
       image: 'python:3.9',
       commands: [
+        'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
         'poetry build',
       ],
@@ -183,12 +159,13 @@ local PipelineBuildPackage = {
       name: 'publish-pypi',
       image: 'python:3.9',
       commands: [
+        'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
-        'poetry build',
+        'poetry publish --build',
       ],
       environment: {
-        POETRY_HTTP_BASIC_TESTPYPI_USERNAME: { from_secret: 'pypi_username' },
-        POETRY_HTTP_BASIC_TESTPYPI_PASSWORD: { from_secret: 'pypi_password' },
+        POETRY_HTTP_BASIC_PYPI_USERNAME: { from_secret: 'pypi_username' },
+        POETRY_HTTP_BASIC_PYPI_PASSWORD: { from_secret: 'pypi_password' },
       },
       when: {
         ref: ['refs/tags/**'],
@@ -213,16 +190,10 @@ local PipelineBuildContainer(arch='amd64') = {
   },
   steps: [
     {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
-    {
       name: 'build',
       image: 'python:3.9',
       commands: [
+        'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
         'poetry build',
       ],
@@ -299,13 +270,6 @@ local PipelineDocs = {
     limit: 1,
   },
   steps: [
-    {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
     {
       name: 'assets',
       image: 'thegeeklab/alpine-tools',
@@ -412,13 +376,6 @@ local PipelineNotifications = {
     arch: 'amd64',
   },
   steps: [
-    {
-      name: 'fetch',
-      image: 'alpine/git',
-      commands: [
-        'git fetch -tq',
-      ],
-    },
     {
       image: 'plugins/manifest',
       name: 'manifest-dockerhub',
