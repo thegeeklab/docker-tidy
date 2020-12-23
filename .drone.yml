@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -40,7 +40,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -133,7 +133,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -168,7 +168,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -234,7 +234,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -325,7 +325,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -416,7 +416,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -510,7 +510,7 @@ concurrency:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -607,7 +607,7 @@ platform:
 
 steps:
 - name: fetch
-  image: thegeeklab/alpine-tools
+  image: alpine/git
   commands:
   - git fetch -tq
 
@@ -697,6 +697,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: c79a1e6c4b48d2989922a16cb430f9c31958011389b9b4842c98d319c9088ad0
+hmac: 2a60c2f0458edd526f1fd0d934e39b1b513e27e52f061368ef6f03c44fedfebf
 
 ...

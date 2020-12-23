@@ -27,7 +27,7 @@ local PipelineLint = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -61,7 +61,7 @@ local PipelineTest = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -108,7 +108,7 @@ local PipelineSecurity = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -145,7 +145,7 @@ local PipelineBuildPackage = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -214,7 +214,7 @@ local PipelineBuildContainer(arch='amd64') = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -301,7 +301,7 @@ local PipelineDocs = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
@@ -414,7 +414,7 @@ local PipelineNotifications = {
   steps: [
     {
       name: 'fetch',
-      image: 'thegeeklab/alpine-tools',
+      image: 'alpine/git',
       commands: [
         'git fetch -tq',
       ],
