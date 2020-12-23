@@ -156,6 +156,7 @@ steps:
   image: python:3.9
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
+  - pip list
   - poetry build
 
 - name: checksum
@@ -652,6 +653,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 75497b938ca5a161c125b510a28ddbf446bfa69bec13203b27af6dd4426f2902
+hmac: afc5954b922971a587d3b98abc91482e354323940c6342eb2d4d1e4db0caaaf3
 
 ...

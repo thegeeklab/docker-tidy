@@ -127,6 +127,7 @@ local PipelineBuildPackage = {
       image: 'python:3.9',
       commands: [
         'pip install poetry poetry-dynamic-versioning -qq',
+        'pip list',
         'poetry build',
       ],
     },
