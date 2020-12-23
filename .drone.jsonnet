@@ -5,7 +5,7 @@ local PythonVersion(pyversion='3.5') = {
     PY_COLORS: 1,
   },
   commands: [
-    'pip install poetry -qq',
+    'pip install poetry poetry-dynamic-versioning -qq',
     'poetry install -q',
     'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
     'poetry version',
@@ -26,13 +26,20 @@ local PipelineLint = {
   },
   steps: [
     {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
+    {
       name: 'flake8',
       image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install poetry -qq',
+        'pip install poetry poetry-dynamic-versioning -qq',
         'poetry install -q',
         'poetry run flake8 ./dockertidy',
       ],
@@ -93,13 +100,20 @@ local PipelineSecurity = {
   },
   steps: [
     {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
+    {
       name: 'bandit',
       image: 'python:3.9',
       environment: {
         PY_COLORS: 1,
       },
       commands: [
-        'pip install poetry -qq',
+        'pip install poetry poetry-dynamic-versioning -qq',
         'poetry install -q',
         'poetry run bandit -r ./dockertidy -x ./dockertidy/test',
       ],
@@ -123,11 +137,17 @@ local PipelineBuildPackage = {
   },
   steps: [
     {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
+    {
       name: 'build',
       image: 'python:3.9',
       commands: [
         'pip install poetry poetry-dynamic-versioning -qq',
-        'pip list',
         'poetry build',
       ],
     },
@@ -185,6 +205,13 @@ local PipelineBuildContainer(arch='amd64') = {
     arch: arch,
   },
   steps: [
+    {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
     {
       name: 'build',
       image: 'python:3.9',
@@ -265,6 +292,13 @@ local PipelineDocs = {
     limit: 1,
   },
   steps: [
+    {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
     {
       name: 'assets',
       image: 'thegeeklab/alpine-tools',
@@ -371,6 +405,13 @@ local PipelineNotifications = {
     arch: 'amd64',
   },
   steps: [
+    {
+      name: 'fetch',
+      image: 'thegeeklab/alpine-tools',
+      commands: [
+        'git fetch --tags',
+      ],
+    },
     {
       image: 'plugins/manifest',
       name: 'manifest-dockerhub',

@@ -7,10 +7,15 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: flake8
   image: python:3.9
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run flake8 ./dockertidy
   environment:
@@ -37,7 +42,7 @@ steps:
 - name: python36-pytest
   image: python:3.6
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -50,7 +55,7 @@ steps:
 - name: python37-pytest
   image: python:3.7
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -63,7 +68,7 @@ steps:
 - name: python38-pytest
   image: python:3.8
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -76,7 +81,7 @@ steps:
 - name: python39-pytest
   image: python:3.9
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -122,10 +127,15 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: bandit
   image: python:3.9
   commands:
-  - pip install poetry -qq
+  - pip install poetry poetry-dynamic-versioning -qq
   - poetry install -q
   - poetry run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
@@ -152,11 +162,15 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: build
   image: python:3.9
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
-  - pip list
   - poetry build
 
 - name: checksum
@@ -214,6 +228,11 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: build
   image: python:3.9
   commands:
@@ -300,6 +319,11 @@ platform:
   arch: arm64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: build
   image: python:3.9
   commands:
@@ -386,6 +410,11 @@ platform:
   arch: arm
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: build
   image: python:3.9
   commands:
@@ -475,6 +504,11 @@ concurrency:
   limit: 1
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: assets
   image: thegeeklab/alpine-tools
   commands:
@@ -567,6 +601,11 @@ platform:
   arch: amd64
 
 steps:
+- name: fetch
+  image: thegeeklab/alpine-tools
+  commands:
+  - git fetch --tags
+
 - name: manifest-dockerhub
   image: plugins/manifest
   settings:
@@ -653,6 +692,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: afc5954b922971a587d3b98abc91482e354323940c6342eb2d4d1e4db0caaaf3
+hmac: b6c89922bc97dcb1dbfbfd8b9e1b0dd0c84f07ef607dc2a5a694822f4cf198e4
 
 ...
