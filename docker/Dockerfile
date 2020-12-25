@@ -1,10 +1,11 @@
 FROM python:3.9-alpine
 
-LABEL maintainer="Robert Kaussow <mail@thegeeklab.de>" \
-    org.label-schema.name="docker-tidy" \
-    org.label-schema.vcs-url="https://github.com/thegeeklab/docker-tidy" \
-    org.label-schema.vendor="Robert Kaussow" \
-    org.label-schema.schema-version="1.0"
+LABEL maintainer="Robert Kaussow <mail@thegeeklab.de>"
+LABEL org.opencontainers.image.authors="Robert Kaussow <mail@thegeeklab.de>"
+LABEL org.opencontainers.image.title="docker-tidy"
+LABEL org.opencontainers.image.url="https://docker-tidy.geekdocs.de/"
+LABEL org.opencontainers.image.source="https://github.com/thegeeklab/docker-tidy"
+LABEL org.opencontainers.image.documentation="https://docker-tidy.geekdocs.de/"
 
 ENV PY_COLORS=1
 ENV TZ=UTC

@@ -1,2 +1,4 @@
+- BREAKING
+  - Drop Python 3.5 support
 - ENHANCEMENT
-  - update package dependencies
+  - Switch to `org.opencontainers` docker image labels
