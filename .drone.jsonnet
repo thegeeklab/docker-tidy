@@ -288,7 +288,7 @@ local PipelineDocs = {
       image: 'node:lts-alpine',
       commands: [
         'npm install -g markdownlint-cli',
-        "markdownlint 'docs/content/**/*.md' 'README.md'",
+        "markdownlint 'docs/content/**/*.md' 'README.md' 'CONTRIBUTING.md'",
       ],
       environment: {
         FORCE_COLOR: true,
@@ -300,7 +300,7 @@ local PipelineDocs = {
       image: 'node:lts-alpine',
       commands: [
         'npm install -g spellchecker-cli',
-        "spellchecker --files 'docs/content/**/*.md' 'README.md' -d .dictionary -p spell indefinite-article syntax-urls --no-suggestions",
+        "spellchecker --files 'docs/content/**/*.md' 'README.md' 'CONTRIBUTING.md' -d .dictionary -p spell indefinite-article syntax-urls --no-suggestions",
       ],
       environment: {
         FORCE_COLOR: true,

@@ -495,7 +495,7 @@ steps:
   image: node:lts-alpine
   commands:
   - npm install -g markdownlint-cli
-  - markdownlint 'docs/content/**/*.md' 'README.md'
+  - markdownlint 'docs/content/**/*.md' 'README.md' 'CONTRIBUTING.md'
   environment:
     FORCE_COLOR: true
     NPM_CONFIG_LOGLEVEL: error
@@ -504,7 +504,7 @@ steps:
   image: node:lts-alpine
   commands:
   - npm install -g spellchecker-cli
-  - spellchecker --files 'docs/content/**/*.md' 'README.md' -d .dictionary -p spell indefinite-article syntax-urls --no-suggestions
+  - spellchecker --files 'docs/content/**/*.md' 'README.md' 'CONTRIBUTING.md' -d .dictionary -p spell indefinite-article syntax-urls --no-suggestions
   environment:
     FORCE_COLOR: true
     NPM_CONFIG_LOGLEVEL: error
@@ -664,6 +664,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: e6019acabf9aa621c86476cf604105cfdee5a58d6c0cbea069b9159f180ecf24
+hmac: efe34a2b218e5db05f9608c0ab25e90352a70bcaaf802a6419d192dda8ac0cdc
 
 ...

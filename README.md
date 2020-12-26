@@ -18,7 +18,8 @@ You can find the full documentation at [https://docker-tidy.geekdocs.de](https:/
 
 ## Contributors
 
-Special thanks goes to all [contributors](https://github.com/thegeeklab/docker-tidy/graphs/contributors).
+Special thanks goes to all [contributors](https://github.com/thegeeklab/docker-tidy/graphs/contributors). If you would like to contribute,
+please see the [instructions](https://github.com/thegeeklab/docker-tidy/blob/master/CONTRIBUTING.md).
 
 ## License
 
