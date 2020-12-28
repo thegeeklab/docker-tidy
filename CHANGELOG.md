@@ -8,8 +8,9 @@
 
 ### Others
 
-- (docker): use standalone dockerfiles for multiarch
-- (docker): switch to `org.opencontainers` image labels
+- **docker**: use standalone dockerfiles for multiarch
+- **docker**: switch to org.opencontainers image labels
+- **deps**: pin docker digests
 
 ### Breaking Changes
 
