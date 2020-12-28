@@ -1,4 +1,4 @@
-local PythonVersion(pyversion='3.5') = {
+local PythonVersion(pyversion='3.6') = {
   name: 'python' + std.strReplace(pyversion, '.', '') + '-pytest',
   image: 'python:' + pyversion,
   environment: {
