@@ -167,7 +167,7 @@ local PipelineBuildPackage = {
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
-        'poetry publish --build',
+        'poetry publish -n',
       ],
       environment: {
         POETRY_HTTP_BASIC_PYPI_USERNAME: { from_secret: 'pypi_username' },

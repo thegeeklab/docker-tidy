@@ -191,7 +191,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry publish --build
+  - poetry publish -n
   environment:
     POETRY_HTTP_BASIC_PYPI_PASSWORD:
       from_secret: pypi_password
@@ -664,6 +664,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 97c4c2ccaed65fc776fe84a4c5f5008123f526ce587c03c93d2c89eb27b66d49
+hmac: ec746347e8432fc5cf3c2212db67ac15975ab6d9e7c8a4e2311ae0094d00c549
 
 ...
