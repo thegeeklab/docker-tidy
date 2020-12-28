@@ -12,7 +12,7 @@ local PythonVersion(pyversion='3.5') = {
     'poetry run docker-tidy --help',
   ],
   depends_on: [
-    'clone',
+    'fetch',
   ],
 };
 

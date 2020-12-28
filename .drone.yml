@@ -51,7 +51,7 @@ steps:
   environment:
     PY_COLORS: 1
   depends_on:
-  - clone
+  - fetch
 
 - name: python37-pytest
   image: python:3.7
@@ -64,7 +64,7 @@ steps:
   environment:
     PY_COLORS: 1
   depends_on:
-  - clone
+  - fetch
 
 - name: python38-pytest
   image: python:3.8
@@ -77,7 +77,7 @@ steps:
   environment:
     PY_COLORS: 1
   depends_on:
-  - clone
+  - fetch
 
 - name: python39-pytest
   image: python:3.9
@@ -90,7 +90,7 @@ steps:
   environment:
     PY_COLORS: 1
   depends_on:
-  - clone
+  - fetch
 
 - name: codecov
   image: python:3.9
@@ -664,6 +664,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: ec746347e8432fc5cf3c2212db67ac15975ab6d9e7c8a4e2311ae0094d00c549
+hmac: a0359634cfee80fd2397e1dbe50eae5be373194110c5f164b03e1524723a3f5f
 
 ...
