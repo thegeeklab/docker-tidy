@@ -10,6 +10,6 @@ title: Documentation
 [![Codecov](https://img.shields.io/codecov/c/github/thegeeklab/docker-tidy)](https://codecov.io/gh/thegeeklab/docker-tidy)
 [![GitHub contributors](https://img.shields.io/github/contributors/thegeeklab/docker-tidy)](https://github.com/thegeeklab/docker-tidy/graphs/contributors)
 [![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/thegeeklab/docker-tidy)
-[![License: Apache-2.0](https://img.shields.io/github/license/thegeeklab/docker-tidy)](https://github.com/thegeeklab/docker-tidy/blob/master/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/github/license/thegeeklab/docker-tidy)](https://github.com/thegeeklab/docker-tidy/blob/main/LICENSE)
 
 This project is a fork of [Yelp/docker-custodian](https://github.com/Yelp/docker-custodian). Keep docker hosts tidy.
