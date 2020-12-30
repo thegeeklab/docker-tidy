@@ -7,6 +7,16 @@ platform:
   arch: amd64
 
 steps:
+- name: yapf
+  image: python:3.9
+  commands:
+  - git fetch -tq
+  - pip install poetry poetry-dynamic-versioning -qq
+  - poetry install -q
+  - poetry run yapf -dr ./dockertidy
+  environment:
+    PY_COLORS: 1
+
 - name: flake8
   image: python:3.9
   commands:
@@ -664,6 +674,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 951a750ab414f65ebb0985f3d93ee20f8ebc5e70505d0e918062560630271b42
+hmac: 63ae695973cbf7b43322468ffe5c50061ff6649cc3b2d8e64e2903bbca1468e9
 
 ...
