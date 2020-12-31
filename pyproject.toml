@@ -18,7 +18,7 @@ classifiers = [
   "Topic :: Utilities",
   "Topic :: Software Development",
 ]
-description = "Keep docker hosts tidy"
+description = "Keep docker hosts tidy."
 documentation = "https://docker-tidy.geekdocs.de/"
 homepage = "https://docker-tidy.geekdocs.de/"
 include = [
