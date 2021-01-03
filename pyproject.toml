@@ -77,7 +77,7 @@ pytest-mock = "^3.3.1"
 yapf = "^0.30.0"
 
 [tool.poetry.scripts]
-docker-tidy = "dockertidy.Cli:main"
+docker-tidy = "dockertidy.cli:main"
 
 [tool.poetry-dynamic-versioning]
 enable = true
