@@ -3,13 +3,13 @@
 
 import argparse
 
-import dockertidy.Exception
+import dockertidy.exception
 from dockertidy import __version__
-from dockertidy.Autostop import AutoStop
-from dockertidy.Config import SingleConfig
-from dockertidy.GarbageCollector import GarbageCollector
-from dockertidy.Logger import SingleLog
-from dockertidy.Parser import timedelta_validator
+from dockertidy.autostop import AutoStop
+from dockertidy.config import SingleConfig
+from dockertidy.garbage_collector import GarbageCollector
+from dockertidy.logger import SingleLog
+from dockertidy.parser import timedelta_validator
 
 
 class DockerTidy:
@@ -124,7 +124,7 @@ class DockerTidy:
     def _get_config(self):
         try:
             config = SingleConfig(args=self.args)
-        except dockertidy.Exception.ConfigError as e:
+        except dockertidy.exception.ConfigError as e:
             self.log.sysexit_with_message(e)
 
         try:

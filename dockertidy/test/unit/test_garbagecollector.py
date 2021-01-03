@@ -4,7 +4,7 @@ import pytest
 import requests
 
 import docker
-from dockertidy import GarbageCollector
+from dockertidy import garbage_collector
 
 pytest_plugins = [
     "dockertidy.test.fixtures.fixtures",
@@ -14,12 +14,12 @@ pytest_plugins = [
 @pytest.fixture
 def gc(mocker):
     mocker.patch.object(
-        GarbageCollector.GarbageCollector,
+        garbage_collector.GarbageCollector,
         "_get_docker_client",
         return_value=mocker.create_autospec(docker.APIClient)
     )
 
-    gc = GarbageCollector.GarbageCollector()
+    gc = garbage_collector.GarbageCollector()
     return gc
 
 

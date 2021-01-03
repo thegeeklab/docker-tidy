@@ -10,11 +10,11 @@ import ruamel.yaml
 from appdirs import AppDirs
 from jsonschema._utils import format_as_index
 
-import dockertidy.Exception
-import dockertidy.Parser
-from dockertidy.Parser import env
-from dockertidy.Utils import Singleton
-from dockertidy.Utils import dict_intersect
+import dockertidy.exception
+import dockertidy.parser
+from dockertidy.parser import env
+from dockertidy.utils import Singleton
+from dockertidy.utils import dict_intersect
 
 config_dir = AppDirs("docker-tidy").user_config_dir
 default_config_file = os.path.join(config_dir, "config.yml")
@@ -162,7 +162,7 @@ class Config():
                     if '"{}" not set'.format(envname) in str(e):
                         pass
                     else:
-                        raise dockertidy.Exception.ConfigError(
+                        raise dockertidy.exception.ConfigError(
                             "Unable to read environment variable", str(e)
                         )
 
@@ -194,7 +194,7 @@ class Config():
                     normalized = ruamel.yaml.safe_load(s)
                 except (ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError) as e:
                     message = "{} {}".format(e.context, e.problem)
-                    raise dockertidy.Exception.ConfigError(
+                    raise dockertidy.exception.ConfigError(
                         "Unable to read config file {}".format(config), message
                     )
 
@@ -236,7 +236,7 @@ class Config():
                 schema=format_as_index(list(e.relative_schema_path)[:-1]),
                 message=e.message
             )
-            raise dockertidy.Exception.ConfigError("Configuration error", schema_error)
+            raise dockertidy.exception.ConfigError("Configuration error", schema_error)
 
         return True
 

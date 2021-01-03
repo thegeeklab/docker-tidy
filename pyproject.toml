@@ -92,7 +92,7 @@ sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 skip_glob = ["**/.env*", "**/env/*", "**/docs/*"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=dockertidy --cov-report xml:coverage.xml --cov-append --no-cov-on-fail"
+addopts = "dockertidy --cov=dockertidy --cov-report=xml:coverage.xml --cov-report=term --cov-append --no-cov-on-fail"
 filterwarnings = [
   "ignore::FutureWarning",
   "ignore:.*collections.*:DeprecationWarning",
