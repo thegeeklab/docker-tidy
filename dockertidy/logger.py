@@ -8,8 +8,8 @@ import sys
 import colorama
 from pythonjsonlogger import jsonlogger
 
-from dockertidy.Utils import Singleton
-from dockertidy.Utils import to_bool
+from dockertidy.utils import Singleton
+from dockertidy.utils import to_bool
 
 CONSOLE_FORMAT = "{}[%(levelname)s]{} %(message)s"
 JSON_FORMAT = "(asctime) (levelname) (message)"

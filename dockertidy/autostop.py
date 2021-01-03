@@ -6,9 +6,9 @@ import docker.errors
 import requests.exceptions
 
 import docker
-from dockertidy.Config import SingleConfig
-from dockertidy.Logger import SingleLog
-from dockertidy.Parser import timedelta
+from dockertidy.config import SingleConfig
+from dockertidy.logger import SingleLog
+from dockertidy.parser import timedelta
 
 
 class AutoStop:

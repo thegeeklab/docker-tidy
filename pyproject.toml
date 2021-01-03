@@ -77,7 +77,7 @@ pytest-mock = "^3.3.1"
 yapf = "^0.30.0"
 
 [tool.poetry.scripts]
-docker-tidy = "dockertidy.Cli:main"
+docker-tidy = "dockertidy.cli:main"
 
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -92,7 +92,7 @@ sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 skip_glob = ["**/.env*", "**/env/*", "**/docs/*"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=dockertidy --cov-report xml:coverage.xml --cov-append --no-cov-on-fail"
+addopts = "dockertidy --cov=dockertidy --cov-report=xml:coverage.xml --cov-report=term --cov-append --no-cov-on-fail"
 filterwarnings = [
   "ignore::FutureWarning",
   "ignore:.*collections.*:DeprecationWarning",
