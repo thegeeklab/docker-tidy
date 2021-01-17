@@ -2,7 +2,7 @@
 title: Documentation
 ---
 
-[![Build Status](https://img.shields.io/drone/build/thegeeklab/docker-tidy?logo=drone)](https://cloud.drone.io/thegeeklab/docker-tidy)
+[![Build Status](https://img.shields.io/drone/build/thegeeklab/docker-tidy?logo=drone)](https://drone.thegeeklab.de/thegeeklab/docker-tidy)
 [![Docker Hub](https://img.shields.io/badge/docker-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/thegeeklab/docker-tidy)
 [![Python Version](https://img.shields.io/pypi/pyversions/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
 [![PyPI Status](https://img.shields.io/pypi/status/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
