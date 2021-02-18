@@ -12,6 +12,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run yapf -dr ./dockertidy
   environment:
@@ -22,6 +23,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run flake8 ./dockertidy
   environment:
@@ -141,6 +143,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
@@ -383,7 +386,7 @@ steps:
 - name: build
   image: python:3.9-alpine
   commands:
-  - apk add -Uq --no-cache build-base libressl-dev libffi-dev musl-dev python3-dev git
+  - apk add -Uq --no-cache build-base libressl-dev libffi-dev musl-dev python3-dev git cargo
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry build
@@ -632,6 +635,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: d8149a65a34ade3b69589171c8d17827b18cc7ee1a3a8d9ee0fef173861f3fe5
+hmac: db4b48de5638c20a72c6e2356b0f75efe61ecb600bfb3784caf5c5ff5909808a
 
 ...
