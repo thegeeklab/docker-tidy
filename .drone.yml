@@ -221,9 +221,11 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
+  - apk --update --quiet add build-base libffi-dev musl-dev libressl-dev python3-dev cargo git
   - git fetch -tq
+  - pip install --upgrade --no-cache-dir pip
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry build
 
@@ -299,9 +301,11 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
+  - apk --update --quiet add build-base libffi-dev musl-dev libressl-dev python3-dev cargo git
   - git fetch -tq
+  - pip install --upgrade --no-cache-dir pip
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry build
 
@@ -377,9 +381,11 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
+  - apk --update --quiet add build-base libffi-dev musl-dev libressl-dev python3-dev cargo git
   - git fetch -tq
+  - pip install --upgrade --no-cache-dir pip
   - pip install poetry poetry-dynamic-versioning -qq
   - poetry build
 
@@ -571,6 +577,7 @@ steps:
     - success
 
 - name: pushrm-dockerhub
+  pull: always
   image: chko/docker-pushrm:1
   environment:
     DOCKER_PASS:
@@ -585,6 +592,7 @@ steps:
     - success
 
 - name: pushrm-quay
+  pull: always
   image: chko/docker-pushrm:1
   environment:
     APIKEY__QUAY_IO:
@@ -625,6 +633,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 07825eaaecd956473fb0c66cf9f7c1b16dc110c9f3bbbc69e268676440f78dbb
+hmac: 30c341dc21563510fa06c7bb66e49e666a6ed1edf555d2a89ffb64b3749ac6bb
 
 ...
