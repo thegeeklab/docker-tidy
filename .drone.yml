@@ -51,6 +51,7 @@ steps:
   image: python:3.6
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -64,6 +65,7 @@ steps:
   image: python:3.7
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -77,6 +79,7 @@ steps:
   image: python:3.8
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -90,6 +93,7 @@ steps:
   image: python:3.9
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config experimental.new-installer false
   - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
@@ -221,11 +225,12 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
-  - apk --update --quiet add py3-cryptography
+  - apk --update --quiet add build-base libressl-dev python3-dev py3-cryptography git
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config virtualenvs.create false
   - poetry build
 
 - name: dryrun
@@ -300,11 +305,12 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
-  - apk --update --quiet add py3-cryptography
+  - apk --update --quiet add build-base libressl-dev python3-dev py3-cryptography git
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config virtualenvs.create false
   - poetry build
 
 - name: dryrun
@@ -379,11 +385,12 @@ platform:
 
 steps:
 - name: build
-  image: python:3.9
+  image: python:3.9-alpine
   commands:
-  - apk --update --quiet add py3-cryptography
+  - apk --update --quiet add build-base libressl-dev python3-dev py3-cryptography git
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
+  - poetry config virtualenvs.create false
   - poetry build
 
 - name: dryrun
@@ -630,6 +637,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 79ccca8d3cf92622e95cf14929f8b06bef4349b517bbb91ac3f8fd0d9f1ecb7f
+hmac: eff4b5e9103801d0ac2f4631f6695092a4c2a5430c04621fece336c2a31bc5eb
 
 ...
