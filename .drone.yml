@@ -12,7 +12,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run yapf -dr ./dockertidy
   environment:
     PY_COLORS: 1
@@ -22,7 +22,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run flake8 ./dockertidy
   environment:
     PY_COLORS: 1
@@ -51,7 +51,7 @@ steps:
   image: python:3.6
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
   - poetry run docker-tidy --help
@@ -64,7 +64,7 @@ steps:
   image: python:3.7
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
   - poetry run docker-tidy --help
@@ -77,7 +77,7 @@ steps:
   image: python:3.8
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
   - poetry run docker-tidy --help
@@ -90,7 +90,7 @@ steps:
   image: python:3.9
   commands:
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
   - poetry version
   - poetry run docker-tidy --help
@@ -137,7 +137,7 @@ steps:
   commands:
   - git fetch -tq
   - pip install poetry poetry-dynamic-versioning -qq
-  - poetry install -q
+  - poetry install
   - poetry run bandit -r ./dockertidy -x ./dockertidy/test
   environment:
     PY_COLORS: 1
@@ -633,6 +633,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 30c341dc21563510fa06c7bb66e49e666a6ed1edf555d2a89ffb64b3749ac6bb
+hmac: a3765d4fd13eb8c384a30f785ecbc02d3f45dc5cbcf44c17fbb7af039c46e531
 
 ...

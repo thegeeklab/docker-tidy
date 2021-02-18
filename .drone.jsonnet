@@ -6,7 +6,7 @@ local PythonVersion(pyversion='3.6') = {
   },
   commands: [
     'pip install poetry poetry-dynamic-versioning -qq',
-    'poetry install -q',
+    'poetry install',
     'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
     'poetry version',
     'poetry run docker-tidy --help',
@@ -33,7 +33,7 @@ local PipelineLint = {
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
-        'poetry install -q',
+        'poetry install',
         'poetry run yapf -dr ./dockertidy',
       ],
     },
@@ -46,7 +46,7 @@ local PipelineLint = {
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
-        'poetry install -q',
+        'poetry install',
         'poetry run flake8 ./dockertidy',
       ],
     },
@@ -119,7 +119,7 @@ local PipelineSecurity = {
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
-        'poetry install -q',
+        'poetry install',
         'poetry run bandit -r ./dockertidy -x ./dockertidy/test',
       ],
     },
