@@ -205,9 +205,11 @@ local PipelineBuildContainer(arch='amd64') = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.9',
+      image: 'python:3.9-alpine',
       commands: [
+        'apk --update --quiet add build-base libffi-dev musl-dev libressl-dev python3-dev cargo git',
         'git fetch -tq',
+        'pip install --upgrade --no-cache-dir pip',
         'pip install poetry poetry-dynamic-versioning -qq',
         'poetry build',
       ],
@@ -222,10 +224,10 @@ local PipelineBuildContainer(arch='amd64') = {
         username: { from_secret: 'docker_username' },
         password: { from_secret: 'docker_password' },
       },
+      depends_on: ['build'],
       when: {
         ref: ['refs/pull/**'],
       },
-      depends_on: ['build'],
     },
     {
       name: 'publish-dockerhub',
@@ -410,6 +412,7 @@ local PipelineNotifications = {
     },
     {
       name: 'pushrm-dockerhub',
+      pull: 'always',
       image: 'chko/docker-pushrm:1',
       environment: {
         DOCKER_PASS: {
@@ -428,6 +431,7 @@ local PipelineNotifications = {
     },
     {
       name: 'pushrm-quay',
+      pull: 'always',
       image: 'chko/docker-pushrm:1',
       environment: {
         APIKEY__QUAY_IO: {
