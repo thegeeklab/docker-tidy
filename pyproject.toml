@@ -74,7 +74,7 @@ pydocstyle = "^5.1.1"
 pytest = "^6.1.2"
 pytest-cov = "^2.10.1"
 pytest-mock = "^3.3.1"
-yapf = "^0.30.0"
+yapf = "^0.31.0"
 
 [tool.poetry.scripts]
 docker-tidy = "dockertidy.cli:main"
