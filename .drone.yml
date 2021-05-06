@@ -494,7 +494,7 @@ steps:
     NPM_CONFIG_LOGLEVEL: error
 
 - name: testbuild
-  image: klakegg/hugo:0.80.0-ext-alpine-ci
+  image: klakegg/hugo:0.83.1-ext-alpine-ci
   commands:
   - hugo-official -s docs/ -b http://localhost/
 
@@ -506,7 +506,7 @@ steps:
     LINK_VALIDATOR_BASE_DIR: docs/public
 
 - name: build
-  image: klakegg/hugo:0.80.0-ext-alpine-ci
+  image: klakegg/hugo:0.83.1-ext-alpine-ci
   commands:
   - hugo-official -s docs/
 
@@ -644,6 +644,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 321540ba92e4abe200e4c4ad456091b37bbbbf08b3edb5c9f3124471f77c206d
+hmac: 1a3c02e976a4a552c4253dad73027fb2cd25e7a91d51d86eb125211b573cddee
 
 ...
