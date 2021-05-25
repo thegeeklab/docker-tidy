@@ -1,4 +1,3 @@
----
 repository:
   name: docker-tidy
   description: Keep docker hosts tidy
@@ -9,12 +8,12 @@ repository:
   has_issues: true
   has_projects: false
   has_wiki: false
-  has_downloads: false
+  has_downloads: true
 
   default_branch: main
 
   allow_squash_merge: true
-  allow_merge_commit: false
+  allow_merge_commit: true
   allow_rebase_merge: true
 
 labels:
