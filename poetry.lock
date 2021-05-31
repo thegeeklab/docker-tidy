@@ -655,7 +655,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
 name = "ruamel.yaml"
-version = "0.17.5"
+version = "0.17.6"
 description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
 category = "main"
 optional = false
@@ -796,7 +796,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.0"
-content-hash = "9d75486d7d790a5cfdd03798813994fffec206263e780395eab006f3b7f2fe3a"
+content-hash = "4502a1eb7690841b44d8d14f68d7cc00e72f233a5fa674a77249f8cc10a35883"
 
 [metadata.files]
 anyconfig = [
@@ -1147,8 +1147,8 @@ requests = [
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
 "ruamel.yaml" = [
-    {file = "ruamel.yaml-0.17.5-py3-none-any.whl", hash = "sha256:b41919284c5387b949c1956145917e14060a0f74f1adc9a00c6bd6194f16e615"},
-    {file = "ruamel.yaml-0.17.5.tar.gz", hash = "sha256:97f71cdda0e7d2cdeba67812a90a160b23290095a1625d8d14e831f783a7bab6"},
+    {file = "ruamel.yaml-0.17.6-py3-none-any.whl", hash = "sha256:748bbdddf9e7f6e1aad9481dfdd93a42f9c39c45821a0f09a31309cd0086e803"},
+    {file = "ruamel.yaml-0.17.6.tar.gz", hash = "sha256:5605cb8ceeebaeed85ae4e97fc80547eca1b3537c163404ffe83f26adf5c9ce7"},
 ]
 "ruamel.yaml.clib" = [
     {file = "ruamel.yaml.clib-0.2.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:28116f204103cb3a108dfd37668f20abe6e3cafd0d3fd40dba126c732457b3cc"},
