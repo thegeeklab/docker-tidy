@@ -770,7 +770,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "websocket-client"
-version = "1.1.1"
+version = "1.2.0"
 description = "WebSocket client for Python with low level API options"
 category = "main"
 optional = false
@@ -799,7 +799,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.0"
-content-hash = "9583c9f487e033d333b5fdcb9b8f1967cfbfe5cc1c72a1e43e6b59201d2bfa1a"
+content-hash = "00474d1814461a76126a830541b954cf7b10093a6e32a7e9511fb25bf8be0e4a"
 
 [metadata.files]
 anyconfig = [
@@ -1251,8 +1251,8 @@ urllib3 = [
     {file = "urllib3-1.26.6.tar.gz", hash = "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"},
 ]
 websocket-client = [
-    {file = "websocket-client-1.1.1.tar.gz", hash = "sha256:4cf754af7e3b3ba76589d49f9e09fd9a6c0aae9b799a89124d656009c01a261d"},
-    {file = "websocket_client-1.1.1-py2.py3-none-any.whl", hash = "sha256:8d07f155f8ed14ae3ced97bd7582b08f280bb1bfd27945f023ba2aceff05ab52"},
+    {file = "websocket-client-1.2.0.tar.gz", hash = "sha256:7665ba6c645989b28b61670874ab753e6929179e9fc90565ace6ac090f59c559"},
+    {file = "websocket_client-1.2.0-py2.py3-none-any.whl", hash = "sha256:d82a975bdd02216f7884cd18106a0d9896a9a9e8cc90f23fe8c81dc48da2f142"},
 ]
 yapf = [
     {file = "yapf-0.31.0-py2.py3-none-any.whl", hash = "sha256:e3a234ba8455fe201eaa649cdac872d590089a18b661e39bbac7020978dd9c2e"},
