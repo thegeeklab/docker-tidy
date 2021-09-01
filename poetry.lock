@@ -130,7 +130,7 @@ calendars = ["convertdate", "hijri-converter", "convertdate"]
 
 [[package]]
 name = "docker"
-version = "5.0.1"
+version = "5.0.2"
 description = "A Python library for the Docker Engine API."
 category = "main"
 optional = false
@@ -844,7 +844,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.0"
-content-hash = "0f5fe21c6605651b8e6f5e5c63beb78a0842ce679d270486e47bf11b5f901c5e"
+content-hash = "0641fde6afcd41d34a54380de98c3c225fd44750421abab30d3627fcc0830575"
 
 [metadata.files]
 anyconfig = [
@@ -956,8 +956,8 @@ dateparser = [
     {file = "dateparser-1.0.0.tar.gz", hash = "sha256:159cc4e01a593706a15cd4e269a0b3345edf3aef8bf9278a57dac8adf5bf1e4a"},
 ]
 docker = [
-    {file = "docker-5.0.1-py2.py3-none-any.whl", hash = "sha256:b88eef725b33c0ed59c67506631bbb09b480b7ca5a739bbbb948b446443fe914"},
-    {file = "docker-5.0.1.tar.gz", hash = "sha256:5aafaec0d2a1de0e32010b43b5eac9f6f851c9db99a46ad32b8e44eeeb55616d"},
+    {file = "docker-5.0.2-py2.py3-none-any.whl", hash = "sha256:9b17f0723d83c1f3418d2aa17bf90b24dbe97deda06208dd4262fa30a6ee87eb"},
+    {file = "docker-5.0.2.tar.gz", hash = "sha256:21ec4998e90dff7a7aaaa098ca8d839c7de412b89e6f6c30908372d58fecf663"},
 ]
 docker-pycreds = [
     {file = "docker-pycreds-0.4.0.tar.gz", hash = "sha256:6ce3270bcaf404cc4c3e27e4b6c70d3521deae82fb508767870fdbf772d584d4"},
