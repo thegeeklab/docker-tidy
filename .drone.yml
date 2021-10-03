@@ -49,20 +49,6 @@ steps:
     commands:
       - git fetch -tq
 
-  - name: python36-pytest
-    image: python:3.6
-    commands:
-      - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
-      - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
-      - poetry version
-      - poetry run docker-tidy --help
-    environment:
-      PY_COLORS: 1
-    depends_on:
-      - fetch
-
   - name: python37-pytest
     image: python:3.7
     commands:
@@ -649,6 +635,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 88f4484d8d0decb3588853efd2a58699d743dbed82fa9d46fb94dc82e04c2740
+hmac: 1e42117efa80a7f3b2d44d347a9258ff4bb2c717d8aec8578ea7fd5a563751a1
 
 ...
