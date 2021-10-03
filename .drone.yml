@@ -101,7 +101,6 @@ steps:
         from_secret: codecov_token
       PY_COLORS: 1
     depends_on:
-      - python36-pytest
       - python37-pytest
       - python38-pytest
       - python39-pytest
@@ -635,6 +634,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 1e42117efa80a7f3b2d44d347a9258ff4bb2c717d8aec8578ea7fd5a563751a1
+hmac: 1de438386a641872d0ff4a5d0137ae4be757c0a794a56f043baa7fd8c500f5ad
 
 ...
