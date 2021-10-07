@@ -27,7 +27,7 @@ local PipelineLint = {
   steps: [
     {
       name: 'yapf',
-      image: 'python:3.9',
+      image: 'python:3.10',
       environment: {
         PY_COLORS: 1,
       },
@@ -41,7 +41,7 @@ local PipelineLint = {
     },
     {
       name: 'flake8',
-      image: 'python:3.9',
+      image: 'python:3.10',
       environment: {
         PY_COLORS: 1,
       },
@@ -69,7 +69,7 @@ local PipelineTest = {
   steps: [
     {
       name: 'fetch',
-      image: 'python:3.9',
+      image: 'python:3.10',
       commands: [
         'git fetch -tq',
       ],
@@ -77,9 +77,10 @@ local PipelineTest = {
     PythonVersion(pyversion='3.7'),
     PythonVersion(pyversion='3.8'),
     PythonVersion(pyversion='3.9'),
+    PythonVersion(pyversion='3.10'),
     {
       name: 'codecov',
-      image: 'python:3.9',
+      image: 'python:3.10',
       environment: {
         PY_COLORS: 1,
         CODECOV_TOKEN: { from_secret: 'codecov_token' },
@@ -92,6 +93,7 @@ local PipelineTest = {
         'python37-pytest',
         'python38-pytest',
         'python39-pytest',
+        'python310-pytest',
       ],
     },
   ],
@@ -113,7 +115,7 @@ local PipelineSecurity = {
   steps: [
     {
       name: 'bandit',
-      image: 'python:3.9',
+      image: 'python:3.10',
       environment: {
         PY_COLORS: 1,
       },
@@ -144,7 +146,7 @@ local PipelineBuildPackage = {
   steps: [
     {
       name: 'build',
-      image: 'python:3.9',
+      image: 'python:3.10',
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
@@ -190,7 +192,7 @@ local PipelineBuildPackage = {
     },
     {
       name: 'publish-pypi',
-      image: 'python:3.9',
+      image: 'python:3.10',
       commands: [
         'git fetch -tq',
         'pip install poetry poetry-dynamic-versioning -qq',
@@ -216,7 +218,7 @@ local PipelineBuildPackage = {
 local PipelineBuildContainer(arch='amd64') = {
   local build = if arch == 'arm' then [{
     name: 'build',
-    image: 'python:3.9-alpine',
+    image: 'python:3.10-alpine',
     commands: [
       'apk add -Uq --no-cache build-base openssl-dev libffi-dev musl-dev python3-dev git cargo',
       'git fetch -tq',
@@ -228,7 +230,7 @@ local PipelineBuildContainer(arch='amd64') = {
     },
   }] else [{
     name: 'build',
-    image: 'python:3.9',
+    image: 'python:3.10',
     commands: [
       'git fetch -tq',
       'pip install poetry poetry-dynamic-versioning -qq',
