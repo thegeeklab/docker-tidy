@@ -54,7 +54,7 @@ python-json-logger = "2.0.2"
 requests = "2.27.1"
 "ruamel.yaml" = "0.17.17"
 websocket_client = "1.2.3"
-zipp = "3.6.0"
+zipp = "3.7.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "1.7.1"
