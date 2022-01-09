@@ -12,8 +12,7 @@ ENV TZ=UTC
 
 ADD dist/docker_tidy-*.whl /
 
-RUN \
-    apk --update add --virtual .build-deps gcc g++ && \
+RUN apk --update add --virtual .build-deps build-base libffi-dev openssl-dev && \
     pip install --upgrade --no-cache-dir pip && \
     pip install --no-cache-dir $(find / -name "docker_tidy-*.whl") && \
     apk del .build-deps && \
