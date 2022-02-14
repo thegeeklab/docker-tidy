@@ -52,7 +52,7 @@ python = "^3.7.0"
 python-dateutil = "2.8.2"
 python-json-logger = "2.0.2"
 requests = "2.27.1"
-"ruamel.yaml" = "0.17.20"
+"ruamel.yaml" = "0.17.21"
 websocket_client = "1.2.3"
 zipp = "3.7.0"
 
