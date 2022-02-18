@@ -18,11 +18,16 @@ markup:
     startLevel: 1
 
 params:
+  description: >
+    Keep docker hosts tidy. docker-tidy is a tool to remove outdated and unused docker resources based on filters.
+  images:
+    - "socialmedia2.png"
+
   geekdocMenuBundle: true
   geekdocToC: 3
 
   geekdocRepo: https://github.com/thegeeklab/docker-tidy
-  geekdocEditPath: edit/main/docs/content
+  geekdocEditPath: edit/main/docs
 
   geekdocDateFormat: "Jan 2, 2006"
   geekdocSearch: true
