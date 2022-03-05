@@ -499,9 +499,9 @@ steps:
       NPM_CONFIG_LOGLEVEL: error
 
   - name: testbuild
-    image: thegeeklab/hugo:0.91.0
+    image: thegeeklab/hugo:0.93.2
     commands:
-      - hugo -s docs/ -b http://localhost/
+      - hugo --panicOnWarning -s docs/ -b http://localhost/
 
   - name: link-validation
     image: thegeeklab/link-validator
@@ -511,9 +511,9 @@ steps:
       LINK_VALIDATOR_BASE_DIR: docs/public
 
   - name: build
-    image: thegeeklab/hugo:0.91.0
+    image: thegeeklab/hugo:0.93.2
     commands:
-      - hugo -s docs/
+      - hugo --panicOnWarning -s docs/
 
   - name: beautify
     image: node:lts-alpine
@@ -649,6 +649,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 1841bc8bcbf056bae7577aaa9a11fb3f1627777745155ce86f48ff87d6d812de
+hmac: c075be1e8c2c431a5b20a49c81c5494829d06335aea8b4894d546bf1e6bece74
 
 ...
