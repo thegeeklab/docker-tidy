@@ -2,9 +2,11 @@
 title: Setup
 ---
 
+<!-- prettier-ignore-start -->
 <!-- spellchecker-disable -->
 {{< toc >}}
 <!-- spellchecker-enable -->
+<!-- prettier-ignore-end -->
 
 ## Pip
 
@@ -46,8 +48,7 @@ docker run \
 
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-{{< hint info >}}
-**Info**\
+{{< hint type=note >}}
 Keep in mind, that you have to pass SELinux labels (:Z or :z) to your mount option if you are working on SELinux enabled systems.
 {{< /hint >}}
 <!-- markdownlint-restore -->
