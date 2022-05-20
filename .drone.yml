@@ -501,7 +501,7 @@ steps:
   - name: testbuild
     image: thegeeklab/hugo:0.97.3
     commands:
-      - hugo --panicOnWarning -s docs/ -b http://localhost:8080/
+      - hugo --panicOnWarning -s docs/ -b http://localhost:8000/
 
   - name: link-validation
     image: thegeeklab/link-validator
@@ -649,6 +649,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 4413e652a457f6f395418f1a13e3971683bdc69155698156b7bc73c2c860e914
+hmac: ef80b1da46ce2d43b50ed1f00c19ff0fc549289d127dcc45270e88e15e84de6b
 
 ...
