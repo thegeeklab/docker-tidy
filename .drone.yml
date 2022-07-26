@@ -523,7 +523,7 @@ steps:
       NPM_CONFIG_LOGLEVEL: error
 
   - name: publish
-    image: plugins/s3-sync
+    image: thegeeklab/drone-s3-sync
     settings:
       access_key:
         from_secret: s3_access_key
@@ -647,6 +647,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: add87029392e8edc5500bf1753c41a2812adbaef5ab45e1da01e62cc258e7de3
+hmac: fdc815dd75d3fa8ef72dac9840ba54ae3f1f071c7cf1b004bed565648d3a85ff
 
 ...
