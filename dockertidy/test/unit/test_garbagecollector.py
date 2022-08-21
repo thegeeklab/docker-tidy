@@ -358,7 +358,7 @@ def test_api_call_with_timeout(mocker, gc):
     gc._api_call(func, image=image)
 
     func.assert_called_once_with(image="abcd")
-    mock_log.warn.assert_called_once_with("Failed to call remove_image " + "image=abcd msg")
+    mock_log.warning.assert_called_once_with("Failed to call remove_image " + "image=abcd msg")
 
 
 def test_api_call_with_api_error(mocker, gc):
@@ -376,7 +376,7 @@ def test_api_call_with_api_error(mocker, gc):
     gc._api_call(func, image=image)
 
     func.assert_called_once_with(image="abcd")
-    mock_log.warn.assert_called_once_with(
+    mock_log.warning.assert_called_once_with(
         "Error calling remove_image image=abcd "
         '409 Client Error for dummy: Conflict ("failed")'
     )

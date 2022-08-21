@@ -63,11 +63,11 @@ class MultilineJsonFormatter(jsonlogger.JsonFormatter):
 class Log:
     """Base logging object."""
 
-    def __init__(self, level=logging.WARN, name="dockertidy", json=False):
+    def __init__(self, level=logging.WARNING, name="dockertidy", json=False):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         self.logger.addHandler(self._get_error_handler(json=json))
-        self.logger.addHandler(self._get_warn_handler(json=json))
+        self.logger.addHandler(self._get_warning_handler(json=json))
         self.logger.addHandler(self._get_info_handler(json=json))
         self.logger.addHandler(self._get_critical_handler(json=json))
         self.logger.addHandler(self._get_debug_handler(json=json))
@@ -88,13 +88,15 @@ class Log:
 
         return handler
 
-    def _get_warn_handler(self, json=False):
+    def _get_warning_handler(self, json=False):
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.WARN)
-        handler.addFilter(LogFilter(logging.WARN))
+        handler.setLevel(logging.WARNING)
+        handler.addFilter(LogFilter(logging.WARNING))
         handler.setFormatter(
             MultilineFormatter(
-                self.warn(CONSOLE_FORMAT.format(colorama.Fore.YELLOW, colorama.Style.RESET_ALL))
+                self.warning(
+                    CONSOLE_FORMAT.format(colorama.Fore.YELLOW, colorama.Style.RESET_ALL)
+                )
             )
         )
 
@@ -164,8 +166,8 @@ class Log:
         """Format error messages and return string."""
         return msg
 
-    def warn(self, msg):
-        """Format warn messages and return string."""
+    def warning(self, msg):
+        """Format warning messages and return string."""
         return msg
 
     def info(self, msg):
