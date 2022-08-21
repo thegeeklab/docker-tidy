@@ -252,14 +252,14 @@ class GarbageCollector:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
             params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
-            self.logger.warn(
+            self.logger.warning(
                 "Failed to call {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
                 )
             )
         except docker.errors.APIError as e:
             params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
-            self.logger.warn(
+            self.logger.warning(
                 "Error calling {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
                 )
@@ -330,4 +330,4 @@ class GarbageCollector:
             not config["gc"]["max_container_age"] and not config["gc"]["max_image_age"]
             and not config["gc"]["dangling_volumes"]
         ):
-            self.logger.warn("Skipped, no arguments given")
+            self.logger.ing("Skipped, no arguments given")
