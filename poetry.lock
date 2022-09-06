@@ -402,7 +402,7 @@ requirements_deprecated_finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "jsonschema"
-version = "4.14.0"
+version = "4.15.0"
 description = "An implementation of JSON Schema validation for Python"
 category = "main"
 optional = false
@@ -886,7 +886,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "d448aa41cab144c327dd3931a9a3d2fde2e04e5a6299f802de11065ec18dcdb9"
+content-hash = "c91d05e4c8ee285ea991239579b773a4df9bc3584614afbe3683a2fa9f55ff50"
 
 [metadata.files]
 anyconfig = [
@@ -1077,8 +1077,8 @@ isort = [
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
 ]
 jsonschema = [
-    {file = "jsonschema-4.14.0-py3-none-any.whl", hash = "sha256:9892b8d630a82990521a9ca630d3446bd316b5ad54dbe981338802787f3e0d2d"},
-    {file = "jsonschema-4.14.0.tar.gz", hash = "sha256:15062f4cc6f591400cd528d2c355f2cfa6a57e44c820dc783aee5e23d36a831f"},
+    {file = "jsonschema-4.15.0-py3-none-any.whl", hash = "sha256:2df0fab225abb3b41967bb3a46fd37dc74b1536b5296d0b1c2078cd072adf0f7"},
+    {file = "jsonschema-4.15.0.tar.gz", hash = "sha256:21f4979391bdceb044e502fd8e79e738c0cdfbdc8773f9a49b5769461e82fe1e"},
 ]
 marshmallow = [
     {file = "marshmallow-3.17.1-py3-none-any.whl", hash = "sha256:1172ce82765bf26c24a3f9299ed6dbeeca4d213f638eaa39a37772656d7ce408"},
