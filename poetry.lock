@@ -111,7 +111,7 @@ toml = ["tomli"]
 
 [[package]]
 name = "dateparser"
-version = "1.1.1"
+version = "1.1.2"
 description = "Date parsing library designed to parse dates from HTML pages"
 category = "main"
 optional = false
@@ -886,7 +886,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "a2f9aee5d5182320a1f9ed6f87ec05274f3d8a8b4b14e3463369dfb08c021cbb"
+content-hash = "5ae2d1cdf01170bcc02cff462bf082929b082dbf31dcd5d0607ec9a065ccee85"
 
 [metadata.files]
 anyconfig = [
@@ -988,8 +988,8 @@ coverage = [
     {file = "coverage-6.5.0.tar.gz", hash = "sha256:f642e90754ee3e06b0e7e51bce3379590e76b7f76b708e1a71ff043f87025c84"},
 ]
 dateparser = [
-    {file = "dateparser-1.1.1-py2.py3-none-any.whl", hash = "sha256:9600874312ff28a41f96ec7ccdc73be1d1c44435719da47fea3339d55ff5a628"},
-    {file = "dateparser-1.1.1.tar.gz", hash = "sha256:038196b1f12c7397e38aad3d61588833257f6f552baa63a1499e6987fa8d42d9"},
+    {file = "dateparser-1.1.2-py2.py3-none-any.whl", hash = "sha256:d31659dc806a7d88e2b510b2c74f68b525ae531f145c62a57a99bd616b7f90cf"},
+    {file = "dateparser-1.1.2.tar.gz", hash = "sha256:3821bf191f95b2658c4abd91571c09821ce7a2bc179bf6cefd8b4515c3ccf9ef"},
 ]
 docker = [
     {file = "docker-6.0.0-py3-none-any.whl", hash = "sha256:6e06ee8eca46cd88733df09b6b80c24a1a556bc5cb1e1ae54b2c239886d245cf"},
