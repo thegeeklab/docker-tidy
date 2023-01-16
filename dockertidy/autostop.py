@@ -2,10 +2,10 @@
 """Stop long running docker iamges."""
 
 import dateutil.parser
+import docker
 import docker.errors
 import requests.exceptions
 
-import docker
 from dockertidy.config import SingleConfig
 from dockertidy.logger import SingleLog
 from dockertidy.parser import timedelta

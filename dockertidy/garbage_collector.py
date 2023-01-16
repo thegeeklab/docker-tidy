@@ -5,10 +5,10 @@ import fnmatch
 from collections import namedtuple
 
 import dateutil.parser
+import docker
 import docker.errors
 import requests.exceptions
 
-import docker
 from dockertidy.config import SingleConfig
 from dockertidy.logger import SingleLog
 from dockertidy.parser import timedelta

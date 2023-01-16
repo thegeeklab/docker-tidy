@@ -1,9 +1,9 @@
 """Test GarbageCollector class."""
 
+import docker
 import pytest
 import requests
 
-import docker
 from dockertidy import garbage_collector
 
 pytest_plugins = [
