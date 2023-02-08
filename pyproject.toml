@@ -54,7 +54,7 @@ python-dateutil = "2.8.2"
 python-json-logger = "2.0.4"
 requests = "2.28.2"
 "ruamel.yaml" = "0.17.21"
-websocket_client = "1.5.0"
+websocket_client = "1.5.1"
 zipp = "3.12.1"
 
 [tool.poetry.dev-dependencies]
