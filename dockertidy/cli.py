@@ -52,9 +52,7 @@ class DockerTidy:
         parser.add_argument(
             "-q", dest="logging.level", action="append_const", const=1, help="decrease log level"
         )
-        parser.add_argument(
-            "--version", action="version", version=f"%(prog)s {__version__}"
-        )
+        parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
 
         subparsers = parser.add_subparsers(dest="command", help="sub-command help")
         subparsers.required = True
