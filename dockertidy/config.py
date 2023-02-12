@@ -106,7 +106,7 @@ class Config():
         },
     }
 
-    def __init__(self, args):
+    def __init__(self, args=None):
         """
         Initialize a new settings class.
 
