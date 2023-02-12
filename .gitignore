@@ -111,3 +111,4 @@ resources/_gen/
 # Misc
 .dockertidy*
 CHANGELOG.md
+.ruff_cache

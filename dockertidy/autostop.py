@@ -58,9 +58,9 @@ class AutoStop:
         try:
             client.stop(cid)
         except requests.exceptions.Timeout as e:
-            self.logger.warning("Failed to stop container {id}: {msg}".format(id=cid, msg=str(e)))
+            self.logger.warning(f"Failed to stop container {cid}: {str(e)}")
         except docker.errors.APIError as e:
-            self.logger.warning("Error stopping {id}: {msg}".format(id=cid, msg=str(e)))
+            self.logger.warning(f"Error stopping {cid}: {str(e)}")
 
     def _build_container_matcher(self, prefixes):
 

@@ -181,7 +181,7 @@ class GarbageCollector:
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
                 # The repr of the image Id used by client.containers()
-                return set(["{id}:latest".format(id=image_summary["Id"][:12])])
+                return {"{id}:latest".format(id=image_summary["Id"][:12])}
             return set(image_tags)
 
         def image_not_in_use(image_summary):
@@ -210,9 +210,7 @@ class GarbageCollector:
         if not image or not self._is_image_old(image, min_date):
             return
 
-        self.logger.info(
-            "Removing image {name}".format(name=self._format_image(image, image_summary))
-        )
+        self.logger.info(f"Removing image {self._format_image(image, image_summary)}")
         if config["dry_run"]:
             return
 
@@ -251,14 +249,14 @@ class GarbageCollector:
         try:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
-            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
+            params = ",".join("%s=%s" % item for item in kwargs.items())
             self.logger.warning(
                 "Failed to call {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
                 )
             )
         except docker.errors.APIError as e:
-            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa
+            params = ",".join("%s=%s" % item for item in kwargs.items())
             self.logger.warning(
                 "Error calling {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
@@ -277,12 +275,11 @@ class GarbageCollector:
 
     def _build_exclude_set(self):
         config = self.config.config
-        exclude_set = set(config["gc"]["exclude_images"])
 
         def is_image_tag(line):
             return line and not line.startswith("#")
 
-        return exclude_set
+        return set(config["gc"]["exclude_images"])
 
     def _format_exclude_labels(self):
         config = self.config.config
@@ -291,10 +288,7 @@ class GarbageCollector:
         for exclude_label_arg in config["gc"]["exclude_container_labels"]:
             split_exclude_label = exclude_label_arg.split("=", 1)
             exclude_label_key = split_exclude_label[0]
-            if len(split_exclude_label) == 2:
-                exclude_label_value = split_exclude_label[1]
-            else:
-                exclude_label_value = None
+            exclude_label_value = split_exclude_label[1] if len(split_exclude_label) == 2 else None
             exclude_labels.append(
                 self.ExcludeLabel(
                     key=exclude_label_key,
@@ -308,7 +302,7 @@ class GarbageCollector:
         try:
             return docker.APIClient(version="auto", timeout=config["http_timeout"])
         except docker.errors.DockerException as e:
-            self.log.sysexit_with_message("Can't create docker client\n{}".format(e))
+            self.log.sysexit_with_message(f"Can't create docker client\n{e}")
 
     def run(self):
         """Garbage collector main method."""

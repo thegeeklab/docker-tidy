@@ -53,7 +53,7 @@ class DockerTidy:
             "-q", dest="logging.level", action="append_const", const=1, help="decrease log level"
         )
         parser.add_argument(
-            "--version", action="version", version="%(prog)s {}".format(__version__)
+            "--version", action="version", version=f"%(prog)s {__version__}"
         )
 
         subparsers = parser.add_subparsers(dest="command", help="sub-command help")
@@ -130,10 +130,10 @@ class DockerTidy:
         try:
             self.log.set_level(config.config["logging"]["level"])
         except ValueError as e:
-            self.log.sysexit_with_message("Can not set log level.\n{}".format(str(e)))
+            self.log.sysexit_with_message(f"Can not set log level.\n{str(e)}")
 
-        self.logger.info("Using config file {}".format(config.config_file))
-        self.logger.debug("Config dump: {}".format(config.config))
+        self.logger.info(f"Using config file {config.config_file}")
+        self.logger.debug(f"Config dump: {config.config}")
 
         return config
 
