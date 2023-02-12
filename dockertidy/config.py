@@ -13,15 +13,15 @@ from jsonschema._utils import format_as_index
 import dockertidy.exception
 import dockertidy.parser
 from dockertidy.parser import env
-from dockertidy.utils import Singleton
-from dockertidy.utils import dict_intersect
+from dockertidy.utils import Singleton, dict_intersect
 
 config_dir = AppDirs("docker-tidy").user_config_dir
 default_config_file = os.path.join(config_dir, "config.yml")
 
 
 class Config():
-    """Create an object with all necessary settings.
+    """
+    Create an object with all necessary settings.
 
     Settings are loade from multiple locations in defined order (last wins):
         - default settings defined by `self._get_defaults()`
@@ -106,7 +106,7 @@ class Config():
         },
     }
 
-    def __init__(self, args={}):
+    def __init__(self, args=None):
         """
         Initialize a new settings class.
 
@@ -115,7 +115,10 @@ class Config():
         :returns: None
 
         """
-        self._args = args
+        if args is None:
+            self._args = {}
+        else:
+            self._args = args
         self._schema = None
         self.config_file = default_config_file
         self.config = None
@@ -159,7 +162,7 @@ class Config():
                     value = item["type"](envname)
                     normalized = self._add_dict_branch(normalized, key.split("."), value)
                 except environs.EnvError as e:
-                    if '"{}" not set'.format(envname) in str(e):
+                    if f'"{envname}" not set' in str(e):
                         pass
                     else:
                         raise dockertidy.exception.ConfigError(
@@ -188,15 +191,15 @@ class Config():
         source_files.append(os.path.join(os.getcwd(), ".dockertidy.yaml"))
 
         for config in [i for i in source_files if os.path.exists(i)]:
-            with open(config, "r", encoding="utf8") as stream:
+            with open(config, encoding="utf8") as stream:
                 s = stream.read()
                 try:
                     normalized = ruamel.yaml.safe_load(s)
                 except (ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError) as e:
-                    message = "{} {}".format(e.context, e.problem)
+                    message = f"{e.context} {e.problem}"
                     raise dockertidy.exception.ConfigError(
-                        "Unable to read config file {}".format(config), message
-                    )
+                        f"Unable to read config file {config}", message
+                    ) from e
 
                 if self._validate(normalized):
                     anyconfig.merge(files_raw, normalized, ac_merge=anyconfig.MS_DICTS)
@@ -224,8 +227,8 @@ class Config():
         if not os.path.isabs(path):
             base = os.path.join(os.getcwd(), path)
             return os.path.abspath(os.path.expanduser(os.path.expandvars(base)))
-        else:
-            return path
+
+        return path
 
     def _validate(self, config):
         try:
@@ -236,7 +239,7 @@ class Config():
                 schema=format_as_index(list(e.relative_schema_path)[:-1]),
                 message=e.message
             )
-            raise dockertidy.exception.ConfigError("Configuration error", schema_error)
+            raise dockertidy.exception.ConfigError("Configuration error", schema_error) from e
 
         return True
 

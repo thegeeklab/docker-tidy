@@ -10,7 +10,8 @@ env = environs.Env()
 
 
 def timedelta_validator(value):
-    """Return the dateparser string for a time in the past.
+    """
+    Return the dateparser string for a time in the past.
 
     :param value: a string containing a time format supported by
     mod:`dateparser`
@@ -19,13 +20,14 @@ def timedelta_validator(value):
         return None
 
     if not dateparser.parse(value):
-        raise ArgumentTypeError("'{}' is not a valid timedelta string".format(value))
+        raise ArgumentTypeError(f"'{value}' is not a valid timedelta string")
 
     return value
 
 
 def timedelta(value, dt_format=None):
-    """Return the :class:`datetime.datetime.DateTime` for a time in the past.
+    """
+    Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
     :param value: a string containing a time format supported by
     mod:`dateparser`
@@ -43,7 +45,7 @@ def timedelta(value, dt_format=None):
     if dt_format:
         timedelta = timedelta.strftime(dt_format)
 
-    return timedelta
+    return timedelta  # noqa
 
 
 @env.parser_for("timedelta_validator")
@@ -52,4 +54,4 @@ def timedelta_parser(value):
         timedelta_validator(value)
         return value
     except ArgumentTypeError as e:
-        raise environs.EnvError(e)
+        raise environs.EnvError(e) from e

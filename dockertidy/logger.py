@@ -8,8 +8,7 @@ import sys
 import colorama
 from pythonjsonlogger import jsonlogger
 
-from dockertidy.utils import Singleton
-from dockertidy.utils import to_bool
+from dockertidy.utils import Singleton, to_bool
 
 CONSOLE_FORMAT = "{}[%(levelname)s]{} %(message)s"
 JSON_FORMAT = "%(asctime)s %(levelname)s %(message)s"
@@ -26,7 +25,7 @@ def _should_do_markup():
 colorama.init(autoreset=True, strip=not _should_do_markup())
 
 
-class LogFilter(object):
+class LogFilter:
     """A custom log filter which excludes log messages above the logged level."""
 
     def __init__(self, level):
@@ -48,7 +47,7 @@ class MultilineFormatter(logging.Formatter):
     """Logging Formatter to reset color after newline characters."""
 
     def format(self, record):  # noqa
-        record.msg = record.msg.replace("\n", "\n{}... ".format(colorama.Style.RESET_ALL))
+        record.msg = record.msg.replace("\n", f"\n{colorama.Style.RESET_ALL}... ")
         return logging.Formatter.format(self, record)
 
 
@@ -183,7 +182,7 @@ class Log:
         :returns: string
 
         """
-        return "{}{}{}".format(color, msg, colorama.Style.RESET_ALL)
+        return f"{color}{msg}{colorama.Style.RESET_ALL}"
 
     def sysexit(self, code=1):
         """Exit running program with given exit code."""
