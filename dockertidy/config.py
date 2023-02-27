@@ -167,7 +167,7 @@ class Config():
                     else:
                         raise dockertidy.exception.ConfigError(
                             "Unable to read environment variable", str(e)
-                        )
+                        ) from e
 
         return normalized
 
