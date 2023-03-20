@@ -45,7 +45,7 @@ def timedelta(value, dt_format=None):
     if dt_format:
         timedelta = timedelta.strftime(dt_format)
 
-    return timedelta  # noqa
+    return timedelta
 
 
 @env.parser_for("timedelta_validator")
