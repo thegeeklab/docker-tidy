@@ -249,14 +249,14 @@ class GarbageCollector:
         try:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
-            params = ",".join("%s=%s" % item for item in kwargs.items())
+            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa:UP031
             self.logger.warning(
                 "Failed to call {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
                 )
             )
         except docker.errors.APIError as e:
-            params = ",".join("%s=%s" % item for item in kwargs.items())
+            params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa:UP031
             self.logger.warning(
                 "Error calling {name} {params} {msg}".format(
                     name=func.__name__, params=params, msg=str(e)
