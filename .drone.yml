@@ -55,7 +55,7 @@ steps:
       - pip install poetry poetry-dynamic-versioning -qq
       - poetry config experimental.new-installer false
       - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+      - poetry run pytest --cov-append
       - poetry version
       - poetry run docker-tidy --help
     environment:
@@ -69,7 +69,7 @@ steps:
       - pip install poetry poetry-dynamic-versioning -qq
       - poetry config experimental.new-installer false
       - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+      - poetry run pytest --cov-append
       - poetry version
       - poetry run docker-tidy --help
     environment:
@@ -83,7 +83,7 @@ steps:
       - pip install poetry poetry-dynamic-versioning -qq
       - poetry config experimental.new-installer false
       - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+      - poetry run pytest --cov-append
       - poetry version
       - poetry run docker-tidy --help
     environment:
@@ -97,7 +97,7 @@ steps:
       - pip install poetry poetry-dynamic-versioning -qq
       - poetry config experimental.new-installer false
       - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+      - poetry run pytest --cov-append
       - poetry version
       - poetry run docker-tidy --help
     environment:
@@ -111,7 +111,7 @@ steps:
       - pip install poetry poetry-dynamic-versioning -qq
       - poetry config experimental.new-installer false
       - poetry install
-      - poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail
+      - poetry run pytest --cov-append
       - poetry version
       - poetry run docker-tidy --help
     environment:
@@ -120,14 +120,12 @@ steps:
       - fetch
 
   - name: codecov
-    image: python:3.11
+    image: thegeeklab/codecov
     commands:
-      - pip install codecov -qq
-      - codecov --required -X gcov
+      - codecov --nonZero
     environment:
       CODECOV_TOKEN:
         from_secret: codecov_token
-      PY_COLORS: 1
     depends_on:
       - python37-pytest
       - python38-pytest
@@ -449,6 +447,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 8b6ef6a4937443a1b191e8af09d98bdc070e1d4fc636d6927160eea1c73330b0
+hmac: 8b699c3cf83d89ee17133cca290a99a23af0691c22d79f963b92cb69416ea427
 
 ...

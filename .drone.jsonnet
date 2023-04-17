@@ -8,7 +8,7 @@ local PythonVersion(pyversion='3.7') = {
     'pip install poetry poetry-dynamic-versioning -qq',
     'poetry config experimental.new-installer false',
     'poetry install',
-    'poetry run pytest dockertidy --cov=dockertidy --cov-append --no-cov-on-fail',
+    'poetry run pytest --cov-append',
     'poetry version',
     'poetry run docker-tidy --help',
   ],
@@ -81,14 +81,12 @@ local PipelineTest = {
     PythonVersion(pyversion='3.11'),
     {
       name: 'codecov',
-      image: 'python:3.11',
+      image: 'thegeeklab/codecov',
       environment: {
-        PY_COLORS: 1,
         CODECOV_TOKEN: { from_secret: 'codecov_token' },
       },
       commands: [
-        'pip install codecov -qq',
-        'codecov --required -X gcov',
+        'codecov --nonZero',
       ],
       depends_on: [
         'python37-pytest',
