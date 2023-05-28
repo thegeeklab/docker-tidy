@@ -12,7 +12,6 @@ steps:
     commands:
       - git fetch -tq
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run yapf -dr ./dockertidy
     environment:
@@ -23,7 +22,6 @@ steps:
     commands:
       - git fetch -tq
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run ruff ./dockertidy
     environment:
@@ -53,7 +51,6 @@ steps:
     image: python:3.7
     commands:
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run pytest --cov-append
       - poetry version
@@ -67,7 +64,6 @@ steps:
     image: python:3.8
     commands:
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run pytest --cov-append
       - poetry version
@@ -81,7 +77,6 @@ steps:
     image: python:3.9
     commands:
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run pytest --cov-append
       - poetry version
@@ -95,7 +90,6 @@ steps:
     image: python:3.10
     commands:
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run pytest --cov-append
       - poetry version
@@ -109,7 +103,6 @@ steps:
     image: python:3.11
     commands:
       - pip install poetry poetry-dynamic-versioning -qq
-      - poetry config experimental.new-installer false
       - poetry install
       - poetry run pytest --cov-append
       - poetry version
@@ -447,6 +440,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 8b699c3cf83d89ee17133cca290a99a23af0691c22d79f963b92cb69416ea427
+hmac: 246d3b09f1c3adaf9bcc465282c1e172e5f0b9bd13c5d71fdc56ea7e836b1808
 
 ...
