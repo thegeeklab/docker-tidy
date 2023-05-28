@@ -128,7 +128,7 @@ class DockerTidy:
         try:
             self.log.set_level(config.config["logging"]["level"])
         except ValueError as e:
-            self.log.sysexit_with_message(f"Can not set log level.\n{str(e)}")
+            self.log.sysexit_with_message(f"Can not set log level.\n{e!s}")
 
         self.logger.info(f"Using config file {config.config_file}")
         self.logger.debug(f"Config dump: {config.config}")
