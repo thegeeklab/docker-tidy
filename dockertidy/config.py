@@ -19,7 +19,7 @@ config_dir = AppDirs("docker-tidy").user_config_dir
 default_config_file = os.path.join(config_dir, "config.yml")
 
 
-class Config():
+class Config:
     """
     Create an object with all necessary settings.
 
