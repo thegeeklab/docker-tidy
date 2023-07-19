@@ -250,14 +250,10 @@ class GarbageCollector:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
             params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa:UP031
-            self.logger.warning(
-                f"Failed to call {func.__name__} {params} {e!s}"
-            )
+            self.logger.warning(f"Failed to call {func.__name__} {params} {e!s}")
         except docker.errors.APIError as e:
             params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa:UP031
-            self.logger.warning(
-                f"Error calling {func.__name__} {params} {e!s}"
-            )
+            self.logger.warning(f"Error calling {func.__name__} {params} {e!s}")
 
     def _format_image(self, image, image_summary):
 
