@@ -2,7 +2,7 @@
 
 Keep docker hosts tidy
 
-[![Build Status](https://img.shields.io/drone/build/thegeeklab/docker-tidy?logo=drone&server=https%3A%2F%2Fdrone.thegeeklab.de)](https://drone.thegeeklab.de/thegeeklab/docker-tidy)
+[![Build Status](https://ci.thegeeklab.de/api/badges/thegeeklab/docker-tidy/status.svg)](https://ci.thegeeklab.de/repos/thegeeklab/docker-tidy)
 [![Docker Hub](https://img.shields.io/badge/docker-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/thegeeklab/docker-tidy)
 [![Python Version](https://img.shields.io/pypi/pyversions/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
 [![PyPI Status](https://img.shields.io/pypi/status/docker-tidy.svg)](https://pypi.org/project/docker-tidy/)
