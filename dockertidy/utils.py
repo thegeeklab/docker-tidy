@@ -17,7 +17,7 @@ def strtobool(value):
         "f": False,
         "false": False,
         "off": False,
-        "0": False
+        "0": False,
     }
 
     try:
@@ -43,7 +43,6 @@ class Singleton(type):
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
-
         if cls not in cls._instances:
             cls._instances[cls] = super().__call__(*args, **kwargs)
         return cls._instances[cls]

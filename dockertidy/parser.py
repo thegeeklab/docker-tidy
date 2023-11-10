@@ -36,10 +36,7 @@ def timedelta(value, dt_format=None):
         return None
 
     timedelta = dateparser.parse(
-        value, settings={
-            "TO_TIMEZONE": "UTC",
-            "RETURN_AS_TIMEZONE_AWARE": True
-        }
+        value, settings={"TO_TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
     )
 
     if dt_format:
