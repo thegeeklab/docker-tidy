@@ -55,7 +55,8 @@ class GarbageCollector:
             self.logger.info(
                 "Removing container {} {} {}".format(
                     container["Id"][:16],
-                    container.get("Name", "").lstrip("/"), container["State"]["FinishedAt"]
+                    container.get("Name", "").lstrip("/"),
+                    container["State"]["FinishedAt"],
                 )
             )
 
@@ -163,7 +164,6 @@ class GarbageCollector:
             self._remove_image(image_summary, timedelta(config["gc"]["max_image_age"]))
 
     def _filter_excluded_images(self, images, exclude_set):
-
         def include_image(image_summary):
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
@@ -176,7 +176,6 @@ class GarbageCollector:
         return filter(include_image, images)
 
     def _filter_images_in_use(self, images, image_tags_in_use):
-
         def get_tag_set(image_summary):
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
@@ -190,7 +189,6 @@ class GarbageCollector:
         return filter(image_not_in_use, images)
 
     def _filter_images_in_use_by_id(self, images, image_ids_in_use):
-
         def image_not_in_use(image_summary):
             return image_summary["Id"] not in image_ids_in_use
 
@@ -256,7 +254,6 @@ class GarbageCollector:
             self.logger.warning(f"Error calling {func.__name__} {params} {e!s}")
 
     def _format_image(self, image, image_summary):
-
         def get_tags():
             tags = image_summary.get("RepoTags")
             if not tags or tags == ["<none>:<none>"]:
@@ -313,7 +310,8 @@ class GarbageCollector:
             self.cleanup_volumes()
 
         if (
-            not config["gc"]["max_container_age"] and not config["gc"]["max_image_age"]
+            not config["gc"]["max_container_age"]
+            and not config["gc"]["max_image_age"]
             and not config["gc"]["dangling_volumes"]
         ):
             self.logger.ing("Skipped, no arguments given")

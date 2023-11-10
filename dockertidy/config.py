@@ -36,73 +36,73 @@ class Config:
         "config_file": {
             "default": "",
             "env": "CONFIG_FILE",
-            "type": environs.Env().str
+            "type": environs.Env().str,
         },
         "dry_run": {
             "default": False,
             "env": "DRY_RUN",
             "file": True,
-            "type": environs.Env().bool
+            "type": environs.Env().bool,
         },
         "http_timeout": {
             "default": 60,
             "env": "HTTP_TIMEOUT",
             "file": True,
-            "type": environs.Env().int
+            "type": environs.Env().int,
         },
         "logging.level": {
             "default": "WARNING",
             "env": "LOG_LEVEL",
             "file": True,
-            "type": environs.Env().str
+            "type": environs.Env().str,
         },
         "logging.json": {
             "default": False,
             "env": "LOG_JSON",
             "file": True,
-            "type": environs.Env().bool
+            "type": environs.Env().bool,
         },
         "gc.max_container_age": {
             "default": "",
             "env": "GC_MAX_CONTAINER_AGE",
             "file": True,
-            "type": env.timedelta_validator
+            "type": env.timedelta_validator,
         },
         "gc.max_image_age": {
             "default": "",
             "env": "GC_MAX_IMAGE_AGE",
             "file": True,
-            "type": env.timedelta_validator
+            "type": env.timedelta_validator,
         },
         "gc.dangling_volumes": {
             "default": False,
             "env": "GC_DANGLING_VOLUMES",
             "file": True,
-            "type": environs.Env().bool
+            "type": environs.Env().bool,
         },
         "gc.exclude_images": {
             "default": [],
             "env": "GC_EXCLUDE_IMAGES",
             "file": True,
-            "type": environs.Env().list
+            "type": environs.Env().list,
         },
         "gc.exclude_container_labels": {
             "default": [],
             "env": "GC_EXCLUDE_CONTAINER_LABELS",
             "file": True,
-            "type": environs.Env().list
+            "type": environs.Env().list,
         },
         "stop.max_run_time": {
             "default": "",
             "env": "STOP_MAX_RUN_TIME",
             "file": True,
-            "type": env.timedelta_validator
+            "type": env.timedelta_validator,
         },
         "stop.prefix": {
             "default": [],
             "env": "STOP_PREFIX",
             "file": True,
-            "type": environs.Env().list
+            "type": environs.Env().list,
         },
     }
 
@@ -237,7 +237,7 @@ class Config:
             schema_error = "Failed validating '{validator}' in schema{schema}\n{message}".format(
                 validator=e.validator,
                 schema=format_as_index(list(e.relative_schema_path)[:-1]),
-                message=e.message
+                message=e.message,
             )
             raise dockertidy.exception.ConfigError("Configuration error", schema_error) from e
 
@@ -245,9 +245,11 @@ class Config:
 
     def _add_dict_branch(self, tree, vector, value):
         key = vector[0]
-        tree[key] = value \
-            if len(vector) == 1 \
+        tree[key] = (
+            value
+            if len(vector) == 1
             else self._add_dict_branch(tree[key] if key in tree else {}, vector[1:], value)
+        )
         return tree
 
 

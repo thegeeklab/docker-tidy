@@ -45,9 +45,7 @@ class AutoStop:
             ) or (not prefix and self._has_been_running_since(container, max_run_time)):
                 self.logger.info(
                     "Stopping container {id} {name}: running since {started}".format(
-                        id=container["Id"][:16],
-                        name=name,
-                        started=container["State"]["StartedAt"]
+                        id=container["Id"][:16], name=name, started=container["State"]["StartedAt"]
                     )
                 )
 
@@ -63,7 +61,6 @@ class AutoStop:
             self.logger.warning(f"Error stopping {cid}: {e!s}")
 
     def _build_container_matcher(self, prefixes):
-
         def matcher(name):
             return any(name.startswith(prefix) for prefix in prefixes)
 
