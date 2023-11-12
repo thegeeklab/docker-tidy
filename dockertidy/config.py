@@ -194,7 +194,7 @@ class Config:
             with open(config, encoding="utf8") as stream:
                 s = stream.read()
                 try:
-                    normalized = ruamel.yaml.safe_load(s)
+                    normalized = ruamel.yaml.YAML(typ="safe", pure=True).load(s)
                 except (ruamel.yaml.composer.ComposerError, ruamel.yaml.scanner.ScannerError) as e:
                     message = f"{e.context} {e.problem}"
                     raise dockertidy.exception.ConfigError(
