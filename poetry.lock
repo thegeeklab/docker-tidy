@@ -325,13 +325,13 @@ six = ">=1.4.0"
 
 [[package]]
 name = "environs"
-version = "10.2.0"
+version = "10.3.0"
 description = "simplified environment variable parsing"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "environs-10.2.0-py3-none-any.whl", hash = "sha256:579dddb252ef4bb83a302df82a99c98f6f3db30f043d1b7acff36264b0bfdc69"},
-    {file = "environs-10.2.0.tar.gz", hash = "sha256:9513dd388c1eeb8e82f1ea5a701356abfb7a3d79925bff937ade67fe096e420d"},
+    {file = "environs-10.3.0-py3-none-any.whl", hash = "sha256:feeaf28f17fd0499f9cd7c0fcf408c6d82c308e69e335eb92d09322fc9ed8138"},
+    {file = "environs-10.3.0.tar.gz", hash = "sha256:cc421ddb143fa30183568164755aa113a160e555cd19e97e664c478662032c24"},
 ]
 
 [package.dependencies]
@@ -1130,4 +1130,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.0"
-content-hash = "b8fc497aec462a131223ad147d9ec6983f145e677200d98c3ac3acd9c885c957"
+content-hash = "1ea4cecae4cfcad699b7759c2c0bca66da4d4bb7d196273e8fda198da6c8e46a"
