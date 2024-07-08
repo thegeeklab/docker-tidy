@@ -74,9 +74,7 @@ class GarbageCollector:
             return containers
 
         def include_container(container):
-            if self._should_exclude_container_with_labels(container):
-                return False
-            return True
+            return not self._should_exclude_container_with_labels(container)
 
         return filter(include_container, containers)
 
