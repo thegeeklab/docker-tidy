@@ -34,7 +34,7 @@ version = "0.0.0"
 [tool.poetry.dependencies]
 anyconfig = "0.14.0"
 appdirs = "1.4.4"
-certifi = "2024.7.4"
+certifi = "2024.8.30"
 colorama = "0.4.6"
 dateparser = "1.2.0"
 docker = "7.1.0"
