@@ -320,13 +320,13 @@ six = ">=1.4.0"
 
 [[package]]
 name = "environs"
-version = "11.2.1"
+version = "12.0.0"
 description = "simplified environment variable parsing"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "environs-11.2.1-py3-none-any.whl", hash = "sha256:9d2080cf25807a26fc0d4301e2d7b62c64fbf547540f21e3a30cc02bc5fbe948"},
-    {file = "environs-11.2.1.tar.gz", hash = "sha256:e068ae3174cef52ba4b95ead22e639056a02465f616e62323e04ae08e86a75a4"},
+    {file = "environs-12.0.0-py3-none-any.whl", hash = "sha256:152068ba62185b99d87df5f6d6044c0e533261777119037e718c1397fc7d697f"},
+    {file = "environs-12.0.0.tar.gz", hash = "sha256:6150ddeb05562a80cc789b308c650d33b98a5f9c3f4c63d9ed465c433f1cb9e2"},
 ]
 
 [package.dependencies]
@@ -334,9 +334,9 @@ marshmallow = ">=3.13.0"
 python-dotenv = "*"
 
 [package.extras]
-dev = ["environs[tests]", "pre-commit (>=3.5,<5.0)", "tox"]
+dev = ["environs[tests]", "pre-commit (>=4.0,<5.0)", "tox"]
 django = ["dj-database-url", "dj-email-url", "django-cache-url"]
-tests = ["environs[django]", "pytest"]
+tests = ["environs[django]", "packaging", "pytest"]
 
 [[package]]
 name = "exceptiongroup"
@@ -1126,4 +1126,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10.0"
-content-hash = "80cae0c603f2f7ab0a0391c7f1501ff39e5011c20b26ef1bd60197f0d79d879b"
+content-hash = "7867b454dff325c0bef69f162e3059e4b436dbfd3d08a62b10b6fa55497b333a"
