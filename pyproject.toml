@@ -142,6 +142,9 @@ select = [
   "RUF",
 ]
 
+[tool.ruff.lint.flake8-builtins]
+builtins-allowed-modules = ["parser"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
