@@ -25,7 +25,7 @@ include = ["LICENSE"]
 keywords = ["docker", "gc", "prune", "garbage"]
 license = "Apache-2.0"
 name = "docker-tidy"
-packages = [{ include = "dockertidy" }]
+packages = [{ include = "dockertidy", format = ["sdist", "wheel"] }]
 readme = "README.md"
 repository = "https://github.com/thegeeklab/docker-tidy/"
 version = "0.0.0"
