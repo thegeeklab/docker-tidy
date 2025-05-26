@@ -50,7 +50,7 @@ python-json-logger = "3.3.0"
 requests = "2.32.3"
 "ruamel.yaml" = "0.18.10"
 websocket_client = "1.8.0"
-zipp = "3.21.0"
+zipp = "3.22.0"
 
 [tool.poetry.scripts]
 docker-tidy = "dockertidy.cli:main"
