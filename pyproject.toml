@@ -56,9 +56,9 @@ zipp = "3.22.0"
 docker-tidy = "dockertidy.cli:main"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "0.11.11"
+ruff = "0.11.12"
 pytest = "8.3.5"
-pytest-mock = "3.14.0"
+pytest-mock = "3.14.1"
 pytest-cov = "6.1.1"
 toml = "0.10.2"
 
