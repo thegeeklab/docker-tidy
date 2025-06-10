@@ -48,7 +48,7 @@ python = "^3.10.0"
 python-dateutil = "2.9.0.post0"
 python-json-logger = "3.3.0"
 requests = "2.32.4"
-"ruamel.yaml" = "0.18.13"
+"ruamel.yaml" = "0.18.14"
 websocket_client = "1.8.0"
 zipp = "3.23.0"
 
