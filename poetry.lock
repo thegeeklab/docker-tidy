@@ -388,14 +388,14 @@ six = ">=1.4.0"
 
 [[package]]
 name = "environs"
-version = "14.3.0"
+version = "14.4.0"
 description = "simplified environment variable parsing"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "environs-14.3.0-py3-none-any.whl", hash = "sha256:91e4c4ea964be277855cdd83a588f6375f10fad9fa452660ecb9f503c230f26a"},
-    {file = "environs-14.3.0.tar.gz", hash = "sha256:20672d92db325ce8114872b1989104eb84f083486325b5a44bcddff56472a384"},
+    {file = "environs-14.4.0-py3-none-any.whl", hash = "sha256:fcd1b0259a2ac1f9ce6e2d2bdbbd51483b83533c37cea1524d5d4abde611270a"},
+    {file = "environs-14.4.0.tar.gz", hash = "sha256:7d9151d0710fc1b02f68bec6863d804ed10121925fb658bbdcb9fc7ddf704f62"},
 ]
 
 [package.dependencies]
@@ -1318,4 +1318,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10.0"
-content-hash = "e93bce587d6258d363a0696c71fc628a83c0da48783d6f9826f6948567d38ff8"
+content-hash = "18bdf58e53c7faff7d4a4f6617b23ad88de6d3f1c14fc27c5839b436494ace73"
