@@ -1,4 +1,5 @@
 """Test GarbageCollector class."""
+# cspell:ignore abcdabcdabcdabcd,babababababaabababab,abbb,abcda
 
 import docker
 import pytest
@@ -364,7 +365,7 @@ def test_api_call_with_timeout(mocker, gc):
 def test_api_call_with_api_error(mocker, gc):
     func = mocker.Mock(
         side_effect=docker.errors.APIError(
-            "Ooops",
+            "Error",
             mocker.Mock(status_code=409, reason="Conflict", url="dummy"),
             explanation="failed"
         ),

@@ -1,0 +1,41 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "dictionaries": ["en_us", "python"],
+  "words": [
+    "Kaussow",
+    "thegeeklab",
+    "geekdoc",
+    "xoxys",
+    "dockertidy",
+    "dateutil",
+    "anyconfig",
+    "autostop",
+    "tzutc",
+    "jsonlogger",
+    "sysexit",
+    "ruamel",
+    "pythonjsonlogger",
+    "katex",
+    "goldmark",
+    "socialmedia",
+    "projectprefix",
+    "levelname",
+    "levelno",
+    "Mountpoint"
+  ],
+  "ignorePaths": [
+    ".woodpecker",
+    ".cspell.json",
+    ".git/**/*",
+    ".gitignore",
+    ".golangci.yaml",
+    ".golangci.yml",
+    ".vscode",
+    "pyproject.toml",
+    "Makefile",
+    "*.svg"
+  ],
+  "ignoreRegExpList": ["&\\S+;", "{{<.+>}}", "color\\:.*"],
+  "enableFiletypes": ["dockercompose"]
+}

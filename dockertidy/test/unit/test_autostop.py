@@ -1,4 +1,5 @@
 """Test Autostop class."""
+# cspell:ignore asdb
 
 import docker
 import pytest
