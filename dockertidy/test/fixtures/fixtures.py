@@ -1,4 +1,6 @@
 """Global pytest fixtures."""
+# cspell:ignore abcdabcdabcdabcd,babababababaabababab,abbb,abcda
+
 import datetime
 
 import pytest

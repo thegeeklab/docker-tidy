@@ -23,7 +23,7 @@ class Config:
     """
     Create an object with all necessary settings.
 
-    Settings are loade from multiple locations in defined order (last wins):
+    Settings are load from multiple locations in defined order (last wins):
         - default settings defined by `self._get_defaults()`
         - yaml config file, defaults to OS specific user config directory
         - provided cli parameters
@@ -157,12 +157,12 @@ class Config:
         for key, item in self.SETTINGS.items():
             if item.get("env"):
                 prefix = "TIDY_"
-                envname = prefix + item["env"]
+                env_name = prefix + item["env"]
                 try:
-                    value = item["type"](envname)
+                    value = item["type"](env_name)
                     normalized = self._add_dict_branch(normalized, key.split("."), value)
                 except environs.EnvError as e:
-                    if f'"{envname}" not set' in str(e):
+                    if f'"{env_name}" not set' in str(e):
                         pass
                     else:
                         raise dockertidy.exception.ConfigError(

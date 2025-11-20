@@ -28,7 +28,7 @@ class DockerTidy:
         """
         Use argparse for parsing CLI arguments.
 
-        :return: args objec
+        :return: args object
         """
         parser = argparse.ArgumentParser(description="keep docker hosts tidy")
         parser.add_argument(
@@ -71,7 +71,7 @@ class DockerTidy:
             type=timedelta_validator,
             dest="gc.max_image_age",
             metavar="MAX_IMAGE_AGE",
-            help="maxium age for an image, images older than this age will be "
+            help="maximum age for an image, images older than this age will be "
             "removed (dateparser value)",
         )
         parser_gc.add_argument(

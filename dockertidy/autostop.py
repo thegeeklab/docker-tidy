@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stop long running docker iamges."""
+"""Stop long running docker images."""
 
 import dateutil.parser
 import docker
@@ -12,7 +12,7 @@ from dockertidy.parser import timedelta
 
 
 class AutoStop:
-    """Autostop object to handle long running containers."""
+    """AutoStop object to handle long running containers."""
 
     def __init__(self):
         self.config = SingleConfig()
@@ -78,7 +78,7 @@ class AutoStop:
         return docker.APIClient(version="auto", timeout=config["http_timeout"])
 
     def run(self):
-        """Autostop main method."""
+        """AutoStop main method."""
         self.logger.info("Start autostop")
         config = self.config.config
 
