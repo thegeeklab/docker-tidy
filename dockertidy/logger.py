@@ -4,6 +4,7 @@
 import logging
 import os
 import sys
+from typing import Any
 
 import colorama
 from pythonjsonlogger import jsonlogger
@@ -14,7 +15,7 @@ CONSOLE_FORMAT = "{}[%(levelname)s]{} %(message)s"
 JSON_FORMAT = "%(asctime)s %(levelname)s %(message)s"
 
 
-def _should_do_markup():
+def _should_do_markup() -> bool:
     py_colors = os.environ.get("PY_COLORS", None)
     if py_colors is not None:
         return to_bool(py_colors)
@@ -28,7 +29,7 @@ colorama.init(autoreset=True, strip=not _should_do_markup())
 class LogFilter:
     """A custom log filter which excludes log messages above the logged level."""
 
-    def __init__(self, level):
+    def __init__(self, level: int) -> None:
         """
         Initialize a new custom log filter.
 
@@ -38,7 +39,7 @@ class LogFilter:
         """
         self.__level = level
 
-    def filter(self, logRecord):  # noqa
+    def filter(self, logRecord: logging.LogRecord) -> bool:  # noqa
         # https://docs.python.org/3/library/logging.html#logrecord-attributes
         return logRecord.levelno <= self.__level
 
@@ -46,7 +47,7 @@ class LogFilter:
 class MultilineFormatter(logging.Formatter):
     """Logging Formatter to reset color after newline characters."""
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         record.msg = record.msg.replace("\n", f"\n{colorama.Style.RESET_ALL}... ")
         return logging.Formatter.format(self, record)
 
@@ -54,7 +55,7 @@ class MultilineFormatter(logging.Formatter):
 class MultilineJsonFormatter(jsonlogger.JsonFormatter):
     """Logging Formatter to remove newline characters."""
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         record.msg = record.msg.replace("\n", " ")
         return jsonlogger.JsonFormatter.format(self, record)
 
@@ -62,7 +63,9 @@ class MultilineJsonFormatter(jsonlogger.JsonFormatter):
 class Log:
     """Base logging object."""
 
-    def __init__(self, level=logging.WARNING, name="dockertidy", json=False):
+    def __init__(
+        self, level: int = logging.WARNING, name: str = "dockertidy", json: bool = False
+    ) -> None:
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         self.logger.addHandler(self._get_error_handler(json=json))
@@ -72,7 +75,7 @@ class Log:
         self.logger.addHandler(self._get_debug_handler(json=json))
         self.logger.propagate = False
 
-    def _get_error_handler(self, json=False):
+    def _get_error_handler(self, json: bool = False) -> logging.StreamHandler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.ERROR)
         handler.addFilter(LogFilter(logging.ERROR))
@@ -87,7 +90,7 @@ class Log:
 
         return handler
 
-    def _get_warning_handler(self, json=False):
+    def _get_warning_handler(self, json: bool = False) -> logging.StreamHandler:
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.WARNING)
         handler.addFilter(LogFilter(logging.WARNING))
@@ -102,7 +105,7 @@ class Log:
 
         return handler
 
-    def _get_info_handler(self, json=False):
+    def _get_info_handler(self, json: bool = False) -> logging.StreamHandler:
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
         handler.addFilter(LogFilter(logging.INFO))
@@ -117,7 +120,7 @@ class Log:
 
         return handler
 
-    def _get_critical_handler(self, json=False):
+    def _get_critical_handler(self, json: bool = False) -> logging.StreamHandler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.CRITICAL)
         handler.addFilter(LogFilter(logging.CRITICAL))
@@ -132,7 +135,7 @@ class Log:
 
         return handler
 
-    def _get_debug_handler(self, json=False):
+    def _get_debug_handler(self, json: bool = False) -> logging.StreamHandler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.DEBUG)
         handler.addFilter(LogFilter(logging.DEBUG))
@@ -147,31 +150,31 @@ class Log:
 
         return handler
 
-    def set_level(self, s):
+    def set_level(self, s: str | int) -> None:
         """Set log level."""
         self.logger.setLevel(s)
 
-    def debug(self, msg):
+    def debug(self, msg: str) -> str:
         """Format info messages and return string."""
         return msg
 
-    def critical(self, msg):
+    def critical(self, msg: str) -> str:
         """Format critical messages and return string."""
         return msg
 
-    def error(self, msg):
+    def error(self, msg: str) -> str:
         """Format error messages and return string."""
         return msg
 
-    def warning(self, msg):
+    def warning(self, msg: str) -> str:
         """Format warning messages and return string."""
         return msg
 
-    def info(self, msg):
+    def info(self, msg: str) -> str:
         """Format info messages and return string."""
         return msg
 
-    def _color_text(self, color, msg):
+    def _color_text(self, color: str, msg: str) -> str:
         """
         Colorize strings.
 
@@ -182,11 +185,11 @@ class Log:
         """
         return f"{color}{msg}{colorama.Style.RESET_ALL}"
 
-    def sysexit(self, code=1):
+    def sysexit(self, code: int = 1) -> None:
         """Exit running program with given exit code."""
         sys.exit(code)
 
-    def sysexit_with_message(self, msg, code=1):
+    def sysexit_with_message(self, msg: Any, code: int = 1) -> None:
         """Exit running program with given exit code and message."""
         self.logger.critical(str(msg))
         self.sysexit(code)

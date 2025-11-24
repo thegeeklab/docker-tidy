@@ -3,6 +3,8 @@
 
 import fnmatch
 from collections import namedtuple
+from collections.abc import Callable
+from typing import Any
 
 import dateutil.parser
 import docker
@@ -21,13 +23,13 @@ class GarbageCollector:
     YEAR_ZERO = "0001-01-01T00:00:00Z"
     ExcludeLabel = namedtuple("ExcludeLabel", ["key", "value"])
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = SingleConfig()
         self.log = SingleLog()
         self.logger = SingleLog().logger
         self.docker = self._get_docker_client()
 
-    def cleanup_containers(self):
+    def cleanup_containers(self) -> None:
         """Identify old containers and remove them."""
         config = self.config.config
         client = self.docker
@@ -67,18 +69,20 @@ class GarbageCollector:
                     v=True,
                 )
 
-    def _filter_excluded_containers(self, containers):
+    def _filter_excluded_containers(
+        self, containers: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         config = self.config.config
 
         if not config["gc"]["exclude_container_labels"]:
             return containers
 
-        def include_container(container):
+        def include_container(container: dict[str, Any]) -> bool:
             return not self._should_exclude_container_with_labels(container)
 
-        return filter(include_container, containers)
+        return list(filter(include_container, containers))
 
-    def _should_exclude_container_with_labels(self, container):
+    def _should_exclude_container_with_labels(self, container: dict[str, Any]) -> bool:
         config = self.config.config
 
         if container["Labels"]:
@@ -98,7 +102,7 @@ class GarbageCollector:
                         return True
         return False
 
-    def _should_remove_container(self, container, min_date):
+    def _should_remove_container(self, container: dict[str, Any], min_date: Any) -> bool:
         state = container.get("State", {})
 
         if state.get("Running"):
@@ -115,28 +119,28 @@ class GarbageCollector:
         finished_date = dateutil.parser.parse(state["FinishedAt"])
         return finished_date < min_date
 
-    def _get_all_containers(self):
+    def _get_all_containers(self) -> list[dict[str, Any]]:
         client = self.docker
         self.logger.info("Getting all containers")
         containers = client.containers(all=True)
         self.logger.info("Found %s containers", len(containers))
         return containers
 
-    def _get_all_images(self):
+    def _get_all_images(self) -> list[dict[str, Any]]:
         client = self.docker
         self.logger.info("Getting all images")
         images = client.images()
         self.logger.info("Found %s images", len(images))
         return images
 
-    def _get_dangling_volumes(self):
+    def _get_dangling_volumes(self) -> list[dict[str, Any]]:
         client = self.docker
         self.logger.info("Getting dangling volumes")
         volumes = client.volumes({"dangling": True})["Volumes"] or []
         self.logger.info("Found %s dangling volumes", len(volumes))
         return volumes
 
-    def cleanup_images(self, exclude_set):
+    def cleanup_images(self, exclude_set: set) -> None:
         """Identify old images and remove them."""
         # re-fetch container list so that we don't  include removed containers
         client = self.docker
@@ -161,8 +165,10 @@ class GarbageCollector:
         for image_summary in reversed(list(images)):
             self._remove_image(image_summary, timedelta(config["gc"]["max_image_age"]))
 
-    def _filter_excluded_images(self, images, exclude_set):
-        def include_image(image_summary):
+    def _filter_excluded_images(
+        self, images: list[dict[str, Any]], exclude_set: set
+    ) -> list[dict[str, Any]]:
+        def include_image(image_summary: dict[str, Any]) -> bool:
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
                 return True
@@ -171,34 +177,38 @@ class GarbageCollector:
                     return False
             return True
 
-        return filter(include_image, images)
+        return list(filter(include_image, images))
 
-    def _filter_images_in_use(self, images, image_tags_in_use):
-        def get_tag_set(image_summary):
+    def _filter_images_in_use(
+        self, images: list[dict[str, Any]], image_tags_in_use: set
+    ) -> list[dict[str, Any]]:
+        def get_tag_set(image_summary: dict[str, Any]) -> set:
             image_tags = image_summary.get("RepoTags")
             if self._no_image_tags(image_tags):
                 # The repr of the image Id used by client.containers()
                 return {"{id}:latest".format(id=image_summary["Id"][:12])}
             return set(image_tags)
 
-        def image_not_in_use(image_summary):
+        def image_not_in_use(image_summary: dict[str, Any]) -> bool:
             return not get_tag_set(image_summary) & image_tags_in_use
 
-        return filter(image_not_in_use, images)
+        return list(filter(image_not_in_use, images))
 
-    def _filter_images_in_use_by_id(self, images, image_ids_in_use):
-        def image_not_in_use(image_summary):
+    def _filter_images_in_use_by_id(
+        self, images: list[dict[str, Any]], image_ids_in_use: set
+    ) -> list[dict[str, Any]]:
+        def image_not_in_use(image_summary: dict[str, Any]) -> bool:
             return image_summary["Id"] not in image_ids_in_use
 
-        return filter(image_not_in_use, images)
+        return list(filter(image_not_in_use, images))
 
-    def _is_image_old(self, image, min_date):
+    def _is_image_old(self, image: dict[str, Any], min_date: Any) -> bool:
         return dateutil.parser.parse(image["Created"]) < min_date
 
-    def _no_image_tags(self, image_tags):
+    def _no_image_tags(self, image_tags: list[str] | None) -> bool:
         return not image_tags or image_tags == ["<none>:<none>"]
 
-    def _remove_image(self, image_summary, min_date):
+    def _remove_image(self, image_summary: dict[str, Any], min_date: Any) -> None:
         config = self.config.config
         client = self.docker
         image = self._api_call(client.inspect_image, image=image_summary["Id"])
@@ -220,7 +230,7 @@ class GarbageCollector:
         for image_tag in image_tags:
             self._api_call(client.remove_image, image=image_tag)
 
-    def _remove_volume(self, volume):
+    def _remove_volume(self, volume: dict[str, Any]) -> None:
         config = self.config.config
         client = self.docker
         if not volume:
@@ -232,7 +242,7 @@ class GarbageCollector:
 
         self._api_call(client.remove_volume, name=volume["Name"])
 
-    def cleanup_volumes(self):
+    def cleanup_volumes(self) -> None:
         """Identify old volumes and remove them."""
         dangling_volumes = self._get_dangling_volumes()
 
@@ -241,7 +251,7 @@ class GarbageCollector:
             self.logger.info("Removing dangling volume %s", volume["Name"])
             self._remove_volume(volume)
 
-    def _api_call(self, func, **kwargs):
+    def _api_call(self, func: Callable, **kwargs: Any) -> Any:
         try:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
@@ -251,8 +261,8 @@ class GarbageCollector:
             params = ",".join("%s=%s" % item for item in kwargs.items())  # noqa:UP031
             self.logger.warning(f"Error calling {func.__name__} {params} {e!s}")
 
-    def _format_image(self, image, image_summary):
-        def get_tags():
+    def _format_image(self, image: dict[str, Any], image_summary: dict[str, Any]) -> str:
+        def get_tags() -> str:
             tags = image_summary.get("RepoTags")
             if not tags or tags == ["<none>:<none>"]:
                 return ""
@@ -260,15 +270,15 @@ class GarbageCollector:
 
         return "{id} {tags}".format(id=image["Id"][:16], tags=get_tags())
 
-    def _build_exclude_set(self):
+    def _build_exclude_set(self) -> set:
         config = self.config.config
 
-        def is_image_tag(line):
+        def is_image_tag(line: str) -> bool:
             return line and not line.startswith("#")
 
         return set(config["gc"]["exclude_images"])
 
-    def _format_exclude_labels(self):
+    def _format_exclude_labels(self) -> None:
         config = self.config.config
         exclude_labels = []
 
@@ -284,14 +294,14 @@ class GarbageCollector:
             )
         config["gc"]["exclude_container_labels"] = exclude_labels
 
-    def _get_docker_client(self):
+    def _get_docker_client(self) -> Any:
         config = self.config.config
         try:
             return docker.APIClient(version="auto", timeout=config["http_timeout"])
         except docker.errors.DockerException as e:
             self.log.sysexit_with_message(f"Can't create docker client\n{e}")
 
-    def run(self):
+    def run(self) -> None:
         """Garbage collector main method."""
         self.logger.info("Start garbage collection")
         config = self.config.config

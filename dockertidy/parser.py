@@ -9,7 +9,7 @@ import environs
 env = environs.Env()
 
 
-def timedelta_validator(value):
+def timedelta_validator(value: str | None) -> str | None:
     """
     Return the dateparser string for a time in the past.
 
@@ -25,7 +25,7 @@ def timedelta_validator(value):
     return value
 
 
-def timedelta(value, dt_format=None):
+def timedelta(value: str | None, dt_format: str | None = None) -> str | None:
     """
     Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
@@ -46,7 +46,7 @@ def timedelta(value, dt_format=None):
 
 
 @env.parser_for("timedelta_validator")
-def timedelta_parser(value):
+def timedelta_parser(value: str) -> str:
     try:
         timedelta_validator(value)
         return value

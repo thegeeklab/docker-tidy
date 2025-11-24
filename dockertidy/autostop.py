@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Stop long running docker images."""
 
+from collections.abc import Callable
+from typing import Any
+
 import dateutil.parser
 import docker
 import docker.errors
@@ -14,13 +17,13 @@ from dockertidy.parser import timedelta
 class AutoStop:
     """AutoStop object to handle long running containers."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = SingleConfig()
         self.log = SingleLog()
         self.logger = SingleLog().logger
         self.docker = self._get_docker_client()
 
-    def stop_containers(self):
+    def stop_containers(self) -> None:
         """Identify long running containers and terminate them."""
         client = self.docker
         config = self.config.config
@@ -52,7 +55,7 @@ class AutoStop:
                 if not dry_run:
                     self._stop_container(client, container["Id"])
 
-    def _stop_container(self, client, cid):
+    def _stop_container(self, client: Any, cid: str) -> None:
         try:
             client.stop(cid)
         except requests.exceptions.Timeout as e:
@@ -60,24 +63,24 @@ class AutoStop:
         except docker.errors.APIError as e:
             self.logger.warning(f"Error stopping {cid}: {e!s}")
 
-    def _build_container_matcher(self, prefixes):
-        def matcher(name):
+    def _build_container_matcher(self, prefixes: list[str]) -> Callable[[str], bool]:
+        def matcher(name: str) -> bool:
             return any(name.startswith(prefix) for prefix in prefixes)
 
         return matcher
 
-    def _has_been_running_since(self, container, min_time):
+    def _has_been_running_since(self, container: dict[str, Any], min_time: Any) -> bool:
         started_at = container.get("State", {}).get("StartedAt")
         if not started_at:
             return False
 
         return dateutil.parser.parse(started_at) <= min_time
 
-    def _get_docker_client(self):
+    def _get_docker_client(self) -> Any:
         config = self.config.config
         return docker.APIClient(version="auto", timeout=config["http_timeout"])
 
-    def run(self):
+    def run(self) -> None:
         """AutoStop main method."""
         self.logger.info("Start autostop")
         config = self.config.config

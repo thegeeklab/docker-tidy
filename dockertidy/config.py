@@ -2,6 +2,7 @@
 """Global settings definition."""
 
 import os
+from typing import Any, TypeVar
 
 import anyconfig
 import environs
@@ -17,6 +18,8 @@ from dockertidy.utils import Singleton, dict_intersect
 
 config_dir = AppDirs("docker-tidy").user_config_dir
 default_config_file = os.path.join(config_dir, "config.yml")
+
+T = TypeVar("T")
 
 
 class Config:
@@ -106,7 +109,7 @@ class Config:
         },
     }
 
-    def __init__(self, args=None):
+    def __init__(self, args: dict[str, Any] | None = None) -> None:
         """
         Initialize a new settings class.
 
@@ -124,7 +127,7 @@ class Config:
         self.config = None
         self._set_config()
 
-    def _get_args(self, args):
+    def _get_args(self, args: dict[str, Any]) -> dict[str, Any]:
         cleaned = dict(filter(lambda item: item[1] is not None, args.items()))
 
         normalized = {}
@@ -141,7 +144,7 @@ class Config:
 
         return normalized
 
-    def _get_defaults(self, files=False):
+    def _get_defaults(self, files: bool = False) -> dict[str, Any]:
         normalized = {}
 
         for key, item in self.SETTINGS.items():
@@ -152,7 +155,7 @@ class Config:
         self.schema = anyconfig.gen_schema(normalized)
         return normalized
 
-    def _get_envs(self):
+    def _get_envs(self) -> dict[str, Any]:
         normalized = {}
         for key, item in self.SETTINGS.items():
             if item.get("env"):
@@ -171,7 +174,7 @@ class Config:
 
         return normalized
 
-    def _set_config(self):
+    def _set_config(self) -> None:
         args = self._get_args(self._args)
         envs = self._get_envs()
         defaults = self._get_defaults()
@@ -223,14 +226,14 @@ class Config:
 
         self.config = defaults
 
-    def _normalize_path(self, path):
+    def _normalize_path(self, path: str) -> str:
         if not os.path.isabs(path):
             base = os.path.join(os.getcwd(), path)
             return os.path.abspath(os.path.expanduser(os.path.expandvars(base)))
 
         return path
 
-    def _validate(self, config):
+    def _validate(self, config: dict[str, Any]) -> bool:
         try:
             anyconfig.validate(config, self.schema, ac_schema_safe=False)
         except jsonschema.exceptions.ValidationError as e:
@@ -240,7 +243,9 @@ class Config:
 
         return True
 
-    def _add_dict_branch(self, tree, vector, value):
+    def _add_dict_branch(
+        self, tree: dict[str, Any], vector: list[str], value: Any
+    ) -> dict[str, Any]:
         key = vector[0]
         tree[key] = (
             value
