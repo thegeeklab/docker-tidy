@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Custom input type parser."""
 
+import datetime
 from argparse import ArgumentTypeError
 
 import dateparser
@@ -25,7 +26,7 @@ def timedelta_validator(value: str | None) -> str | None:
     return value
 
 
-def timedelta(value: str | None, dt_format: str | None = None) -> str | None:
+def timedelta(value: str, dt_format: str | None = None) -> datetime.date | str:
     """
     Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
@@ -40,7 +41,7 @@ def timedelta(value: str | None, dt_format: str | None = None) -> str | None:
     )
 
     if dt_format:
-        timedelta = timedelta.strftime(dt_format)
+        return timedelta.strftime(dt_format)
 
     return timedelta
 

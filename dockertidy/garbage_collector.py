@@ -9,6 +9,7 @@ from typing import Any
 import dateutil.parser
 import docker
 import docker.errors
+import docker.utils
 import requests.exceptions
 
 from dockertidy.config import SingleConfig
@@ -274,7 +275,7 @@ class GarbageCollector:
         config = self.config.config
 
         def is_image_tag(line: str) -> bool:
-            return line and not line.startswith("#")
+            return bool(line) and not line.startswith("#")
 
         return set(config["gc"]["exclude_images"])
 
@@ -322,4 +323,4 @@ class GarbageCollector:
             and not config["gc"]["max_image_age"]
             and not config["gc"]["dangling_volumes"]
         ):
-            self.logger.ing("Skipped, no arguments given")
+            self.logger.warning("Skipped, no arguments given")
