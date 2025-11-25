@@ -61,6 +61,9 @@ pytest = "9.0.1"
 pytest-mock = "3.15.1"
 pytest-cov = "7.0.0"
 toml = "0.10.2"
+types-appdirs = "1.4.3.5"
+types-docker = "7.1.0.20251009"
+mypy = "1.18.2"
 
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -139,3 +142,7 @@ builtins-allowed-modules = ["parser"]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+
+[tool.mypy]
+strict_optional = false
+files = ["dockertidy/"]

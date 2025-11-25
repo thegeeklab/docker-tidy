@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Custom input type parser."""
 
+import datetime
 from argparse import ArgumentTypeError
 
 import dateparser
@@ -9,7 +10,7 @@ import environs
 env = environs.Env()
 
 
-def timedelta_validator(value):
+def timedelta_validator(value: str | None) -> str | None:
     """
     Return the dateparser string for a time in the past.
 
@@ -25,7 +26,7 @@ def timedelta_validator(value):
     return value
 
 
-def timedelta(value, dt_format=None):
+def timedelta(value: str, dt_format: str | None = None) -> datetime.date | str:
     """
     Return the :class:`datetime.datetime.DateTime` for a time in the past.
 
@@ -40,13 +41,13 @@ def timedelta(value, dt_format=None):
     )
 
     if dt_format:
-        timedelta = timedelta.strftime(dt_format)
+        return timedelta.strftime(dt_format)
 
     return timedelta
 
 
 @env.parser_for("timedelta_validator")
-def timedelta_parser(value):
+def timedelta_parser(value: str) -> str:
     try:
         timedelta_validator(value)
         return value

@@ -2,6 +2,7 @@
 """Global settings definition."""
 
 import os
+from typing import Any
 
 import anyconfig
 import environs
@@ -29,7 +30,7 @@ class Config:
         - provided cli parameters
     """
 
-    SETTINGS = {
+    SETTINGS: dict[str, dict[str, Any]] = {
         "command": {
             "default": "",
         },
@@ -106,7 +107,7 @@ class Config:
         },
     }
 
-    def __init__(self, args=None):
+    def __init__(self, args: dict[str, Any] | None = None) -> None:
         """
         Initialize a new settings class.
 
@@ -119,15 +120,15 @@ class Config:
             self._args = {}
         else:
             self._args = args
-        self._schema = None
-        self.config_file = default_config_file
-        self.config = None
+        self._schema: dict[str, Any] | None = None
+        self.config_file: str = default_config_file
+        self.config: dict[str, Any] | None = None
         self._set_config()
 
-    def _get_args(self, args):
+    def _get_args(self, args: dict[str, Any]) -> dict[str, Any]:
         cleaned = dict(filter(lambda item: item[1] is not None, args.items()))
 
-        normalized = {}
+        normalized: dict[str, Any] = {}
         for key, value in cleaned.items():
             normalized = self._add_dict_branch(normalized, key.split("."), value)
 
@@ -141,8 +142,8 @@ class Config:
 
         return normalized
 
-    def _get_defaults(self, files=False):
-        normalized = {}
+    def _get_defaults(self, files: bool = False) -> dict[str, Any]:
+        normalized: dict[str, Any] = {}
 
         for key, item in self.SETTINGS.items():
             if files and not item.get("file"):
@@ -152,8 +153,8 @@ class Config:
         self.schema = anyconfig.gen_schema(normalized)
         return normalized
 
-    def _get_envs(self):
-        normalized = {}
+    def _get_envs(self) -> dict[str, Any]:
+        normalized: dict[str, Any] = {}
         for key, item in self.SETTINGS.items():
             if item.get("env"):
                 prefix = "TIDY_"
@@ -171,7 +172,7 @@ class Config:
 
         return normalized
 
-    def _set_config(self):
+    def _set_config(self) -> None:
         args = self._get_args(self._args)
         envs = self._get_envs()
         defaults = self._get_defaults()
@@ -223,24 +224,26 @@ class Config:
 
         self.config = defaults
 
-    def _normalize_path(self, path):
+    def _normalize_path(self, path: str) -> str:
         if not os.path.isabs(path):
             base = os.path.join(os.getcwd(), path)
             return os.path.abspath(os.path.expanduser(os.path.expandvars(base)))
 
         return path
 
-    def _validate(self, config):
+    def _validate(self, config: dict[str, Any]) -> bool:
         try:
             anyconfig.validate(config, self.schema, ac_schema_safe=False)
         except jsonschema.exceptions.ValidationError as e:
-            schema = format_as_index(list(e.relative_schema_path)[:-1])
+            schema = format_as_index("config", list(e.relative_schema_path)[1:-1])
             schema_error = f"Failed validating '{e.validator}' in schema {schema}\n{e.message}"
             raise dockertidy.exception.ConfigError("Configuration error", schema_error) from e
 
         return True
 
-    def _add_dict_branch(self, tree, vector, value):
+    def _add_dict_branch(
+        self, tree: dict[str, Any], vector: list[str], value: Any
+    ) -> dict[str, Any]:
         key = vector[0]
         tree[key] = (
             value

@@ -2,6 +2,7 @@
 """Entrypoint and CLI handler."""
 
 import argparse
+from typing import Any
 
 import dockertidy.exception
 from dockertidy import __version__
@@ -15,7 +16,7 @@ from dockertidy.parser import timedelta_validator
 class DockerTidy:
     """Cli entrypoint to handle command arguments."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.log = SingleLog()
         self.logger = self.log.logger
         self.args = self._cli_args()
@@ -24,7 +25,7 @@ class DockerTidy:
         self.stop = AutoStop()
         self.run()
 
-    def _cli_args(self):
+    def _cli_args(self) -> dict[str, Any]:
         """
         Use argparse for parsing CLI arguments.
 
@@ -118,7 +119,7 @@ class DockerTidy:
 
         return parser.parse_args().__dict__
 
-    def _get_config(self):
+    def _get_config(self) -> Any:
         try:
             config = SingleConfig(args=self.args)
         except dockertidy.exception.ConfigError as e:
@@ -134,7 +135,7 @@ class DockerTidy:
 
         return config
 
-    def run(self):
+    def run(self) -> None:
         """Cli main method."""
         if self.config.config["command"] == "gc":
             self.gc.run()
@@ -142,5 +143,5 @@ class DockerTidy:
             self.stop.run()
 
 
-def main():
+def main() -> None:
     DockerTidy()
