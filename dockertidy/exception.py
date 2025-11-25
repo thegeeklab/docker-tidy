@@ -2,7 +2,6 @@
 """Custom exceptions."""
 
 
-
 class TidyError(Exception):
     """Generic exception class for docker-tidy."""
 
