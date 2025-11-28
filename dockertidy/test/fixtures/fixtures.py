@@ -2,13 +2,14 @@
 # cspell:ignore abcdabcdabcdabcd,babababababaabababab,abbb,abcda
 
 import datetime
+from typing import Any
 
 import pytest
 from dateutil import tz
 
 
 @pytest.fixture
-def container():
+def container() -> dict[str, Any]:
     return {
         "Id": "abcdabcdabcdabcd",
         "Created": "2013-12-20T17:00:00Z",
@@ -22,7 +23,7 @@ def container():
 
 
 @pytest.fixture
-def containers():
+def containers()-> list[dict[str, Any]]:
     return [
         {
             "Id": "abcd",
@@ -46,7 +47,7 @@ def containers():
 
 
 @pytest.fixture
-def image():
+def image() -> dict[str, str]:
     return {
         "Id": "abcdabcdabcdabcd",
         "Created": "2014-01-20T05:00:00Z",
@@ -54,7 +55,7 @@ def image():
 
 
 @pytest.fixture
-def images():
+def images()-> list[dict[str, list[str]|str]]:
     return [
         {
             "RepoTags": ["<none>:<none>"],
@@ -80,15 +81,15 @@ def images():
 
 
 @pytest.fixture
-def now():
+def now() -> datetime.datetime:
     return datetime.datetime(2014, 1, 20, 10, 10, tzinfo=tz.tzutc())
 
 
 @pytest.fixture
-def earlier_time():
+def earlier_time() -> datetime.datetime:
     return datetime.datetime(2014, 1, 1, 0, 0, tzinfo=tz.tzutc())
 
 
 @pytest.fixture
-def later_time():
+def later_time() -> datetime.datetime:
     return datetime.datetime(2014, 1, 20, 0, 10, tzinfo=tz.tzutc())

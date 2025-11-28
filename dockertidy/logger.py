@@ -4,10 +4,10 @@
 import logging
 import os
 import sys
-from typing import Any
+from typing import Any, NoReturn
 
 import colorama
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger.json import JsonFormatter
 
 from dockertidy.utils import Singleton, to_bool
 
@@ -52,12 +52,12 @@ class MultilineFormatter(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-class MultilineJsonFormatter(jsonlogger.JsonFormatter):
+class MultilineJsonFormatter(JsonFormatter):
     """Logging Formatter to remove newline characters."""
 
     def format(self, record: logging.LogRecord) -> str:
         record.msg = record.msg.replace("\n", " ")
-        return jsonlogger.JsonFormatter.format(self, record)
+        return JsonFormatter.format(self, record)
 
 
 class Log:
@@ -75,7 +75,7 @@ class Log:
         self.logger.addHandler(self._get_debug_handler(json=json))
         self.logger.propagate = False
 
-    def _get_error_handler(self, json: bool = False) -> logging.StreamHandler:
+    def _get_error_handler(self, json: bool = False) -> logging.Handler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.ERROR)
         handler.addFilter(LogFilter(logging.ERROR))
@@ -90,7 +90,7 @@ class Log:
 
         return handler
 
-    def _get_warning_handler(self, json: bool = False) -> logging.StreamHandler:
+    def _get_warning_handler(self, json: bool = False) -> logging.Handler:
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.WARNING)
         handler.addFilter(LogFilter(logging.WARNING))
@@ -105,7 +105,7 @@ class Log:
 
         return handler
 
-    def _get_info_handler(self, json: bool = False) -> logging.StreamHandler:
+    def _get_info_handler(self, json: bool = False) -> logging.Handler:
         handler = logging.StreamHandler(sys.stdout)
         handler.setLevel(logging.INFO)
         handler.addFilter(LogFilter(logging.INFO))
@@ -120,7 +120,7 @@ class Log:
 
         return handler
 
-    def _get_critical_handler(self, json: bool = False) -> logging.StreamHandler:
+    def _get_critical_handler(self, json: bool = False) -> logging.Handler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.CRITICAL)
         handler.addFilter(LogFilter(logging.CRITICAL))
@@ -135,7 +135,7 @@ class Log:
 
         return handler
 
-    def _get_debug_handler(self, json: bool = False) -> logging.StreamHandler:
+    def _get_debug_handler(self, json: bool = False) -> logging.Handler:
         handler = logging.StreamHandler(sys.stderr)
         handler.setLevel(logging.DEBUG)
         handler.addFilter(LogFilter(logging.DEBUG))
@@ -185,11 +185,11 @@ class Log:
         """
         return f"{color}{msg}{colorama.Style.RESET_ALL}"
 
-    def sysexit(self, code: int = 1) -> None:
+    def sysexit(self, code: int = 1) -> NoReturn:
         """Exit running program with given exit code."""
         sys.exit(code)
 
-    def sysexit_with_message(self, msg: Any, code: int = 1) -> None:
+    def sysexit_with_message(self, msg: Any, code: int = 1) -> NoReturn:
         """Exit running program with given exit code and message."""
         self.logger.critical(str(msg))
         self.sysexit(code)

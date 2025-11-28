@@ -119,7 +119,7 @@ class DockerTidy:
 
         return parser.parse_args().__dict__
 
-    def _get_config(self) -> Any:
+    def _get_config(self) -> SingleConfig:
         try:
             config = SingleConfig(args=self.args)
         except dockertidy.exception.ConfigError as e:

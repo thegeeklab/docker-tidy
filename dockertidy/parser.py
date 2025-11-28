@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Custom input type parser."""
 
-import datetime
 from argparse import ArgumentTypeError
 
 import dateparser
@@ -24,26 +23,6 @@ def timedelta_validator(value: str | None) -> str | None:
         raise ArgumentTypeError(f"'{value}' is not a valid timedelta string")
 
     return value
-
-
-def timedelta(value: str, dt_format: str | None = None) -> datetime.date | str:
-    """
-    Return the :class:`datetime.datetime.DateTime` for a time in the past.
-
-    :param value: a string containing a time format supported by
-    mod:`dateparser`
-    """
-    if value is None:
-        return None
-
-    timedelta = dateparser.parse(
-        value, settings={"TO_TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True}
-    )
-
-    if dt_format:
-        return timedelta.strftime(dt_format)
-
-    return timedelta
 
 
 @env.parser_for("timedelta_validator")
