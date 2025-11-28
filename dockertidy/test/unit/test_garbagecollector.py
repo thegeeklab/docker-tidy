@@ -4,8 +4,11 @@
 import docker
 import pytest
 import requests
+import datetime
 
 from dockertidy import garbage_collector
+from pytest_mock import MockFixture
+from typing import Any
 
 pytest_plugins = [
     "dockertidy.test.fixtures.fixtures",
@@ -13,7 +16,7 @@ pytest_plugins = [
 
 
 @pytest.fixture
-def gc(mocker):
+def gc(mocker: MockFixture) -> garbage_collector.GarbageCollector:
     mocker.patch.object(
         garbage_collector.GarbageCollector,
         "_get_docker_client",
@@ -24,43 +27,43 @@ def gc(mocker):
     return gc
 
 
-def test_is_running(gc, container, now):
+def test_is_running(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime) -> None:
     container["State"]["Running"] = True
 
     assert not gc._should_remove_container(container, now)
 
 
-def test_is_ghost(gc, container, now):
+def test_is_ghost(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime) -> None:
     container["State"]["Ghost"] = True
 
     assert gc._should_remove_container(container, now)
 
 
-def test_old_never_run(gc, container, now, earlier_time):
+def test_old_never_run(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime, earlier_time: datetime.datetime) -> None:
     container["Created"] = str(earlier_time)
     container["State"]["FinishedAt"] = gc.YEAR_ZERO
 
     assert gc._should_remove_container(container, now)
 
 
-def test_not_old_never_run(gc, container, now, earlier_time):
+def test_not_old_never_run(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime, earlier_time: datetime.datetime) -> None:
     container["Created"] = str(now)
     container["State"]["FinishedAt"] = gc.YEAR_ZERO
 
     assert not gc._should_remove_container(container, now)
 
 
-def test_old_stopped(gc, container, now):
+def test_old_stopped(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime) -> None:
     assert gc._should_remove_container(container, now)
 
 
-def test_not_old(gc, container, now):
+def test_not_old(gc: garbage_collector.GarbageCollector, container: dict[str, Any], now: datetime.datetime) -> None:
     container["State"]["FinishedAt"] = "2014-01-21T00:00:00Z"
 
     assert not gc._should_remove_container(container, now)
 
 
-def test_cleanup_containers(gc, mocker, containers):
+def test_cleanup_containers(gc: garbage_collector.GarbageCollector, mocker: MockFixture, containers: list[dict[str, Any]]) -> None:
     client = mocker.create_autospec(docker.APIClient)
     client.containers.return_value = [
         {
@@ -78,8 +81,8 @@ def test_cleanup_containers(gc, mocker, containers):
     client.remove_container.assert_called_once_with(container="abcd", v=True)
 
 
-def test_filter_excluded_containers(gc):
-    containers = [
+def test_filter_excluded_containers(gc: garbage_collector.GarbageCollector) -> None:
+    containers: list[dict[str, Any]] = [
         {
             "Labels": {
                 "toot": ""
@@ -122,7 +125,7 @@ def test_filter_excluded_containers(gc):
     assert [containers[0], containers[3], containers[4]] == list(result)
 
 
-def test_cleanup_images(mocker, gc, containers):
+def test_cleanup_images(mocker: MockFixture, gc: garbage_collector.GarbageCollector, containers: list[dict[str, Any]]) -> None:
     client = mocker.create_autospec(docker.APIClient)
     client._version = "1.21"
     client.images.return_value = images = [
@@ -143,7 +146,7 @@ def test_cleanup_images(mocker, gc, containers):
     ]
 
 
-def test_cleanup_volumes(mocker, gc):
+def test_cleanup_volumes(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     client = mocker.create_autospec(docker.APIClient)
     client.volumes.return_value = volumes = {
         "Volumes": [
@@ -165,12 +168,13 @@ def test_cleanup_volumes(mocker, gc):
 
     gc.docker = client
     gc.cleanup_volumes()
+    assert volumes["Volumes"] is not None
     assert client.remove_volume.mock_calls == [
         mocker.call(name=volume["Name"]) for volume in reversed(volumes["Volumes"])
     ]
 
 
-def test_filter_images_in_use(gc, images):
+def test_filter_images_in_use(gc: garbage_collector.GarbageCollector, images: list[dict[str, list[str]|str]]) -> None:
     image_tags_in_use = set([
         "user/one:latest",
         "user/foo:latest",
@@ -194,9 +198,9 @@ def test_filter_images_in_use(gc, images):
     assert list(actual) == expected
 
 
-def test_filter_images_in_use_by_id(mocker, gc, containers):
+def test_filter_images_in_use_by_id(mocker: MockFixture, gc: garbage_collector.GarbageCollector, containers: list[dict[str, Any]]) -> None:
     client = mocker.create_autospec(docker.APIClient)
-    client._version = "1.21"
+    client.api_version = "1.21"
     client.containers.return_value = [
         {
             "Id": "abcd",
@@ -249,7 +253,7 @@ def test_filter_images_in_use_by_id(mocker, gc, containers):
     ]
 
 
-def test_filter_excluded_images(gc, images):
+def test_filter_excluded_images(gc: garbage_collector.GarbageCollector, images: list[dict[str, list[str]|str]]) -> None:
     exclude_set = set([
         "user/one:latest",
         "user/foo:latest",
@@ -276,7 +280,7 @@ def test_filter_excluded_images(gc, images):
     assert list(actual) == expected
 
 
-def test_filter_excluded_images_advanced(gc, images):
+def test_filter_excluded_images_advanced(gc: garbage_collector.GarbageCollector, images: list[dict[str, list[str]|str]]) -> None:
     exclude_set = set([
         "user/one:*",
         "new_*:123",
@@ -300,15 +304,15 @@ def test_filter_excluded_images_advanced(gc, images):
     assert list(actual) == expected
 
 
-def test_is_image_old(gc, image, now):
+def test_is_image_old(gc: garbage_collector.GarbageCollector, image: dict[str, str], now: datetime.datetime) -> None:
     assert gc._is_image_old(image, now)
 
 
-def test_is_image_old_false(gc, image, later_time):
+def test_is_image_old_false(gc: garbage_collector.GarbageCollector, image: dict[str, str], later_time: datetime.datetime) -> None:
     assert not gc._is_image_old(image, later_time)
 
 
-def test_remove_image_no_tags(mocker, gc, image, now):
+def test_remove_image_no_tags(mocker: MockFixture, gc: garbage_collector.GarbageCollector, image: dict[str, str], now: datetime.datetime) -> None:
     client = mocker.create_autospec(docker.APIClient)
     image_id = "abcd"
     image_summary = {"Id": image_id}
@@ -319,7 +323,7 @@ def test_remove_image_no_tags(mocker, gc, image, now):
     client.remove_image.assert_called_once_with(image=image_id)
 
 
-def test_remove_image_new_image_not_removed(mocker, gc, image, later_time):
+def test_remove_image_new_image_not_removed(mocker: MockFixture, gc: garbage_collector.GarbageCollector, image: dict[str, str], later_time: datetime.datetime) -> None:
     client = mocker.create_autospec(docker.APIClient)
     image_id = "abcd"
     image_summary = {"Id": image_id}
@@ -330,7 +334,7 @@ def test_remove_image_new_image_not_removed(mocker, gc, image, later_time):
     assert not client.remove_image.mock_calls
 
 
-def test_remove_image_with_tags(mocker, gc, image, now):
+def test_remove_image_with_tags(mocker: MockFixture, gc: garbage_collector.GarbageCollector, image: dict[str, str], now: datetime.datetime) -> None:
     client = mocker.create_autospec(docker.APIClient)
     image_id = "abcd"
     repo_tags = ["user/one:latest", "user/one:12345"]
@@ -342,7 +346,7 @@ def test_remove_image_with_tags(mocker, gc, image, now):
     assert client.remove_image.mock_calls == [mocker.call(image=tag) for tag in repo_tags]
 
 
-def test_api_call_success(mocker, gc):
+def test_api_call_success(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     func = mocker.Mock()
     container = "abcd"
     result = gc._api_call(func, container=container)
@@ -351,7 +355,7 @@ def test_api_call_success(mocker, gc):
     assert result == func.return_value
 
 
-def test_api_call_with_timeout(mocker, gc):
+def test_api_call_with_timeout(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     func = mocker.Mock(side_effect=requests.exceptions.ReadTimeout("msg"), __name__="remove_image")
     image = "abcd"
 
@@ -362,7 +366,7 @@ def test_api_call_with_timeout(mocker, gc):
     mock_log.warning.assert_called_once_with("Failed to call remove_image " + "image=abcd msg")
 
 
-def test_api_call_with_api_error(mocker, gc):
+def test_api_call_with_api_error(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     func = mocker.Mock(
         side_effect=docker.errors.APIError(
             "Error",
@@ -383,7 +387,7 @@ def test_api_call_with_api_error(mocker, gc):
     )
 
 
-def test_get_all_containers(mocker, gc):
+def test_get_all_containers(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     client = mocker.create_autospec(docker.APIClient)
     count = 10
     client.containers.return_value = [mocker.Mock() for _ in range(count)]
@@ -397,7 +401,7 @@ def test_get_all_containers(mocker, gc):
     mock_log.info.assert_called_with("Found %s containers", count)
 
 
-def test_get_all_images(mocker, gc):
+def test_get_all_images(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     client = mocker.create_autospec(docker.APIClient)
     count = 7
     client.images.return_value = [mocker.Mock() for _ in range(count)]
@@ -410,7 +414,7 @@ def test_get_all_images(mocker, gc):
     mock_log.info.assert_called_with("Found %s images", count)
 
 
-def test_get_dangling_volumes(mocker, gc):
+def test_get_dangling_volumes(mocker: MockFixture, gc: garbage_collector.GarbageCollector) -> None:
     client = mocker.create_autospec(docker.APIClient)
     count = 4
     client.volumes.return_value = {"Volumes": [mocker.Mock() for _ in range(count)]}
@@ -423,7 +427,7 @@ def test_get_dangling_volumes(mocker, gc):
     mock_log.info.assert_called_with("Found %s dangling volumes", count)
 
 
-def test_build_exclude_set(gc):
+def test_build_exclude_set(gc: garbage_collector.GarbageCollector) -> None:
     gc.config.config["gc"]["exclude_images"] = [
         "some_image:latest",
         "repo/foo:12345",
@@ -439,7 +443,7 @@ def test_build_exclude_set(gc):
     assert exclude_set == expected
 
 
-def test_format_exclude_labels(gc):
+def test_format_exclude_labels(gc: garbage_collector.GarbageCollector) -> None:
     gc.config.config["gc"]["exclude_container_labels"] = [
         "voo*",
         "doo=poo",
@@ -452,11 +456,11 @@ def test_format_exclude_labels(gc):
     assert expected == gc.config.config["gc"]["exclude_container_labels"]
 
 
-def test_build_exclude_set_empty(gc):
+def test_build_exclude_set_empty(gc: garbage_collector.GarbageCollector) -> None:
     gc.config.config["gc"]["exclude_images"] = []
     exclude_set = gc._build_exclude_set()
     assert exclude_set == set()
 
 
-def test_get_docker_client(gc, mocker):
+def test_get_docker_client(gc: garbage_collector.GarbageCollector, mocker: MockFixture) -> None:
     assert isinstance(gc.docker, docker.APIClient)

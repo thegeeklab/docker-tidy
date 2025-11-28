@@ -120,9 +120,9 @@ class Config:
             self._args = {}
         else:
             self._args = args
-        self._schema: dict[str, Any] | None = None
+        self._schema: dict[str, Any] = {}
         self.config_file: str = default_config_file
-        self.config: dict[str, Any] | None = None
+        self.config: dict[str, Any] = {}
         self._set_config()
 
     def _get_args(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -179,11 +179,13 @@ class Config:
         files_raw = self._get_defaults(files=True)
 
         # preset config file path
-        if envs.get("config_file"):
-            self.config_file = self._normalize_path(envs.get("config_file"))
+        config_file = envs.get("config_file")
+        if config_file:
+            self.config_file = self._normalize_path(config_file)
 
-        if args.get("config_file"):
-            self.config_file = self._normalize_path(args.get("config_file"))
+        config_file = args.get("config_file")
+        if config_file:
+            self.config_file = self._normalize_path(config_file)
 
         source_files = []
         source_files.append(self.config_file)

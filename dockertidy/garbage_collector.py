@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Remove unused docker containers and images."""
 
+import datetime
 import fnmatch
 from collections import namedtuple
 from collections.abc import Callable
 from typing import Any
 
+import dateparser
 import dateutil.parser
 import docker
 import docker.errors
@@ -14,7 +16,6 @@ import requests.exceptions
 
 from dockertidy.config import SingleConfig
 from dockertidy.logger import SingleLog
-from dockertidy.parser import timedelta
 
 
 class GarbageCollector:
@@ -38,10 +39,16 @@ class GarbageCollector:
 
         filtered_containers = self._filter_excluded_containers(all_containers)
 
+        max_container_age = dateparser.parse(
+            config["gc"]["max_container_age"],
+            settings={"TO_TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True},
+        )
+
+        if not max_container_age:
+            return
+
         self.logger.info(
-            "Removing containers older than '{}'".format(
-                timedelta(config["gc"]["max_container_age"], dt_format="%Y-%m-%d, %H:%M:%S")
-            )
+            f"Removing containers older than '{max_container_age.strftime('%Y-%m-%d, %H:%M:%S')}'"
         )
 
         for container_summary in reversed(list(filtered_containers)):
@@ -51,7 +58,7 @@ class GarbageCollector:
             )
             if not container or not self._should_remove_container(
                 container,
-                timedelta(config["gc"]["max_container_age"]),
+                max_container_age,
             ):
                 continue
 
@@ -103,7 +110,9 @@ class GarbageCollector:
                         return True
         return False
 
-    def _should_remove_container(self, container: dict[str, Any], min_date: Any) -> bool:
+    def _should_remove_container(
+        self, container: dict[str, Any], min_date: datetime.datetime
+    ) -> bool:
         state = container.get("State", {})
 
         if state.get("Running"):
@@ -120,14 +129,14 @@ class GarbageCollector:
         finished_date = dateutil.parser.parse(state["FinishedAt"])
         return finished_date < min_date
 
-    def _get_all_containers(self) -> list[dict[str, Any]]:
+    def _get_all_containers(self) -> Any:
         client = self.docker
         self.logger.info("Getting all containers")
         containers = client.containers(all=True)
         self.logger.info("Found %s containers", len(containers))
         return containers
 
-    def _get_all_images(self) -> list[dict[str, Any]]:
+    def _get_all_images(self) -> Any:
         client = self.docker
         self.logger.info("Getting all images")
         images = client.images()
@@ -141,7 +150,7 @@ class GarbageCollector:
         self.logger.info("Found %s dangling volumes", len(volumes))
         return volumes
 
-    def cleanup_images(self, exclude_set: set) -> None:
+    def cleanup_images(self, exclude_set: set[str]) -> None:
         """Identify old images and remove them."""
         # re-fetch container list so that we don't  include removed containers
         client = self.docker
@@ -149,28 +158,34 @@ class GarbageCollector:
 
         containers = self._get_all_containers()
         images = self._get_all_images()
-        if docker.utils.compare_version("1.21", client._version) < 0:
-            image_tags_in_use = {container["Image"] for container in containers}
+        if docker.utils.compare_version("1.21", client.api_version) < 0:
+            image_tags_in_use = {container.get("Image", "") for container in containers}
             images = self._filter_images_in_use(images, image_tags_in_use)
         else:
             # ImageID field was added in 1.21
-            image_ids_in_use = {container["ImageID"] for container in containers}
+            image_ids_in_use = {container.get("ImageID", "") for container in containers}
             images = self._filter_images_in_use_by_id(images, image_ids_in_use)
         images = self._filter_excluded_images(images, exclude_set)
 
+        max_image_age = dateparser.parse(
+            config["gc"]["max_image_age"],
+            settings={"TO_TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True},
+        )
+
+        if not max_image_age:
+            return
+
         self.logger.info(
-            "Removing images older than '{}'".format(
-                timedelta(config["gc"]["max_image_age"], dt_format="%Y-%m-%d, %H:%M:%S")
-            )
+            f"Removing images older than '{max_image_age.strftime('%Y-%m-%d, %H:%M:%S')}'"
         )
         for image_summary in reversed(list(images)):
-            self._remove_image(image_summary, timedelta(config["gc"]["max_image_age"]))
+            self._remove_image(image_summary, max_image_age)
 
     def _filter_excluded_images(
-        self, images: list[dict[str, Any]], exclude_set: set
+        self, images: list[dict[str, Any]], exclude_set: set[str]
     ) -> list[dict[str, Any]]:
         def include_image(image_summary: dict[str, Any]) -> bool:
-            image_tags = image_summary.get("RepoTags")
+            image_tags = image_summary.get("RepoTags", [])
             if self._no_image_tags(image_tags):
                 return True
             for exclude_pattern in exclude_set:
@@ -181,10 +196,10 @@ class GarbageCollector:
         return list(filter(include_image, images))
 
     def _filter_images_in_use(
-        self, images: list[dict[str, Any]], image_tags_in_use: set
+        self, images: list[dict[str, Any]], image_tags_in_use: set[str]
     ) -> list[dict[str, Any]]:
-        def get_tag_set(image_summary: dict[str, Any]) -> set:
-            image_tags = image_summary.get("RepoTags")
+        def get_tag_set(image_summary: dict[str, Any]) -> set[str]:
+            image_tags = image_summary.get("RepoTags", [])
             if self._no_image_tags(image_tags):
                 # The repr of the image Id used by client.containers()
                 return {"{id}:latest".format(id=image_summary["Id"][:12])}
@@ -196,14 +211,14 @@ class GarbageCollector:
         return list(filter(image_not_in_use, images))
 
     def _filter_images_in_use_by_id(
-        self, images: list[dict[str, Any]], image_ids_in_use: set
+        self, images: list[dict[str, Any]], image_ids_in_use: set[str]
     ) -> list[dict[str, Any]]:
         def image_not_in_use(image_summary: dict[str, Any]) -> bool:
             return image_summary["Id"] not in image_ids_in_use
 
         return list(filter(image_not_in_use, images))
 
-    def _is_image_old(self, image: dict[str, Any], min_date: Any) -> bool:
+    def _is_image_old(self, image: dict[str, Any], min_date: datetime.datetime) -> bool:
         return dateutil.parser.parse(image["Created"]) < min_date
 
     def _no_image_tags(self, image_tags: list[str] | None) -> bool:
@@ -221,7 +236,7 @@ class GarbageCollector:
         if config["dry_run"]:
             return
 
-        image_tags = image_summary.get("RepoTags")
+        image_tags = image_summary.get("RepoTags", [])
         # If there are no tags, remove the id
         if self._no_image_tags(image_tags):
             self._api_call(client.remove_image, image=image_summary["Id"])
@@ -252,7 +267,7 @@ class GarbageCollector:
             self.logger.info("Removing dangling volume %s", volume["Name"])
             self._remove_volume(volume)
 
-    def _api_call(self, func: Callable, **kwargs: Any) -> Any:
+    def _api_call(self, func: Callable[..., str | None], **kwargs: Any) -> Any:
         try:
             return func(**kwargs)
         except requests.exceptions.Timeout as e:
@@ -271,7 +286,7 @@ class GarbageCollector:
 
         return "{id} {tags}".format(id=image["Id"][:16], tags=get_tags())
 
-    def _build_exclude_set(self) -> set:
+    def _build_exclude_set(self) -> set[str]:
         config = self.config.config
 
         def is_image_tag(line: str) -> bool:
@@ -295,7 +310,7 @@ class GarbageCollector:
             )
         config["gc"]["exclude_container_labels"] = exclude_labels
 
-    def _get_docker_client(self) -> Any:
+    def _get_docker_client(self) -> docker.APIClient:
         config = self.config.config
         try:
             return docker.APIClient(version="auto", timeout=config["http_timeout"])

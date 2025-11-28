@@ -36,7 +36,7 @@ version = "25.4.0"
 description = "Classes Without Boilerplate"
 optional = false
 python-versions = ">=3.9"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "attrs-25.4.0-py3-none-any.whl", hash = "sha256:adcf7e2a1fb3b36ac48d97835bb6d8ade15b8dcce26aba8bf1d14847b57a3373"},
     {file = "attrs-25.4.0.tar.gz", hash = "sha256:16d5969b87f0859ef33a48b35d55ac1be6e42ae49d5e853b597db70c35c57e11"},
@@ -952,7 +952,7 @@ version = "0.37.0"
 description = "JSON Referencing + Python"
 optional = false
 python-versions = ">=3.10"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "referencing-0.37.0-py3-none-any.whl", hash = "sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"},
     {file = "referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8"},
@@ -1116,7 +1116,7 @@ version = "0.29.0"
 description = "Python bindings to Rust's persistent data structures (rpds)"
 optional = false
 python-versions = ">=3.10"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "rpds_py-0.29.0-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:4ae4b88c6617e1b9e5038ab3fccd7bac0842fdda2b703117b2aa99bc85379113"},
     {file = "rpds_py-0.29.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:7d9128ec9d8cecda6f044001fde4fb71ea7c24325336612ef8179091eb9596b9"},
@@ -1392,6 +1392,30 @@ files = [
 ]
 
 [[package]]
+name = "types-colorama"
+version = "0.4.15.20250801"
+description = "Typing stubs for colorama"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_colorama-0.4.15.20250801-py3-none-any.whl", hash = "sha256:b6e89bd3b250fdad13a8b6a465c933f4a5afe485ea2e2f104d739be50b13eea9"},
+    {file = "types_colorama-0.4.15.20250801.tar.gz", hash = "sha256:02565d13d68963d12237d3f330f5ecd622a3179f7b5b14ee7f16146270c357f5"},
+]
+
+[[package]]
+name = "types-dateparser"
+version = "1.2.2.20250809"
+description = "Typing stubs for dateparser"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_dateparser-1.2.2.20250809-py3-none-any.whl", hash = "sha256:f12ae46abc3085e60e16fbe55730c5acbce980cbe3b176b17b08b4cef85850ef"},
+    {file = "types_dateparser-1.2.2.20250809.tar.gz", hash = "sha256:a898f5527e6c34d213bc5d85254b8246d8b1e76239ed9243711198add0c8a29c"},
+]
+
+[[package]]
 name = "types-docker"
 version = "7.1.0.20251009"
 description = "Typing stubs for docker"
@@ -1409,6 +1433,21 @@ types-requests = "*"
 urllib3 = ">=2"
 
 [[package]]
+name = "types-jsonschema"
+version = "4.25.1.20251009"
+description = "Typing stubs for jsonschema"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_jsonschema-4.25.1.20251009-py3-none-any.whl", hash = "sha256:f30b329037b78e7a60146b1146feb0b6fb0b71628637584409bada83968dad3e"},
+    {file = "types_jsonschema-4.25.1.20251009.tar.gz", hash = "sha256:75d0f5c5dd18dc23b664437a0c1a625743e8d2e665ceaf3aecb29841f3a5f97f"},
+]
+
+[package.dependencies]
+referencing = "*"
+
+[[package]]
 name = "types-paramiko"
 version = "4.0.0.20250822"
 description = "Typing stubs for paramiko"
@@ -1422,6 +1461,18 @@ files = [
 
 [package.dependencies]
 cryptography = ">=37.0.0"
+
+[[package]]
+name = "types-python-dateutil"
+version = "2.9.0.20251115"
+description = "Typing stubs for python-dateutil"
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "types_python_dateutil-2.9.0.20251115-py3-none-any.whl", hash = "sha256:9cf9c1c582019753b8639a081deefd7e044b9fa36bd8217f565c6c4e36ee0624"},
+    {file = "types_python_dateutil-2.9.0.20251115.tar.gz", hash = "sha256:8a47f2c3920f52a994056b8786309b43143faa5a64d4cbb2722d6addabdf1a58"},
+]
 
 [[package]]
 name = "types-requests"
@@ -1540,4 +1591,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "ab8b308b122fe7e6c6f4c76321c43a38b739aa7b741a0774797a5800cf5cda53"
+content-hash = "ad736edae186caae3c7e3bf4aee71b00fa4781695a141c767f9b77da24c599ba"

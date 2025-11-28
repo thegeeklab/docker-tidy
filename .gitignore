@@ -112,3 +112,4 @@ resources/_gen/
 .dockertidy*
 CHANGELOG.md
 .ruff_cache
+.mypy_cache

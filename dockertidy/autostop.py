@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Stop long running docker images."""
 
+import datetime
 from collections.abc import Callable
 from typing import Any
 
+import dateparser
 import dateutil.parser
 import docker
 import docker.errors
@@ -11,7 +13,6 @@ import requests.exceptions
 
 from dockertidy.config import SingleConfig
 from dockertidy.logger import SingleLog
-from dockertidy.parser import timedelta
 
 
 class AutoStop:
@@ -28,16 +29,21 @@ class AutoStop:
         client = self.docker
         config = self.config.config
 
-        max_run_time = timedelta(config["stop"]["max_run_time"])
+        max_run_time = dateparser.parse(
+            config["stop"]["max_run_time"],
+            settings={"TO_TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True},
+        )
+
+        if not max_run_time:
+            return
+
         prefix = config["stop"]["prefix"]
         dry_run = config["dry_run"]
 
         matcher = self._build_container_matcher(prefix)
 
         self.logger.info(
-            "Stopping containers older than '{}'".format(
-                timedelta(config["stop"]["max_run_time"], dt_format="%Y-%m-%d, %H:%M:%S")
-            )
+            f"Stopping containers older than '{max_run_time.strftime('%Y-%m-%d, %H:%M:%S')}'"
         )
         for container_summary in client.containers():
             container = client.inspect_container(container_summary["Id"])
@@ -69,10 +75,15 @@ class AutoStop:
 
         return matcher
 
-    def _has_been_running_since(self, container: dict[str, Any], min_time: Any) -> bool:
+    def _has_been_running_since(
+        self, container: dict[str, Any], min_time: datetime.datetime | None
+    ) -> bool:
         started_at = container.get("State", {}).get("StartedAt")
         if not started_at:
             return False
+
+        if min_time is None:
+            return True
 
         return dateutil.parser.parse(started_at) <= min_time
 
