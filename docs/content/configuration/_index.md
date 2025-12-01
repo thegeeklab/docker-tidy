@@ -3,7 +3,9 @@ title: Configuration
 ---
 
 <!-- spellchecker-disable -->
+
 {{< toc >}}
+
 <!-- spellchecker-enable -->
 
 _docker-tidy_ comes with default settings which should be sufficient for most users to start, but you can adjust most settings to your needs.
