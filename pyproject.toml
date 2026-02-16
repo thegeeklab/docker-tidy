@@ -31,7 +31,7 @@ repository = "https://github.com/thegeeklab/docker-tidy/"
 version = "0.0.0"
 
 [tool.poetry.dependencies]
-anyconfig = "0.15.0"
+anyconfig = "0.15.1"
 appdirs = "1.4.4"
 certifi = "2026.1.4"
 colorama = "0.4.6"
