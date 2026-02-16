@@ -2,13 +2,14 @@
 
 [[package]]
 name = "anyconfig"
-version = "0.14.0"
+version = "0.15.0"
 description = "Library provides common APIs to load and dump configuration files in various formats"
 optional = false
-python-versions = "*"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "anyconfig-0.14.0.tar.gz", hash = "sha256:2cdf54af5dae8e91743ded82c54ed9d8aaefa3a9722f5d45e9b5f74b603e014d"},
+    {file = "anyconfig-0.15.0-py3-none-any.whl", hash = "sha256:59ca0d40308b8dd5d838f0d720e0c7207bd58b61069c30e53f3da1e35e093861"},
+    {file = "anyconfig-0.15.0.tar.gz", hash = "sha256:01555bf2a0cc8a1203accdb87bf7a7d6dd4e77846ca2c51240d6729ea211f3f3"},
 ]
 
 [package.extras]
@@ -1650,4 +1651,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "51b3bbb3134d1e8a8d6c65be1769f2707bfe7d2b617e77134d95c82440b7fb0c"
+content-hash = "56dacf3f9bf557cabf9d4c807daf70faeb0acc2c7e29fd635d5d765ed3488940"
