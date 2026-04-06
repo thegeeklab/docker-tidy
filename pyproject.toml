@@ -56,17 +56,17 @@ zipp = "3.23.0"
 docker-tidy = "dockertidy.cli:main"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "0.15.8"
+ruff = "0.15.9"
 pytest = "9.0.2"
 pytest-mock = "3.15.1"
 pytest-cov = "7.1.0"
 toml = "0.10.2"
 types-appdirs = "1.4.3.5"
-types-docker = "7.1.0.20260328"
-mypy = "1.19.1"
-types-python-dateutil = "2.9.0.20260323"
+types-docker = "7.1.0.20260403"
+mypy = "1.20.0"
+types-python-dateutil = "2.9.0.20260402"
 types-dateparser = "1.4.0.20260328"
-types-jsonschema = "4.26.0.20260325"
+types-jsonschema = "4.26.0.20260402"
 types-colorama = "0.4.15.20250801"
 
 [tool.poetry-dynamic-versioning]
