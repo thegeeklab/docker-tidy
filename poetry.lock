@@ -618,14 +618,14 @@ django = ["dj-database-url", "dj-email-url", "django-cache-url"]
 
 [[package]]
 name = "idna"
-version = "3.13"
+version = "3.14"
 description = "Internationalized Domain Names in Applications (IDNA)"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "idna-3.13-py3-none-any.whl", hash = "sha256:892ea0cde124a99ce773decba204c5552b69c3c67ffd5f232eb7696135bc8bb3"},
-    {file = "idna-3.13.tar.gz", hash = "sha256:585ea8fe5d69b9181ec1afba340451fba6ba764af97026f92a91d4eef164a242"},
+    {file = "idna-3.14-py3-none-any.whl", hash = "sha256:e677eaf072e290f7b725f9acf0b3a2bd55f9fd6f7c70abe5f0e34823d0accf69"},
+    {file = "idna-3.14.tar.gz", hash = "sha256:466d810d7a2cc1022bea9b037c39728d51ae7dad40d480fc9b7d7ecf98ba8ee3"},
 ]
 
 [package.extras]
@@ -1693,4 +1693,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "5a1abab614d71b12023ec436e2fe38ae75781e3f6d4573d19c1284fbe012fefc"
+content-hash = "123edab397e25d8d8027b8b0fd28c2a3b1cfcad0773d749bc69d6aaf452315f3"
