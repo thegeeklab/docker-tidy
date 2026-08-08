@@ -40,6 +40,32 @@ docker-tidy gc --max-container-age "3 days ago" --max-image-age "30 days ago"
         more than once.
 ```
 
+### Free disk space by removing oldest images
+
+`docker-tidy gc` can remove the oldest unused images until a target amount of free disk space is available on the Docker data filesystem. This is an alternative to time-based image removal when you care more about disk pressure than image age.
+
+The target can be specified as an absolute size or a percentage of the filesystem:
+
+```Shell
+# Remove oldest images until at least 10 GB is free
+docker-tidy gc --min-free-disk-space 10GB
+
+# Remove oldest images until at least 15% of the filesystem is free
+docker-tidy gc --min-free-disk-space 15%
+```
+
+Supported size units: `B`, `KB`/`K`, `MB`/`M`, `GB`/`G`, `TB`/`T`.
+
+By default, the filesystem containing `/var/lib/docker` is checked. To monitor a different path:
+
+```Shell
+docker-tidy gc --min-free-disk-space 5GB --disk-path /mnt/docker-data
+```
+
+Images are removed oldest-first, respecting `--exclude-image` and in-use filters. The tool re-checks free space after each removal and stops once the target is met.
+
+This flag can be combined with `--max-image-age` and other cleanup flags; each runs independently.
+
 ## Autostop
 
 Stop containers that have been running for too long.

@@ -1,14 +1,19 @@
 """Test GarbageCollector class."""
 # cspell:ignore abcdabcdabcdabcd,babababababaabababab,abbb,abcda
 
+import datetime
+from collections import namedtuple
+
 import docker
 import pytest
 import requests
-import datetime
 
 from dockertidy import garbage_collector
+from dockertidy.garbage_collector import parse_disk_size
 from pytest_mock import MockFixture
 from typing import Any
+
+DiskUsage = namedtuple("DiskUsage", ["total", "used", "free"])
 
 pytest_plugins = [
     "dockertidy.test.fixtures.fixtures",
@@ -464,3 +469,220 @@ def test_build_exclude_set_empty(gc: garbage_collector.GarbageCollector) -> None
 
 def test_get_docker_client(gc: garbage_collector.GarbageCollector, mocker: MockFixture) -> None:
     assert isinstance(gc.docker, docker.APIClient)
+
+
+def test_parse_disk_size_bytes() -> None:
+    assert parse_disk_size("10GB") == (10 * 1024**3, False)
+    assert parse_disk_size("500MB") == (500 * 1024**2, False)
+    assert parse_disk_size("1TB") == (1024**4, False)
+    assert parse_disk_size("100KB") == (100 * 1024, False)
+    assert parse_disk_size("1024B") == (1024, False)
+    assert parse_disk_size("2048") == (2048, False)
+    assert parse_disk_size("1G") == (1024**3, False)
+    assert parse_disk_size("1M") == (1024**2, False)
+    assert parse_disk_size("1K") == (1024, False)
+    assert parse_disk_size("1T") == (1024**4, False)
+
+
+def test_parse_disk_size_percent() -> None:
+    assert parse_disk_size("10%") == (10, True)
+    assert parse_disk_size("50%") == (50, True)
+    assert parse_disk_size("1%") == (1, True)
+    assert parse_disk_size("100%") == (100, True)
+
+
+def test_parse_disk_size_percent_invalid() -> None:
+    with pytest.raises(ValueError, match="Percentage must be between 1 and 100"):
+        parse_disk_size("0%")
+    with pytest.raises(ValueError, match="Percentage must be between 1 and 100"):
+        parse_disk_size("101%")
+    with pytest.raises(ValueError, match="Percentage must be between 1 and 100"):
+        parse_disk_size("200%")
+
+
+def test_parse_disk_size_invalid() -> None:
+    with pytest.raises(ValueError, match="Size must be positive"):
+        parse_disk_size("0")
+    with pytest.raises(ValueError, match="Size must be positive"):
+        parse_disk_size("0GB")
+    with pytest.raises(ValueError, match="Size must be positive"):
+        parse_disk_size("-1GB")
+    with pytest.raises(ValueError, match="Invalid size format"):
+        parse_disk_size("abc")
+
+
+def test_cleanup_images_by_space_already_free(
+    mocker: MockFixture, gc: garbage_collector.GarbageCollector,
+) -> None:
+    client = mocker.create_autospec(docker.APIClient)
+    usage = DiskUsage(total=100 * 1024**3, used=10 * 1024**3, free=90 * 1024**3)
+    mocker.patch.object(gc, "_get_disk_usage", return_value=usage)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "1MB"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+
+    mock_log = mocker.patch.object(gc, "logger", autospec=True)
+    gc.docker = client
+    gc.cleanup_images_by_space(set())
+
+    client.images.assert_not_called()
+    mock_log.info.assert_called_once()
+    assert "already above" in mock_log.info.call_args[0][0]
+
+
+def test_cleanup_images_by_space_removes_oldest_first(
+    mocker: MockFixture,
+    gc: garbage_collector.GarbageCollector,
+    images_by_age: list[dict[str, Any]],
+) -> None:
+    client = mocker.create_autospec(docker.APIClient)
+    client._version = "1.21"
+    client.containers.return_value = []
+    client.images.return_value = list(images_by_age)
+    inspect_image_returns = [
+        {"Id": "img_newest", "Created": "2024-06-01T00:00:00Z"},
+        {"Id": "img_mid", "Created": "2023-06-01T00:00:00Z"},
+        {"Id": "img_oldest", "Created": "2022-06-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+    ]
+    client.inspect_image.side_effect = iter(inspect_image_returns)
+
+    usage_calls = [
+        DiskUsage(total=100 * 1024**3, used=95 * 1024**3, free=5 * 1024**3),
+        DiskUsage(total=100 * 1024**3, used=92 * 1024**3, free=8 * 1024**3),
+        DiskUsage(total=100 * 1024**3, used=80 * 1024**3, free=20 * 1024**3),
+    ]
+    mocker.patch.object(gc, "_get_disk_usage", side_effect=usage_calls)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "10GB"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+    gc.docker = client
+
+    gc.cleanup_images_by_space(set())
+
+    remove_calls = client.remove_image.mock_calls
+    assert len(remove_calls) == 1
+    assert mocker.call(image="img_none") in remove_calls
+
+
+def test_cleanup_images_by_space_dry_run(
+    mocker: MockFixture,
+    gc: garbage_collector.GarbageCollector,
+    images_by_age: list[dict[str, Any]],
+) -> None:
+    client = mocker.create_autospec(docker.APIClient)
+    client._version = "1.21"
+    client.containers.return_value = []
+    client.images.return_value = list(images_by_age)
+    client.inspect_image.side_effect = lambda image: {
+        "Id": image,
+        "Created": next(
+            img["Created"] for img in images_by_age if img["Id"] == image
+        ),
+    }
+
+    usage = DiskUsage(total=100 * 1024**3, used=99 * 1024**3, free=1 * 1024**3)
+    mocker.patch.object(gc, "_get_disk_usage", return_value=usage)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "10GB"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+    gc.config.config["dry_run"] = True
+    gc.docker = client
+
+    gc.cleanup_images_by_space(set())
+
+    client.remove_image.assert_not_called()
+
+
+def test_cleanup_images_by_space_no_images(
+    mocker: MockFixture, gc: garbage_collector.GarbageCollector,
+) -> None:
+    client = mocker.create_autospec(docker.APIClient)
+    client._version = "1.21"
+    client.containers.return_value = []
+    client.images.return_value = []
+
+    usage = DiskUsage(total=100 * 1024**3, used=99 * 1024**3, free=1 * 1024**3)
+    mocker.patch.object(gc, "_get_disk_usage", return_value=usage)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "10GB"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+    gc.docker = client
+
+    gc.cleanup_images_by_space(set())
+
+    client.remove_image.assert_not_called()
+
+
+def test_cleanup_images_by_space_percentage(
+    mocker: MockFixture,
+    gc: garbage_collector.GarbageCollector,
+    images_by_age: list[dict[str, Any]],
+) -> None:
+    client = mocker.MagicMock(spec=docker.APIClient)
+    client.api_version = "1.21"
+    client.containers.return_value = []
+    client.images.return_value = list(images_by_age)
+
+    inspect_image_returns = [
+        {"Id": "img_newest", "Created": "2024-06-01T00:00:00Z"},
+        {"Id": "img_mid", "Created": "2023-06-01T00:00:00Z"},
+        {"Id": "img_oldest", "Created": "2022-06-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+    ]
+    client.inspect_image.side_effect = iter(inspect_image_returns)
+
+    usage_calls = [
+        DiskUsage(total=100 * 1024**3, used=95 * 1024**3, free=5 * 1024**3),
+        DiskUsage(total=100 * 1024**3, used=95 * 1024**3, free=5 * 1024**3),
+        DiskUsage(total=100 * 1024**3, used=85 * 1024**3, free=15 * 1024**3),
+    ]
+    mocker.patch.object(gc, "_get_disk_usage", side_effect=usage_calls)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "10%"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+    gc.config.config["dry_run"] = False
+    gc.docker = client
+
+    gc.cleanup_images_by_space(set())
+
+    assert len(client.remove_image.mock_calls) == 1
+    assert mocker.call(image="img_none") in client.remove_image.mock_calls
+
+
+def test_cleanup_images_by_space_with_excluded(
+    mocker: MockFixture,
+    gc: garbage_collector.GarbageCollector,
+    images_by_age: list[dict[str, Any]],
+) -> None:
+    client = mocker.MagicMock(spec=docker.APIClient)
+    client.api_version = "1.21"
+    client.containers.return_value = []
+    client.images.return_value = list(images_by_age)
+    inspect_image_returns = [
+        {"Id": "img_newest", "Created": "2024-06-01T00:00:00Z"},
+        {"Id": "img_mid", "Created": "2023-06-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+        {"Id": "img_none", "Created": "2022-01-01T00:00:00Z"},
+        {"Id": "img_mid", "Created": "2023-06-01T00:00:00Z"},
+        {"Id": "img_newest", "Created": "2024-06-01T00:00:00Z"},
+    ]
+    client.inspect_image.side_effect = iter(inspect_image_returns)
+
+    usage = DiskUsage(total=100 * 1024**3, used=99 * 1024**3, free=1 * 1024**3)
+    mocker.patch.object(gc, "_get_disk_usage", return_value=usage)
+
+    gc.config.config["gc"]["min_free_disk_space"] = "100GB"
+    gc.config.config["gc"]["disk_path"] = "/var/lib/docker"
+    gc.config.config["dry_run"] = False
+    gc.docker = client
+
+    gc.cleanup_images_by_space({"app:oldest"})
+
+    remove_calls = client.remove_image.mock_calls
+    assert mocker.call(image="app:oldest") not in remove_calls
+    assert mocker.call(image="img_none") in remove_calls
+    assert mocker.call(image="app:mid") in remove_calls
+    assert mocker.call(image="app:newest") in remove_calls

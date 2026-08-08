@@ -41,6 +41,8 @@ gc:
   dangling_volumes: false
   exclude_images: []
   exclude_container_labels: []
+  min_free_disk_space:
+  disk_path: /var/lib/docker
 
 stop:
   max_run_time:
@@ -68,6 +70,8 @@ TIDY_GC_DANGLING_VOLUMES=False
 TIDY_GC_EXCLUDE_IMAGES=
 # comma-separated list
 TIDY_GC_EXCLUDE_CONTAINER_LABELS=
+TIDY_GC_MIN_FREE_DISK_SPACE=
+TIDY_GC_DISK_PATH=/var/lib/docker
 TIDY_STOP_MAX_RUN_TIME=
 # comma-separated list
 TIDY_STOP_PREFIX=

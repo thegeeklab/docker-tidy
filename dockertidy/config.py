@@ -93,6 +93,18 @@ class Config:
             "file": True,
             "type": environs.Env().list,
         },
+        "gc.min_free_disk_space": {
+            "default": "",
+            "env": "GC_MIN_FREE_DISK_SPACE",
+            "file": True,
+            "type": environs.Env().str,
+        },
+        "gc.disk_path": {
+            "default": "/var/lib/docker",
+            "env": "GC_DISK_PATH",
+            "file": True,
+            "type": environs.Env().str,
+        },
         "stop.max_run_time": {
             "default": "",
             "env": "STOP_MAX_RUN_TIME",

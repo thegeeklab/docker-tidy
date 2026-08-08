@@ -97,6 +97,21 @@ class DockerTidy:
             metavar="EXCLUDE_CONTAINER_LABEL",
             help="never remove containers with this label key or label key=value",
         )
+        parser_gc.add_argument(
+            "--min-free-disk-space",
+            type=str,
+            dest="gc.min_free_disk_space",
+            metavar="MIN_FREE_DISK_SPACE",
+            help="remove oldest images until this much free disk space is available "
+            "(e.g. 10GB, 500MB, 5%%)",
+        )
+        parser_gc.add_argument(
+            "--disk-path",
+            type=str,
+            dest="gc.disk_path",
+            metavar="DISK_PATH",
+            help="filesystem path to check for free disk space (default: /var/lib/docker)",
+        )
 
         parser_stop = subparsers.add_parser(
             "stop", help="stop containers that have been running for too long"
