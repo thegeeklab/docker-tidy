@@ -384,9 +384,7 @@ class GarbageCollector:
 
         usage = self._get_disk_usage(disk_path)
 
-        target_bytes = (
-            int(usage.total * (target_value / 100.0)) if is_percent else target_value
-        )
+        target_bytes = int(usage.total * (target_value / 100.0)) if is_percent else target_value
 
         if usage.free >= target_bytes:
             self.logger.info(
@@ -418,8 +416,7 @@ class GarbageCollector:
             current_usage = self._get_disk_usage(disk_path)
             if current_usage.free >= target_bytes:
                 self.logger.info(
-                    f"Reached target free space: "
-                    f"{current_usage.free / 1024**3:.1f}GB free"
+                    f"Reached target free space: {current_usage.free / 1024**3:.1f}GB free"
                 )
                 break
 
