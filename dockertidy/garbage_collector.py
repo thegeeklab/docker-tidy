@@ -3,6 +3,7 @@
 
 import datetime
 import fnmatch
+import shutil
 from collections import namedtuple
 from collections.abc import Callable
 from typing import Any
@@ -16,6 +17,51 @@ import requests.exceptions
 
 from dockertidy.config import SingleConfig
 from dockertidy.logger import SingleLog
+
+SIZE_UNITS: dict[str, int] = {
+    "B": 1,
+    "K": 1024,
+    "KB": 1024,
+    "M": 1024**2,
+    "MB": 1024**2,
+    "G": 1024**3,
+    "GB": 1024**3,
+    "T": 1024**4,
+    "TB": 1024**4,
+}
+
+
+def parse_disk_size(value: str) -> tuple[int, bool]:
+    """
+    Parse a disk space string like '10GB' or '15%'.
+
+    Returns (bytes, is_percentage).
+    """
+    value = value.strip().upper()
+    if value.endswith("%"):
+        try:
+            percent = int(value[:-1])
+        except ValueError as e:
+            raise ValueError(f"Invalid percentage format: '{value}'") from e
+        if not 1 <= percent <= 100:
+            raise ValueError(f"Percentage must be between 1 and 100, got {percent}%")
+        return (percent, True)
+    for unit, multiplier in sorted(SIZE_UNITS.items(), key=lambda x: len(x[0]), reverse=True):
+        if value.endswith(unit) and len(unit) > 0 and value != unit:
+            try:
+                number = int(value[: -len(unit)])
+            except ValueError as e:
+                raise ValueError(f"Invalid size format: '{value}'") from e
+            if number <= 0:
+                raise ValueError(f"Size must be positive, got '{value}'")
+            return (number * multiplier, False)
+    try:
+        bytes_value = int(value)
+    except ValueError as e:
+        raise ValueError(f"Invalid size format: '{value}'") from e
+    if bytes_value <= 0:
+        raise ValueError(f"Size must be positive, got '{value}'")
+    return (bytes_value, False)
 
 
 class GarbageCollector:
@@ -150,22 +196,23 @@ class GarbageCollector:
         self.logger.info("Found %s dangling volumes", len(volumes))
         return volumes
 
-    def cleanup_images(self, exclude_set: set[str]) -> None:
-        """Identify old images and remove them."""
-        # re-fetch container list so that we don't  include removed containers
+    def _get_removable_images(self, exclude_set: set[str]) -> list[dict[str, Any]]:
         client = self.docker
-        config = self.config.config
-
         containers = self._get_all_containers()
         images = self._get_all_images()
         if docker.utils.compare_version("1.21", client.api_version) < 0:
             image_tags_in_use = {container.get("Image", "") for container in containers}
             images = self._filter_images_in_use(images, image_tags_in_use)
         else:
-            # ImageID field was added in 1.21
             image_ids_in_use = {container.get("ImageID", "") for container in containers}
             images = self._filter_images_in_use_by_id(images, image_ids_in_use)
-        images = self._filter_excluded_images(images, exclude_set)
+        return self._filter_excluded_images(images, exclude_set)
+
+    def cleanup_images(self, exclude_set: set[str]) -> None:
+        """Identify old images and remove them."""
+        config = self.config.config
+
+        images = self._get_removable_images(exclude_set)
 
         max_image_age = dateparser.parse(
             config["gc"]["max_image_age"],
@@ -224,6 +271,15 @@ class GarbageCollector:
     def _no_image_tags(self, image_tags: list[str] | None) -> bool:
         return not image_tags or image_tags == ["<none>:<none>"]
 
+    def _remove_image_tags(self, image_summary: dict[str, Any]) -> None:
+        client = self.docker
+        image_tags = image_summary.get("RepoTags", [])
+        if self._no_image_tags(image_tags):
+            self._api_call(client.remove_image, image=image_summary["Id"])
+        else:
+            for image_tag in image_tags:
+                self._api_call(client.remove_image, image=image_tag)
+
     def _remove_image(self, image_summary: dict[str, Any], min_date: Any) -> None:
         config = self.config.config
         client = self.docker
@@ -236,15 +292,7 @@ class GarbageCollector:
         if config["dry_run"]:
             return
 
-        image_tags = image_summary.get("RepoTags", [])
-        # If there are no tags, remove the id
-        if self._no_image_tags(image_tags):
-            self._api_call(client.remove_image, image=image_summary["Id"])
-            return
-
-        # Remove any repository tags so we don't  hit 409 Conflict
-        for image_tag in image_tags:
-            self._api_call(client.remove_image, image=image_tag)
+        self._remove_image_tags(image_summary)
 
     def _remove_volume(self, volume: dict[str, Any]) -> None:
         config = self.config.config
@@ -317,18 +365,86 @@ class GarbageCollector:
         except docker.errors.DockerException as e:
             self.log.sysexit_with_message(f"Can't create docker client\n{e}")
 
+    def _get_disk_usage(self, path: str) -> Any:
+        try:
+            return shutil.disk_usage(path)
+        except OSError as e:
+            self.log.sysexit_with_message(f"Cannot check disk space at '{path}': {e}")
+
+    def cleanup_images_by_space(self, exclude_set: set[str]) -> None:
+        """Remove oldest images until the target free disk space is reached."""
+        config = self.config.config
+        client = self.docker
+
+        try:
+            target_value, is_percent = parse_disk_size(config["gc"]["min_free_disk_space"])
+        except ValueError as e:
+            self.log.sysexit_with_message(str(e))
+        disk_path = config["gc"]["disk_path"]
+
+        usage = self._get_disk_usage(disk_path)
+
+        target_bytes = int(usage.total * (target_value / 100.0)) if is_percent else target_value
+
+        if usage.free >= target_bytes:
+            self.logger.info(
+                f"Free disk space ({usage.free / 1024**3:.1f}GB) already above "
+                f"target ({target_bytes / 1024**3:.1f}GB), skipping image cleanup by space"
+            )
+            return
+
+        self.logger.info(
+            f"Target: {target_bytes / 1024**3:.1f}GB free, "
+            f"current: {usage.free / 1024**3:.1f}GB free, "
+            f"removing oldest images until target is reached"
+        )
+
+        images = self._get_removable_images(exclude_set)
+
+        decorated: list[tuple[dict[str, Any], dict[str, Any] | None, datetime.datetime]] = []
+        for image_summary in images:
+            image = self._api_call(client.inspect_image, image=image_summary["Id"])
+            if image:
+                created = dateutil.parser.parse(image["Created"])
+            else:
+                created = datetime.datetime.max.replace(tzinfo=datetime.timezone.utc)
+            decorated.append((image_summary, image, created))
+
+        decorated.sort(key=lambda x: x[2])
+
+        for image_summary, image, _ in decorated:
+            current_usage = self._get_disk_usage(disk_path)
+            if current_usage.free >= target_bytes:
+                self.logger.info(
+                    f"Reached target free space: {current_usage.free / 1024**3:.1f}GB free"
+                )
+                break
+
+            if not image:
+                continue
+
+            self.logger.info(f"Removing image {self._format_image(image, image_summary)}")
+            if config["dry_run"]:
+                continue
+
+            self._remove_image_tags(image_summary)
+
     def run(self) -> None:
         """Garbage collector main method."""
         self.logger.info("Start garbage collection")
         config = self.config.config
         self._format_exclude_labels()
 
+        exclude_set = self._build_exclude_set()
+
         if config["gc"]["max_container_age"]:
             self.cleanup_containers()
 
         if config["gc"]["max_image_age"]:
-            exclude_set = self._build_exclude_set()
             self.cleanup_images(exclude_set)
+
+        if config["gc"]["min_free_disk_space"]:
+            self.cleanup_images_by_space(exclude_set)
 
         if config["gc"]["dangling_volumes"]:
             self.cleanup_volumes()
@@ -337,5 +453,6 @@ class GarbageCollector:
             not config["gc"]["max_container_age"]
             and not config["gc"]["max_image_age"]
             and not config["gc"]["dangling_volumes"]
+            and not config["gc"]["min_free_disk_space"]
         ):
             self.logger.warning("Skipped, no arguments given")

@@ -93,3 +93,29 @@ def earlier_time() -> datetime.datetime:
 @pytest.fixture
 def later_time() -> datetime.datetime:
     return datetime.datetime(2014, 1, 20, 0, 10, tzinfo=tz.tzutc())
+
+
+@pytest.fixture
+def images_by_age() -> list[dict[str, Any]]:
+    return [
+        {
+            "Id": "img_newest",
+            "RepoTags": ["app:newest"],
+            "Created": "2024-06-01T00:00:00Z",
+        },
+        {
+            "Id": "img_mid",
+            "RepoTags": ["app:mid"],
+            "Created": "2023-06-01T00:00:00Z",
+        },
+        {
+            "Id": "img_oldest",
+            "RepoTags": ["app:oldest"],
+            "Created": "2022-06-01T00:00:00Z",
+        },
+        {
+            "Id": "img_none",
+            "RepoTags": ["<none>:<none>"],
+            "Created": "2022-01-01T00:00:00Z",
+        },
+    ]
