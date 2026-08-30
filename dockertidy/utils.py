@@ -1,35 +1,8 @@
 #!/usr/bin/env python3
 """Global utility methods and classes."""
 
+import threading
 from typing import Any
-
-
-def strtobool(value: str) -> bool:
-    """Convert a string representation of truth to true or false."""
-
-    _map = {
-        "y": True,
-        "yes": True,
-        "t": True,
-        "true": True,
-        "on": True,
-        "1": True,
-        "n": False,
-        "no": False,
-        "f": False,
-        "false": False,
-        "off": False,
-        "0": False,
-    }
-
-    try:
-        return _map[str(value).lower()]
-    except KeyError as err:
-        raise ValueError(f'"{value}" is not a valid bool value') from err
-
-
-def to_bool(string: str | bool) -> bool:
-    return bool(strtobool(str(string)))
 
 
 def dict_intersect(d1: dict[str, Any], d2: dict[str, Any]) -> dict[str, Any]:
@@ -40,11 +13,14 @@ def dict_intersect(d1: dict[str, Any], d2: dict[str, Any]) -> dict[str, Any]:
 
 
 class Singleton(type):
-    """Singleton metaclass."""
+    """Thread-safe singleton metaclass."""
 
     _instances: dict[Any, Any] = {}
+    _lock = threading.Lock()
 
     def __call__(cls, *args: Any, **kwargs: Any) -> Any:
         if cls not in cls._instances:
-            cls._instances[cls] = super().__call__(*args, **kwargs)
+            with cls._lock:
+                if cls not in cls._instances:
+                    cls._instances[cls] = super().__call__(*args, **kwargs)
         return cls._instances[cls]
