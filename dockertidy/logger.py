@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Global utility methods and classes."""
 
+import copy
 import logging
 import os
 import sys
@@ -9,16 +10,26 @@ from typing import Any, NoReturn
 import colorama
 from pythonjsonlogger.json import JsonFormatter
 
-from dockertidy.utils import Singleton, to_bool
+from dockertidy.utils import Singleton
 
-CONSOLE_FORMAT = "{}[%(levelname)s]{} %(message)s"
 JSON_FORMAT = "%(asctime)s %(levelname)s %(message)s"
+
+_LEVEL_COLORS: dict[int, tuple[str, str]] = {
+    logging.DEBUG: (colorama.Fore.BLUE, colorama.Style.BRIGHT),
+    logging.INFO: (colorama.Fore.CYAN, colorama.Style.BRIGHT),
+    logging.WARNING: (colorama.Fore.YELLOW, colorama.Style.BRIGHT),
+    logging.ERROR: (colorama.Fore.RED, colorama.Style.BRIGHT),
+    logging.CRITICAL: (colorama.Fore.RED, colorama.Style.BRIGHT),
+}
+
+_STDOUT_LEVELS = {logging.INFO, logging.WARNING}
+_STDERR_LEVELS = {logging.DEBUG, logging.ERROR, logging.CRITICAL}
 
 
 def _should_do_markup() -> bool:
-    py_colors = os.environ.get("PY_COLORS", None)
+    py_colors = os.environ.get("PY_COLORS")
     if py_colors is not None:
-        return to_bool(py_colors)
+        return py_colors.strip().lower() in {"1", "true", "yes", "on", "y", "t"}
 
     return sys.stdout.isatty() and os.environ.get("TERM") != "dumb"
 
@@ -26,36 +37,41 @@ def _should_do_markup() -> bool:
 colorama.init(autoreset=True, strip=not _should_do_markup())
 
 
-class LogFilter:
-    """A custom log filter which excludes log messages above the logged level."""
+class LevelFilter(logging.Filter):
+    """Keep only records whose level belongs to the configured level set."""
 
-    def __init__(self, level: int) -> None:
-        """
-        Initialize a new custom log filter.
+    def __init__(self, levels: set[int]) -> None:
+        super().__init__()
+        self._levels = levels
 
-        :param level: Log level limit
-        :returns: None
-
-        """
-        self.__level = level
-
-    def filter(self, logRecord: logging.LogRecord) -> bool:  # noqa
-        # https://docs.python.org/3/library/logging.html#logrecord-attributes
-        return logRecord.levelno <= self.__level
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.levelno in self._levels
 
 
-class MultilineFormatter(logging.Formatter):
-    """Logging Formatter to reset color after newline characters."""
+class ConsoleFormatter(logging.Formatter):
+    """Colorize the level prefix and reset the color after line breaks."""
 
     def format(self, record: logging.LogRecord) -> str:
-        record.msg = record.msg.replace("\n", f"\n{colorama.Style.RESET_ALL}... ")
-        return logging.Formatter.format(self, record)
+        color, style = _LEVEL_COLORS.get(record.levelno, (colorama.Fore.WHITE, ""))
+        reset = colorama.Style.RESET_ALL
+        message = record.getMessage().replace("\n", f"\n{reset}... ")
+        output = f"{color}{style}[{record.levelname}]{reset} {message}"
+
+        if record.exc_info and not record.exc_text:
+            record.exc_text = self.formatException(record.exc_info)
+        if record.exc_text:
+            if output[-1:] != "\n":
+                output += "\n"
+            output += record.exc_text
+
+        return output
 
 
 class MultilineJsonFormatter(JsonFormatter):
-    """Logging Formatter to remove newline characters."""
+    """JSON formatter that replaces line breaks in messages with spaces."""
 
     def format(self, record: logging.LogRecord) -> str:
+        record = copy.copy(record)
         record.msg = record.msg.replace("\n", " ")
         return JsonFormatter.format(self, record)
 
@@ -67,123 +83,32 @@ class Log:
         self, level: int = logging.WARNING, name: str = "dockertidy", json: bool = False
     ) -> None:
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(level)
-        self.logger.addHandler(self._get_error_handler(json=json))
-        self.logger.addHandler(self._get_warning_handler(json=json))
-        self.logger.addHandler(self._get_info_handler(json=json))
-        self.logger.addHandler(self._get_critical_handler(json=json))
-        self.logger.addHandler(self._get_debug_handler(json=json))
         self.logger.propagate = False
+        self.logger.setLevel(level)
+        self._configure(json)
 
-    def _get_error_handler(self, json: bool = False) -> logging.Handler:
-        handler = logging.StreamHandler(sys.stderr)
-        handler.setLevel(logging.ERROR)
-        handler.addFilter(LogFilter(logging.ERROR))
-        handler.setFormatter(
-            MultilineFormatter(
-                self.error(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))
-            )
-        )
+    def _configure(self, json: bool = False) -> None:
+        for handler in self.logger.handlers[:]:
+            self.logger.removeHandler(handler)
 
-        if json:
-            handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
+        self.logger.addHandler(self._get_handler(sys.stdout, _STDOUT_LEVELS, json))
+        self.logger.addHandler(self._get_handler(sys.stderr, _STDERR_LEVELS, json))
 
-        return handler
-
-    def _get_warning_handler(self, json: bool = False) -> logging.Handler:
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.WARNING)
-        handler.addFilter(LogFilter(logging.WARNING))
-        handler.setFormatter(
-            MultilineFormatter(
-                self.warning(CONSOLE_FORMAT.format(colorama.Fore.YELLOW, colorama.Style.RESET_ALL))
-            )
-        )
-
-        if json:
-            handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
-
-        return handler
-
-    def _get_info_handler(self, json: bool = False) -> logging.Handler:
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.INFO)
-        handler.addFilter(LogFilter(logging.INFO))
-        handler.setFormatter(
-            MultilineFormatter(
-                self.info(CONSOLE_FORMAT.format(colorama.Fore.CYAN, colorama.Style.RESET_ALL))
-            )
-        )
-
-        if json:
-            handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
-
-        return handler
-
-    def _get_critical_handler(self, json: bool = False) -> logging.Handler:
-        handler = logging.StreamHandler(sys.stderr)
-        handler.setLevel(logging.CRITICAL)
-        handler.addFilter(LogFilter(logging.CRITICAL))
-        handler.setFormatter(
-            MultilineFormatter(
-                self.critical(CONSOLE_FORMAT.format(colorama.Fore.RED, colorama.Style.RESET_ALL))
-            )
-        )
-
-        if json:
-            handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
-
-        return handler
-
-    def _get_debug_handler(self, json: bool = False) -> logging.Handler:
-        handler = logging.StreamHandler(sys.stderr)
+    def _get_handler(self, stream: Any, levels: set[int], json: bool = False) -> logging.Handler:
+        handler = logging.StreamHandler(stream)
         handler.setLevel(logging.DEBUG)
-        handler.addFilter(LogFilter(logging.DEBUG))
-        handler.setFormatter(
-            MultilineFormatter(
-                self.critical(CONSOLE_FORMAT.format(colorama.Fore.BLUE, colorama.Style.RESET_ALL))
-            )
-        )
-
-        if json:
-            handler.setFormatter(MultilineJsonFormatter(JSON_FORMAT))
-
+        handler.addFilter(LevelFilter(levels))
+        handler.setFormatter(self._get_formatter(json))
         return handler
+
+    def _get_formatter(self, json: bool = False) -> logging.Formatter:
+        if json:
+            return MultilineJsonFormatter(JSON_FORMAT)
+        return ConsoleFormatter()
 
     def set_level(self, s: str | int) -> None:
         """Set log level."""
         self.logger.setLevel(s)
-
-    def debug(self, msg: str) -> str:
-        """Format info messages and return string."""
-        return msg
-
-    def critical(self, msg: str) -> str:
-        """Format critical messages and return string."""
-        return msg
-
-    def error(self, msg: str) -> str:
-        """Format error messages and return string."""
-        return msg
-
-    def warning(self, msg: str) -> str:
-        """Format warning messages and return string."""
-        return msg
-
-    def info(self, msg: str) -> str:
-        """Format info messages and return string."""
-        return msg
-
-    def _color_text(self, color: str, msg: str) -> str:
-        """
-        Colorize strings.
-
-        :param color: colorama color settings
-        :param msg: string to colorize
-        :returns: string
-
-        """
-        return f"{color}{msg}{colorama.Style.RESET_ALL}"
 
     def sysexit(self, code: int = 1) -> NoReturn:
         """Exit running program with given exit code."""

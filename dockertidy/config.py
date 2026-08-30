@@ -9,7 +9,7 @@ import environs
 import jsonschema.exceptions
 import ruamel.yaml
 from appdirs import AppDirs
-from jsonschema._utils import format_as_index
+from environs.exceptions import EnvError, EnvNotSetError
 
 import dockertidy.exception
 import dockertidy.parser
@@ -167,20 +167,23 @@ class Config:
 
     def _get_envs(self) -> dict[str, Any]:
         normalized: dict[str, Any] = {}
+        prefix = "TIDY_"
         for key, item in self.SETTINGS.items():
-            if item.get("env"):
-                prefix = "TIDY_"
-                env_name = prefix + item["env"]
-                try:
-                    value = item["type"](env_name)
-                    normalized = self._add_dict_branch(normalized, key.split("."), value)
-                except environs.EnvError as e:
-                    if f'"{env_name}" not set' in str(e):
-                        pass
-                    else:
-                        raise dockertidy.exception.ConfigError(
-                            "Unable to read environment variable", str(e)
-                        ) from e
+            env = item.get("env")
+            if not env:
+                continue
+
+            env_name = prefix + env
+            try:
+                value = item["type"](env_name)
+            except EnvNotSetError:
+                continue
+            except EnvError as e:
+                raise dockertidy.exception.ConfigError(
+                    "Unable to read environment variable", str(e)
+                ) from e
+
+            normalized = self._add_dict_branch(normalized, key.split("."), value)
 
         return normalized
 
@@ -249,8 +252,9 @@ class Config:
         try:
             anyconfig.validate(config, self.schema, ac_schema_safe=False)
         except jsonschema.exceptions.ValidationError as e:
-            schema = format_as_index("config", list(e.relative_schema_path)[1:-1])
-            schema_error = f"Failed validating '{e.validator}' in schema {schema}\n{e.message}"
+            schema_error = (
+                f"Failed validating '{e.validator}' in schema {e.json_path}\n{e.message}"
+            )
             raise dockertidy.exception.ConfigError("Configuration error", schema_error) from e
 
         return True
