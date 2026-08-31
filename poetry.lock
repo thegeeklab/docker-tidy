@@ -1598,14 +1598,14 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [[package]]
 name = "websocket-client"
-version = "1.9.1"
+version = "1.9.2"
 description = "WebSocket client for Python with low level API options"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "websocket_client-1.9.1-py3-none-any.whl", hash = "sha256:19a871b81d0022589dd9e8e1b1891e0516d32113837dfb987d7691b6a425a1e2"},
-    {file = "websocket_client-1.9.1.tar.gz", hash = "sha256:2e0916d2e28ccc82702f2f70aa7a654588e84a5cf2f5914099638b33547f2b7c"},
+    {file = "websocket_client-1.9.2-py3-none-any.whl", hash = "sha256:e1a673830a9c7bfa47b1cd3d5e4178f4c9651d80a4eab02c9c23a1c3ec6250ce"},
+    {file = "websocket_client-1.9.2.tar.gz", hash = "sha256:0fcb57545848be86992e128218fd96dd87a6769ffdb1a968dff79632b85604d0"},
 ]
 
 [package.extras]
@@ -1636,4 +1636,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "4094a5dfa543413f11b0f45009d2fc75ed0a19093d6dad71cf44bdcfdd5c9bd9"
+content-hash = "a229818a3ecda5b1ea434a3d6c4a7a7e9e123b0bfa9cbdcef2e794b0cd2b06c2"
