@@ -49,7 +49,7 @@ python-dateutil = "2.9.0.post0"
 python-json-logger = "4.2.0"
 requests = "2.34.2"
 "ruamel.yaml" = "0.19.1"
-websocket_client = "1.9.1"
+websocket_client = "1.9.2"
 zipp = "4.1.0"
 
 [tool.poetry.scripts]
