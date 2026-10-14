@@ -407,7 +407,7 @@ class GarbageCollector:
             if image:
                 created = dateutil.parser.parse(image["Created"])
             else:
-                created = datetime.datetime.max.replace(tzinfo=datetime.timezone.utc)
+                created = datetime.datetime.max.replace(tzinfo=datetime.UTC)
             decorated.append((image_summary, image, created))
 
         decorated.sort(key=lambda x: x[2])
