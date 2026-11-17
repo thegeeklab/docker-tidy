@@ -447,14 +447,14 @@ files = [
 
 [[package]]
 name = "dateparser"
-version = "1.5.0"
+version = "1.5.1"
 description = "Date parsing library designed to parse dates from HTML pages"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "dateparser-1.5.0-py3-none-any.whl", hash = "sha256:7c4e088f25458f57db391510035af0878439a6df71d159318dcdb0a7553932e3"},
-    {file = "dateparser-1.5.0.tar.gz", hash = "sha256:08d62f2c00d3a1e806fc59d40c79e7554e31d84d3b8c6145820af051c92e7292"},
+    {file = "dateparser-1.5.1-py3-none-any.whl", hash = "sha256:1d312d2dbc3cddd61fe96d336af733b54bd01d7beb5657a432c7d1c2a144a5c8"},
+    {file = "dateparser-1.5.1.tar.gz", hash = "sha256:1c3d4a568b4f4d615adfc2945b54596adffc14f955c9b435030b5236226a4366"},
 ]
 
 [package.dependencies]
@@ -1623,4 +1623,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11.0"
-content-hash = "e76c64b61213038ad644f63cc4a2bd5dbdbcbc3559e6d377b78cbc0e62b54b7b"
+content-hash = "f1be74a56d489ded740d3a11b34c1fdf30d7cc4144f339def9f8543a40f642f6"
